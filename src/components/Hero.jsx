@@ -224,7 +224,7 @@ function AvatarOrb({ name }) {
         background: "var(--color-border)",
       }}>
         <img
-          src="/avatar.jpg"
+          src={`${import.meta.env.BASE_URL}avatar.jpg`}
           alt={`${name} — profile photo`}
           style={{
             width: "100%",
