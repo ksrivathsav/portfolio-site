@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-scroll";
 import { Menu, X, Sun, Moon, Code2 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import { navLinks, personalInfo } from "../data/portfolioData";
 
@@ -18,6 +18,9 @@ export default function Navbar() {
   const { isDark, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
 
   // Add background blur when user scrolls down
   useEffect(() => {
@@ -59,6 +62,13 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Reading progress bar */}
+      <motion.div
+        style={{
+          position: "fixed", top: 0, left: 0, right: 0, height: "2px",
+          background: "var(--color-primary)", scaleX, transformOrigin: "left", zIndex: 1001,
+        }}
+      />
       <nav style={isDark ? navStyle : lightNavStyle} aria-label="Main navigation">
         {/* Logo */}
         <Link to="hero" smooth duration={600} style={{ cursor: "pointer" }}>
