@@ -35,7 +35,7 @@ function SkillCard({ category, index }) {
       initial={{ opacity: 0, y: 32 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.55, delay: index * 0.08, ease: "easeOut" }}
-      className="card"
+      className="card skill-card-hover"
     >
       {/* Category header with bouncing icon */}
       <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "1.25rem" }}>

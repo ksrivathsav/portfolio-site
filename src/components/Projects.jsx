@@ -49,6 +49,11 @@ function ProjectCard({ project, index }) {
     const rect = ref.current.getBoundingClientRect();
     x.set(e.clientX - rect.left - rect.width / 2);
     y.set(e.clientY - rect.top - rect.height / 2);
+    // spotlight
+    const sx = ((e.clientX - rect.left) / rect.width) * 100;
+    const sy = ((e.clientY - rect.top) / rect.height) * 100;
+    ref.current.style.setProperty("--mouse-x", `${sx}%`);
+    ref.current.style.setProperty("--mouse-y", `${sy}%`);
   };
   const handleMouseLeave = () => { x.set(0); y.set(0); };
 
@@ -63,7 +68,7 @@ function ProjectCard({ project, index }) {
       style={{ rotateX, rotateY, perspective: 900, transformStyle: "preserve-3d" }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="card"
+      className="card card-spotlight"
     >
       {/* Colored gradient top strip */}
       <div style={{

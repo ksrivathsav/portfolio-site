@@ -1,9 +1,5 @@
-// ─────────────────────────────────────────────────────────
-//  App.jsx
-//  Root application component. Wraps the app in ThemeProvider
-//  and renders all sections in order.
-// ─────────────────────────────────────────────────────────
 import { ThemeProvider } from "./context/ThemeContext";
+import { motion } from "framer-motion";
 import Navbar     from "./components/Navbar";
 import Hero       from "./components/Hero";
 import Experience from "./components/Experience";
@@ -11,26 +7,19 @@ import Education  from "./components/Education";
 import Projects   from "./components/Projects";
 import Skills     from "./components/Skills";
 import Footer     from "./components/Footer";
+import CursorGlow from "./components/CursorGlow";
 
 export default function App() {
   return (
-    // ThemeProvider manages dark/light mode state globally
     <ThemeProvider>
-      {/* Skip-to-content link for accessibility */}
+      <CursorGlow />
       <a
         href="#hero"
         style={{
-          position: "absolute",
-          top: "-100%",
-          left: "1rem",
-          background: "var(--color-primary)",
-          color: "#fff",
-          padding: "0.5rem 1rem",
-          borderRadius: "0 0 0.5rem 0.5rem",
-          zIndex: 9999,
-          textDecoration: "none",
-          fontWeight: 700,
-          transition: "top 0.2s",
+          position: "absolute", top: "-100%", left: "1rem",
+          background: "var(--color-primary)", color: "#fff",
+          padding: "0.5rem 1rem", borderRadius: "0 0 0.5rem 0.5rem",
+          zIndex: 9999, textDecoration: "none", fontWeight: 700, transition: "top 0.2s",
         }}
         onFocus={(e) => { e.currentTarget.style.top = "0"; }}
         onBlur={(e)  => { e.currentTarget.style.top = "-100%"; }}
@@ -40,15 +29,20 @@ export default function App() {
 
       <Navbar />
 
-      <main id="main-content">
-        <Hero />
-        <Experience />
-        <Education />
-        <Skills />
-        <Projects />
-      </main>
-
-      <Footer />
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+      >
+        <main id="main-content">
+          <Hero />
+          <Experience />
+          <Education />
+          <Skills />
+          <Projects />
+        </main>
+        <Footer />
+      </motion.div>
     </ThemeProvider>
   );
 }
