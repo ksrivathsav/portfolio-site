@@ -1,29 +1,42 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { Link } from "react-scroll";
 import { Mail, ChevronDown, Briefcase, Building2, FolderGit2 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 import { personalInfo } from "../data/portfolioData";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 
-function useTypewriter(text, speed = 55, startDelay = 1600) {
+/* ── Cycling typewriter hook ─────────────────────────────── */
+function useTypewriter(texts, speed = 55, pauseMs = 1800) {
+  const list = Array.isArray(texts) ? texts : [texts];
   const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
+  const [phase, setPhase] = useState("typing");
+  const [idx, setIdx] = useState(0);
+
   useEffect(() => {
-    let t, iv;
-    t = setTimeout(() => {
-      let i = 0;
-      iv = setInterval(() => {
-        i++;
-        setDisplayed(text.slice(0, i));
-        if (i >= text.length) { clearInterval(iv); setDone(true); }
-      }, speed);
-    }, startDelay);
-    return () => { clearTimeout(t); clearInterval(iv); };
-  }, [text, speed, startDelay]);
-  return { displayed, done };
+    let timer;
+    const current = list[idx];
+    if (phase === "typing") {
+      if (displayed.length < current.length) {
+        timer = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), speed);
+      } else {
+        timer = setTimeout(() => setPhase("deleting"), pauseMs);
+      }
+    } else if (phase === "deleting") {
+      if (displayed.length > 0) {
+        timer = setTimeout(() => setDisplayed(displayed.slice(0, -1)), speed / 2);
+      } else {
+        setIdx((i) => (i + 1) % list.length);
+        setPhase("typing");
+      }
+    }
+    return () => clearTimeout(timer);
+  }, [displayed, phase, idx, list, speed, pauseMs]);
+
+  return { displayed, showCursor: phase === "typing" || phase === "deleting" };
 }
 
+/* ── Counting number hook ────────────────────────────────── */
 function useCounter(end, duration = 1800) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
@@ -44,6 +57,7 @@ function useCounter(end, duration = 1800) {
   return { count, ref };
 }
 
+/* ── Animation variants ──────────────────────────────────── */
 const letters = {
   hidden: {},
   show: { transition: { staggerChildren: 0.045 } },
@@ -52,7 +66,6 @@ const letter = {
   hidden: { opacity: 0, y: 40, rotateX: -90 },
   show:   { opacity: 1, y: 0,  rotateX: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 };
-
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.14, delayChildren: 0.3 } },
@@ -62,11 +75,20 @@ const item = {
   show:   { opacity: 1, y: 0, transition: { duration: 0.65, ease: "easeOut" } },
 };
 
+/* ── Main component ──────────────────────────────────────── */
 export default function Hero() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const { isMobile, isTablet } = useBreakpoint();
-  const { displayed: typedTitle, done: typingDone } = useTypewriter(personalInfo.title);
-  const years     = useCounter(5);
+
+  const ROLES = [
+    personalInfo.title,
+    "Full-Stack Developer",
+    "Cloud & DevOps Engineer",
+    "ML / AI Engineer",
+  ];
+  const { displayed: typedTitle, showCursor } = useTypewriter(ROLES);
+
+  const years     = useCounter(3);
   const companies = useCounter(3);
   const projects  = useCounter(10);
 
@@ -83,22 +105,16 @@ export default function Hero() {
       className="hero-grid-bg"
       style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", padding: heroPadding, overflow: "hidden" }}
     >
-      {/* Floating orbs — fewer/smaller on mobile */}
-      {!isMobile && (
-        <FloatingOrb color="rgba(99,102,241,0.18)" style={{ top: "5%", right: "2%", width: "560px", height: "560px" }} duration={11} delay={0} />
-      )}
+      {/* Floating orbs */}
+      {!isMobile && <FloatingOrb color="rgba(99,102,241,0.18)" style={{ top: "5%", right: "2%", width: "560px", height: "560px" }} duration={11} delay={0} />}
       <FloatingOrb color="rgba(6,182,212,0.13)" style={{ bottom: "10%", left: "0%", width: isMobile ? "220px" : "420px", height: isMobile ? "220px" : "420px" }} duration={14} delay={3} />
-      {!isMobile && (
-        <FloatingOrb color="rgba(16,185,129,0.10)" style={{ top: "45%", left: "38%", width: "300px", height: "300px" }} duration={17} delay={6} />
-      )}
-      {!isMobile && (
-        <FloatingOrb color="rgba(245,158,11,0.08)" style={{ top: "70%", right: "15%", width: "240px", height: "240px" }} duration={20} delay={2} />
-      )}
+      {!isMobile && <FloatingOrb color="rgba(16,185,129,0.10)" style={{ top: "45%", left: "38%", width: "300px", height: "300px" }} duration={17} delay={6} />}
+      {!isMobile && <FloatingOrb color="rgba(245,158,11,0.08)" style={{ top: "70%", right: "15%", width: "240px", height: "240px" }} duration={20} delay={2} />}
 
       <div style={{ maxWidth: "840px", margin: "0 auto", width: "100%", textAlign: "center", position: "relative", zIndex: 1 }}>
         <motion.div variants={container} initial="hidden" animate="show" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 
-          {/* Avatar */}
+          {/* Avatar with spinning ring */}
           <motion.div variants={item} style={{ marginBottom: isMobile ? "1.5rem" : "2.5rem" }}>
             <AvatarOrb name={personalInfo.name} size={avatarSize} />
           </motion.div>
@@ -107,8 +123,7 @@ export default function Hero() {
           <motion.div variants={item} style={{ marginBottom: isMobile ? "1.25rem" : "1.75rem" }}>
             <motion.span whileHover={{ scale: 1.05 }} style={{
               display: "inline-flex", alignItems: "center", gap: "0.5rem",
-              padding: "0.3rem 1rem", borderRadius: "9999px",
-              fontSize: "0.8rem", fontWeight: 500,
+              padding: "0.3rem 1rem", borderRadius: "9999px", fontSize: "0.8rem", fontWeight: 500,
               background: "var(--color-surface)", border: "1px solid var(--color-border)",
               color: "var(--color-text)", cursor: "default",
             }}>
@@ -117,14 +132,11 @@ export default function Hero() {
             </motion.span>
           </motion.div>
 
-          {/* Name — letter by letter */}
+          {/* Name — letter by letter + gradient shimmer */}
           <div style={{ marginBottom: "0.75rem", perspective: "600px" }}>
-            <motion.h1 variants={letters} initial="hidden" animate="show" style={{
-              fontSize: isMobile ? "clamp(2rem, 10vw, 2.8rem)" : "clamp(2.8rem, 9vw, 5rem)",
-              fontWeight: 800, lineHeight: 1.05,
-              color: "var(--color-text)", letterSpacing: "-0.04em",
-              display: "inline-block",
-            }}>
+            <motion.h1 variants={letters} initial="hidden" animate="show"
+              className="gradient-name"
+              style={{ fontSize: isMobile ? "clamp(2rem, 10vw, 2.8rem)" : "clamp(2.8rem, 9vw, 5rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.04em", display: "inline-block" }}>
               {personalInfo.name.split("").map((char, i) => (
                 <motion.span key={i} variants={letter} style={{ display: "inline-block", transformOrigin: "bottom center" }}>
                   {char === " " ? "\u00A0" : char}
@@ -133,11 +145,11 @@ export default function Hero() {
             </motion.h1>
           </div>
 
-          {/* Typewriter title */}
+          {/* Cycling typewriter role */}
           <motion.div variants={item} style={{ marginBottom: isMobile ? "1.25rem" : "1.75rem", minHeight: "2.4rem", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <h2 style={{ fontSize: isMobile ? "clamp(1rem, 4.5vw, 1.35rem)" : "clamp(1.2rem, 3vw, 1.7rem)", fontWeight: 500, color: "var(--color-muted)", letterSpacing: "-0.02em", textAlign: "center" }}>
               {typedTitle}
-              {!typingDone && <span className="typing-cursor" />}
+              {showCursor && <span className="typing-cursor" />}
             </h2>
           </motion.div>
 
@@ -150,8 +162,7 @@ export default function Hero() {
           <motion.div variants={item} style={{
             display: "flex", gap: "0", marginBottom: isMobile ? "1.75rem" : "2.75rem",
             border: "1px solid var(--color-border)", borderRadius: "0.75rem",
-            overflow: "hidden", background: "var(--color-surface)",
-            width: isMobile ? "100%" : "auto",
+            overflow: "hidden", background: "var(--color-surface)", width: isMobile ? "100%" : "auto",
           }}>
             {[
               { ref: years.ref,     count: years.count,     suffix: "+", label: "Years Exp",  Icon: Briefcase },
@@ -175,25 +186,29 @@ export default function Hero() {
             ))}
           </motion.div>
 
-          {/* CTA buttons */}
+          {/* CTA buttons with magnetic effect on desktop */}
           <motion.div variants={item} style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center", marginBottom: "2.5rem", width: isMobile ? "100%" : "auto" }}>
             <Link to="projects" smooth duration={600} offset={-64} style={isMobile ? { width: "100%" } : {}}>
-              <motion.button className="btn btn-primary"
-                whileHover={{ scale: 1.04, boxShadow: "0 8px 24px -4px rgba(99,102,241,0.4)" }}
-                whileTap={{ scale: 0.97 }}
-                style={isMobile ? { width: "100%", justifyContent: "center" } : {}}
-              >
-                View Projects
-              </motion.button>
+              <MagneticButton disabled={isMobile}>
+                <motion.button className="btn btn-primary"
+                  whileHover={{ scale: 1.04, boxShadow: "0 8px 28px -4px rgba(99,102,241,0.45)" }}
+                  whileTap={{ scale: 0.97 }}
+                  style={isMobile ? { width: "100%", justifyContent: "center" } : {}}
+                >
+                  View Projects
+                </motion.button>
+              </MagneticButton>
             </Link>
             <div style={{ position: "relative", width: isMobile ? "100%" : "auto" }}>
-              <motion.button className="btn btn-secondary"
-                whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-                onClick={() => setIsContactOpen(!isContactOpen)}
-                style={isMobile ? { width: "100%", justifyContent: "center" } : {}}
-              >
-                Contact Me
-              </motion.button>
+              <MagneticButton disabled={isMobile}>
+                <motion.button className="btn btn-secondary"
+                  whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                  onClick={() => setIsContactOpen(!isContactOpen)}
+                  style={isMobile ? { width: "100%", justifyContent: "center" } : {}}
+                >
+                  Contact Me
+                </motion.button>
+              </MagneticButton>
               <AnimatePresence>
                 {isContactOpen && (
                   <motion.div
@@ -253,6 +268,34 @@ export default function Hero() {
   );
 }
 
+/* ── Magnetic button wrapper (desktop only) ─────────────── */
+function MagneticButton({ children, disabled, strength = 0.28 }) {
+  const ref = useRef(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 200, damping: 18 });
+  const sy = useSpring(y, { stiffness: 200, damping: 18 });
+
+  if (disabled) return children;
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ x: sx, y: sy, display: "inline-block" }}
+      onMouseMove={(e) => {
+        if (!ref.current) return;
+        const rect = ref.current.getBoundingClientRect();
+        x.set((e.clientX - (rect.left + rect.width / 2)) * strength);
+        y.set((e.clientY - (rect.top + rect.height / 2)) * strength);
+      }}
+      onMouseLeave={() => { x.set(0); y.set(0); }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ── Floating orb ────────────────────────────────────────── */
 function FloatingOrb({ color, style, duration, delay }) {
   return (
     <motion.div
@@ -268,29 +311,18 @@ function FloatingOrb({ color, style, duration, delay }) {
   );
 }
 
+/* ── Avatar with spinning conic ring ────────────────────── */
 function AvatarOrb({ name, size = 210 }) {
   const px = `${size}px`;
   return (
     <div style={{ position: "relative", width: px, height: px }}>
-      {/* Outer glow pulse */}
       <motion.div
         animate={{ scale: [1, 1.12, 1], opacity: [0.4, 0.15, 0.4] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        style={{
-          position: "absolute", inset: "-12px", borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(99,102,241,0.25), transparent 70%)",
-          zIndex: 0,
-        }}
+        style={{ position: "absolute", inset: "-12px", borderRadius: "50%", background: "radial-gradient(circle, rgba(99,102,241,0.25), transparent 70%)", zIndex: 0 }}
       />
-      {/* Spinning conic ring */}
-      <div className="avatar-ring" style={{
-        position: "absolute", inset: 0, borderRadius: "50%",
-        background: "conic-gradient(from 0deg, #6366f1, #06b6d4, #10b981, #f59e0b, #ec4899, #8b5cf6, #6366f1)",
-        zIndex: 1,
-      }} />
-      {/* BG gap mask */}
+      <div className="avatar-ring" style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "conic-gradient(from 0deg, #6366f1, #06b6d4, #10b981, #f59e0b, #ec4899, #8b5cf6, #6366f1)", zIndex: 1 }} />
       <div style={{ position: "absolute", inset: "4px", borderRadius: "50%", background: "var(--color-bg)", zIndex: 2 }} />
-      {/* Photo */}
       <div style={{ position: "absolute", inset: "8px", borderRadius: "50%", overflow: "hidden", zIndex: 3 }}>
         <img
           src={`${import.meta.env.BASE_URL}avatar.jpg`}

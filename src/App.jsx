@@ -8,11 +8,13 @@ import Projects   from "./components/Projects";
 import Skills     from "./components/Skills";
 import Footer     from "./components/Footer";
 import CursorGlow from "./components/CursorGlow";
+import ScrollToTop from "./components/ScrollToTop";
 
 export default function App() {
   return (
     <ThemeProvider>
       <CursorGlow />
+      <ScrollToTop />
       <a
         href="#hero"
         style={{
