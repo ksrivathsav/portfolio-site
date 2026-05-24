@@ -4,6 +4,7 @@ import { ExternalLink, Star } from "lucide-react";
 import { GithubIcon } from "./SocialIcons";
 import { projects } from "../data/portfolioData";
 import { SectionHeader } from "./Experience";
+import { useBreakpoint } from "../hooks/useBreakpoint";
 
 // Map Tailwind gradient strings → CSS hex colors for inline gradient strips
 const GRADIENT_MAP = {
@@ -16,15 +17,15 @@ const GRADIENT_MAP = {
 };
 
 export default function Projects() {
+  const { isMobile } = useBreakpoint();
   return (
     <section id="projects" style={{ padding: "5rem 1.5rem" }}>
       <div className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
         <SectionHeader title="Featured Projects" />
-
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-          gap: "1.5rem",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(300px, 1fr))",
+          gap: isMobile ? "1rem" : "1.5rem",
         }}>
           {projects.map((project, idx) => (
             <ProjectCard key={project.id} project={project} index={idx} />
@@ -36,6 +37,7 @@ export default function Projects() {
 }
 
 function ProjectCard({ project, index }) {
+  const { isTouch, isMobile } = useBreakpoint();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
@@ -45,11 +47,10 @@ function ProjectCard({ project, index }) {
   const rotateY = useSpring(useTransform(x, [-80, 80], [-6, 6]), { stiffness: 280, damping: 28 });
 
   const handleMouseMove = (e) => {
-    if (!ref.current) return;
+    if (isTouch || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     x.set(e.clientX - rect.left - rect.width / 2);
     y.set(e.clientY - rect.top - rect.height / 2);
-    // spotlight
     const sx = ((e.clientX - rect.left) / rect.width) * 100;
     const sy = ((e.clientY - rect.top) / rect.height) * 100;
     ref.current.style.setProperty("--mouse-x", `${sx}%`);
@@ -62,10 +63,10 @@ function ProjectCard({ project, index }) {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 32 }}
+      initial={{ opacity: 0, y: 28 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: (index % 3) * 0.1, ease: "easeOut" }}
-      style={{ rotateX, rotateY, perspective: 900, transformStyle: "preserve-3d" }}
+      transition={{ duration: 0.5, delay: isMobile ? 0 : (index % 3) * 0.08, ease: "easeOut" }}
+      style={isTouch ? {} : { rotateX, rotateY, perspective: 900, transformStyle: "preserve-3d" }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="card card-spotlight"

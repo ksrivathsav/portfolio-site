@@ -1,192 +1,157 @@
-// ─────────────────────────────────────────────────────────
-//  Navbar.jsx
-//  Sticky navigation bar with:
-//   • Smooth-scroll links (via react-scroll)
-//   • Active section highlighting
-//   • Dark/Light toggle
-//   • Mobile hamburger menu
-// ─────────────────────────────────────────────────────────
 import { useState, useEffect } from "react";
 import { Link } from "react-scroll";
 import { Menu, X, Sun, Moon, Code2 } from "lucide-react";
-import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
-import { navLinks, personalInfo } from "../data/portfolioData";
+import { navLinks } from "../data/portfolioData";
+import { useBreakpoint } from "../hooks/useBreakpoint";
 
 export default function Navbar() {
   const { isDark, toggleTheme } = useTheme();
+  const { isMobileNav } = useBreakpoint();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
 
-  // Add background blur when user scrolls down
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on resize to desktop
+  // Close drawer when resizing to desktop
   useEffect(() => {
-    const onResize = () => { if (window.innerWidth >= 768) setMenuOpen(false); };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+    if (!isMobileNav) setMenuOpen(false);
+  }, [isMobileNav]);
 
-  const navStyle = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1000,
-    padding: "0 1.5rem",
-    height: "4rem",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    transition: "all 0.3s ease",
-    background: scrolled
-      ? "rgba(15, 23, 42, 0.85)"
-      : "transparent",
-    backdropFilter: scrolled ? "blur(12px)" : "none",
-    borderBottom: scrolled ? "1px solid var(--color-border)" : "none",
+  const navBase = {
+    position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
+    padding: "0 1.25rem", height: "4rem",
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    transition: "background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease",
+    borderBottom: scrolled ? "1px solid var(--color-border)" : "1px solid transparent",
+    backdropFilter: scrolled ? "blur(14px)" : "none",
   };
 
+  const navStyle = {
+    ...navBase,
+    background: scrolled ? "rgba(9,9,11,0.88)" : "transparent",
+  };
   const lightNavStyle = {
-    ...navStyle,
-    background: scrolled ? "rgba(255,255,255,0.9)" : "transparent",
+    ...navBase,
+    background: scrolled ? "rgba(255,255,255,0.92)" : "transparent",
   };
 
   return (
     <>
       {/* Reading progress bar */}
-      <motion.div
-        style={{
-          position: "fixed", top: 0, left: 0, right: 0, height: "2px",
-          background: "var(--color-primary)", scaleX, transformOrigin: "left", zIndex: 1001,
-        }}
-      />
+      <motion.div style={{
+        position: "fixed", top: 0, left: 0, right: 0, height: "2px",
+        background: "var(--color-primary)", scaleX, transformOrigin: "left", zIndex: 1001,
+      }} />
+
       <nav style={isDark ? navStyle : lightNavStyle} aria-label="Main navigation">
         {/* Logo */}
-        <Link to="hero" smooth duration={600} style={{ cursor: "pointer" }}>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-          >
+        <Link to="hero" smooth duration={600} style={{ cursor: "pointer", flexShrink: 0 }}>
+          <motion.div whileHover={{ scale: 1.05 }} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <div style={{
-              width: "2rem", height: "2rem", borderRadius: "0.25rem",
+              width: "1.875rem", height: "1.875rem", borderRadius: "0.25rem",
               background: "var(--color-primary)",
-              display: "flex", alignItems: "center", justifyContent: "center",
+              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
             }}>
-              <Code2 size={16} color="var(--color-bg)" />
+              <Code2 size={15} color="var(--color-bg)" />
             </div>
-            <span style={{ fontWeight: 800, fontSize: "1.1rem", color: "var(--color-text)" }}>
+            <span style={{ fontWeight: 800, fontSize: "1.05rem", color: "var(--color-text)", whiteSpace: "nowrap" }}>
               Srivathsav
             </span>
           </motion.div>
         </Link>
 
-        {/* Desktop links */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}
-          className="hidden md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              smooth
-              duration={600}
-              offset={-64}
-              spy
-              activeClass="nav-active"
-              style={{
-                padding: "0.4rem 0.875rem",
-                borderRadius: "0.5rem",
-                fontSize: "0.875rem",
-                fontWeight: 500,
-                cursor: "pointer",
-                color: "var(--color-muted)",
-                transition: "color 0.2s ease, background 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.color = "var(--color-text)";
-                e.target.style.background = "var(--color-surface)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.color = "var(--color-muted)";
-                e.target.style.background = "transparent";
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
+        {/* Desktop links — only rendered when viewport >= 768px */}
+        {!isMobileNav && (
+          <div style={{ display: "flex", alignItems: "center", gap: "0.125rem" }}>
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                smooth
+                duration={600}
+                offset={-64}
+                spy
+                activeClass="nav-active"
+                style={{
+                  padding: "0.375rem 0.75rem",
+                  borderRadius: "0.5rem",
+                  fontSize: "0.875rem",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  color: "var(--color-muted)",
+                  transition: "color 0.2s ease, background 0.2s ease",
+                  whiteSpace: "nowrap",
+                }}
+                onMouseEnter={(e) => { e.target.style.color = "var(--color-text)"; e.target.style.background = "var(--color-accent)"; }}
+                onMouseLeave={(e) => { e.target.style.color = "var(--color-muted)"; e.target.style.background = "transparent"; }}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
 
-        {/* Right side controls */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          {/* Theme toggle */}
+        {/* Right controls */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
           <motion.button
             onClick={toggleTheme}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             aria-label="Toggle theme"
             style={{
-              background: "var(--color-surface)",
-              border: "1px solid var(--color-border)",
-              borderRadius: "0.625rem",
-              padding: "0.45rem",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              color: "var(--color-muted)",
+              background: "var(--color-surface)", border: "1px solid var(--color-border)",
+              borderRadius: "0.5rem", padding: "0.4rem",
+              cursor: "pointer", display: "flex", alignItems: "center",
+              color: "var(--color-muted)", flexShrink: 0,
             }}
           >
-            {isDark ? <Sun size={17} /> : <Moon size={17} />}
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
           </motion.button>
 
-          {/* Hamburger (mobile) */}
-          <motion.button
-            onClick={() => setMenuOpen((o) => !o)}
-            whileTap={{ scale: 0.9 }}
-            aria-label="Toggle menu"
-            className="flex md:hidden"
-            style={{
-              background: "var(--color-surface)",
-              border: "1px solid var(--color-border)",
-              borderRadius: "0.625rem",
-              padding: "0.45rem",
-              cursor: "pointer",
-              color: "var(--color-muted)",
-            }}
-          >
-            {menuOpen ? <X size={17} /> : <Menu size={17} />}
-          </motion.button>
+          {/* Hamburger — only rendered when viewport < 768px */}
+          {isMobileNav && (
+            <motion.button
+              onClick={() => setMenuOpen((o) => !o)}
+              whileTap={{ scale: 0.9 }}
+              aria-label="Toggle menu"
+              style={{
+                background: "var(--color-surface)", border: "1px solid var(--color-border)",
+                borderRadius: "0.5rem", padding: "0.4rem",
+                cursor: "pointer", display: "flex", alignItems: "center",
+                color: "var(--color-muted)",
+              }}
+            >
+              {menuOpen ? <X size={16} /> : <Menu size={16} />}
+            </motion.button>
+          )}
         </div>
       </nav>
 
-      {/* Mobile Drawer */}
+      {/* Mobile slide-down drawer */}
       <AnimatePresence>
-        {menuOpen && (
+        {menuOpen && isMobileNav && (
           <motion.div
             key="mobile-menu"
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.22 }}
             style={{
-              position: "fixed",
-              top: "4rem",
-              left: 0,
-              right: 0,
-              zIndex: 999,
+              position: "fixed", top: "4rem", left: 0, right: 0, zIndex: 999,
               background: "var(--color-surface)",
               borderBottom: "1px solid var(--color-border)",
-              padding: "1rem 1.5rem",
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.25rem",
+              padding: "0.75rem 1rem 1rem",
+              display: "flex", flexDirection: "column", gap: "0.25rem",
+              boxShadow: "0 8px 24px -4px rgba(0,0,0,0.1)",
             }}
           >
             {navLinks.map((link) => (
@@ -206,6 +171,8 @@ export default function Navbar() {
                   color: "var(--color-text)",
                   transition: "background 0.2s ease",
                 }}
+                onMouseEnter={(e) => { e.target.style.background = "var(--color-accent)"; }}
+                onMouseLeave={(e) => { e.target.style.background = "transparent"; }}
               >
                 {link.label}
               </Link>

@@ -271,6 +271,39 @@ h1, h2, h3, h4, h5, h6 {
   100% { background-position: 0% 50%; }
 }
 
+/* ─── Responsive ─────────────────────────────────────────── */
+
+/* Large tablets & small laptops (≤ 1024px) */
+@media (max-width: 1024px) {
+  .section { max-width: 100%; }
+}
+
+/* Tablets / large phones (≤ 768px) */
+@media (max-width: 768px) {
+  .section { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .section-title { font-size: clamp(1.6rem, 5.5vw, 2.2rem); }
+  .section-subtitle { font-size: 1rem; }
+  .card:hover { transform: none; }
+}
+
+/* Phones (≤ 640px) */
+@media (max-width: 640px) {
+  .section { padding-left: 1rem; padding-right: 1rem; }
+  .section-title { font-size: clamp(1.5rem, 6vw, 1.9rem); }
+  .card { padding: 1.1rem; }
+  .card:hover { transform: none; box-shadow: none; }
+  .hero-grid-bg { background-size: 24px 24px; }
+  .scroll-indicator { display: none; }
+}
+
+/* Small phones (≤ 480px) */
+@media (max-width: 480px) {
+  .section { padding-left: 0.875rem; padding-right: 0.875rem; }
+  .btn { padding: 0.5rem 0.875rem; font-size: 0.82rem; }
+  .badge { font-size: 0.68rem; padding: 0.1rem 0.4rem; }
+  .card { padding: 0.9rem; }
+}
+
 /* ─── Input ─────────────────────────────────────────────── */
 input, textarea {
   width: 100%;

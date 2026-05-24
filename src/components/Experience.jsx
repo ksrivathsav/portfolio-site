@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { MapPin, Calendar } from "lucide-react";
 import { experiences } from "../data/portfolioData";
+import { useBreakpoint } from "../hooks/useBreakpoint";
 
 const bulletContainer = {
   hidden: {},
@@ -13,35 +14,25 @@ const bulletItem = {
 };
 
 export default function Experience() {
+  const { isMobile } = useBreakpoint();
   const timelineRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: timelineRef, offset: ["start 0.85", "end 0.15"] });
   const lineScaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
+  const tlPL   = isMobile ? "1.5rem" : "2rem";
+  const lineL  = isMobile ? "0.75rem" : "1rem";
+  const lineLC = isMobile ? "calc(0.75rem - 0.5px)" : "calc(1rem - 0.5px)";
+
   return (
     <section id="experience" style={{ padding: "5rem 1.5rem", background: "var(--color-surface)" }}>
       <div className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
-        <SectionHeader
-          title="Work Experience"
-          subtitle="A timeline of my professional journey"
-        />
-
-        <div ref={timelineRef} style={{ position: "relative", paddingLeft: "2rem" }}>
-          {/* Static base line */}
-          <div style={{
-            position: "absolute", left: "1rem", top: 0, bottom: 0,
-            width: "1px", background: "var(--color-border)", zIndex: 0,
-          }} />
-          {/* Animated progress line */}
-          <motion.div style={{
-            position: "absolute", left: "calc(1rem - 0.5px)", top: 0,
-            width: "2px", height: "100%",
-            background: "linear-gradient(to bottom, #6366f1, #06b6d4, #10b981, #f59e0b)",
-            scaleY: lineScaleY, transformOrigin: "top", zIndex: 0,
-          }} />
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "3rem", position: "relative", zIndex: 1 }}>
+        <SectionHeader title="Work Experience" subtitle="A timeline of my professional journey" />
+        <div ref={timelineRef} style={{ position: "relative", paddingLeft: tlPL }}>
+          <div style={{ position: "absolute", left: lineL, top: 0, bottom: 0, width: "1px", background: "var(--color-border)", zIndex: 0 }} />
+          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #6366f1, #06b6d4, #10b981, #f59e0b)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem", position: "relative", zIndex: 1 }}>
             {experiences.map((exp, index) => (
-              <TimelineItem key={exp.id} exp={exp} index={index} />
+              <TimelineItem key={exp.id} exp={exp} index={index} dotLeft={lineL} />
             ))}
           </div>
         </div>
@@ -50,9 +41,11 @@ export default function Experience() {
   );
 }
 
-function TimelineItem({ exp, index }) {
+function TimelineItem({ exp, index, dotLeft = "1rem" }) {
+  const { isMobile } = useBreakpoint();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
+  const itemPL = isMobile ? "2rem" : "3rem";
 
   return (
     <motion.div
@@ -60,7 +53,7 @@ function TimelineItem({ exp, index }) {
       initial={{ opacity: 0, x: -24 }}
       animate={isInView ? { opacity: 1, x: 0 } : {}}
       transition={{ duration: 0.55, delay: 0.05, ease: "easeOut" }}
-      style={{ position: "relative", paddingLeft: "3rem" }}
+      style={{ position: "relative", paddingLeft: itemPL }}
     >
       {/* Pulsing colored dot */}
       <motion.div
@@ -68,7 +61,7 @@ function TimelineItem({ exp, index }) {
         animate={isInView ? { scale: 1 } : {}}
         transition={{ delay: 0.2, type: "spring", stiffness: 420, damping: 14 }}
         style={{
-          position: "absolute", left: "1rem", top: "0.45rem",
+          position: "absolute", left: dotLeft, top: "0.45rem",
           width: "12px", height: "12px", borderRadius: "50%",
           background: exp.color, transform: "translateX(-50%)",
           boxShadow: `0 0 0 3px var(--color-surface), 0 0 0 5px ${exp.color}55`,

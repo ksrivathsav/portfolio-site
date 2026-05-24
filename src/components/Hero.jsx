@@ -4,6 +4,7 @@ import { Link } from "react-scroll";
 import { Mail, ChevronDown, Briefcase, Building2, FolderGit2 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 import { personalInfo } from "../data/portfolioData";
+import { useBreakpoint } from "../hooks/useBreakpoint";
 
 function useTypewriter(text, speed = 55, startDelay = 1600) {
   const [displayed, setDisplayed] = useState("");
@@ -63,125 +64,111 @@ const item = {
 
 export default function Hero() {
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const { isMobile, isTablet } = useBreakpoint();
   const { displayed: typedTitle, done: typingDone } = useTypewriter(personalInfo.title);
-  const years    = useCounter(5);
+  const years     = useCounter(5);
   const companies = useCounter(3);
   const projects  = useCounter(10);
+
+  const avatarSize   = isMobile ? 148 : isTablet ? 178 : 210;
+  const heroPadding  = isMobile ? "5.5rem 1rem 3rem" : isTablet ? "7rem 1.5rem 3.5rem" : "8rem 1.5rem 4rem";
+  const statsPad     = isMobile ? "0.75rem 0.5rem" : "1.25rem 1.5rem";
+  const statsNumSize = isMobile ? "1.5rem" : isTablet ? "1.7rem" : "1.9rem";
+  const statsLblSize = isMobile ? "0.62rem" : "0.72rem";
+  const bioMaxW      = isMobile ? "100%" : "580px";
 
   return (
     <section
       id="hero"
       className="hero-grid-bg"
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "relative",
-        padding: "8rem 1.5rem 4rem",
-        overflow: "hidden",
-      }}
+      style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", padding: heroPadding, overflow: "hidden" }}
     >
-      {/* Floating ambient orbs */}
-      <FloatingOrb color="rgba(99,102,241,0.18)"  style={{ top: "5%",   right: "2%",  width: "560px", height: "560px" }} duration={11} delay={0} />
-      <FloatingOrb color="rgba(6,182,212,0.13)"   style={{ bottom: "10%", left: "0%",  width: "420px", height: "420px" }} duration={14} delay={3} />
-      <FloatingOrb color="rgba(16,185,129,0.10)"  style={{ top: "45%",  left: "38%", width: "300px", height: "300px" }} duration={17} delay={6} />
-      <FloatingOrb color="rgba(245,158,11,0.08)"  style={{ top: "70%",  right: "15%", width: "240px", height: "240px" }} duration={20} delay={2} />
+      {/* Floating orbs — fewer/smaller on mobile */}
+      {!isMobile && (
+        <FloatingOrb color="rgba(99,102,241,0.18)" style={{ top: "5%", right: "2%", width: "560px", height: "560px" }} duration={11} delay={0} />
+      )}
+      <FloatingOrb color="rgba(6,182,212,0.13)" style={{ bottom: "10%", left: "0%", width: isMobile ? "220px" : "420px", height: isMobile ? "220px" : "420px" }} duration={14} delay={3} />
+      {!isMobile && (
+        <FloatingOrb color="rgba(16,185,129,0.10)" style={{ top: "45%", left: "38%", width: "300px", height: "300px" }} duration={17} delay={6} />
+      )}
+      {!isMobile && (
+        <FloatingOrb color="rgba(245,158,11,0.08)" style={{ top: "70%", right: "15%", width: "240px", height: "240px" }} duration={20} delay={2} />
+      )}
 
       <div style={{ maxWidth: "840px", margin: "0 auto", width: "100%", textAlign: "center", position: "relative", zIndex: 1 }}>
         <motion.div variants={container} initial="hidden" animate="show" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
 
-          {/* Avatar with animated ring */}
-          <motion.div variants={item} style={{ marginBottom: "2.5rem" }}>
-            <AvatarOrb name={personalInfo.name} />
+          {/* Avatar */}
+          <motion.div variants={item} style={{ marginBottom: isMobile ? "1.5rem" : "2.5rem" }}>
+            <AvatarOrb name={personalInfo.name} size={avatarSize} />
           </motion.div>
 
           {/* Status badge */}
-          <motion.div variants={item} style={{ marginBottom: "1.75rem" }}>
-            <motion.span
-              whileHover={{ scale: 1.05 }}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: "0.5rem",
-                padding: "0.3rem 1rem", borderRadius: "9999px",
-                fontSize: "0.8rem", fontWeight: 500,
-                background: "var(--color-surface)",
-                border: "1px solid var(--color-border)",
-                color: "var(--color-text)", cursor: "default",
-              }}
-            >
-              <span className="status-dot" style={{
-                width: "7px", height: "7px", borderRadius: "50%",
-                background: "#10b981", display: "inline-block", flexShrink: 0,
-              }} />
+          <motion.div variants={item} style={{ marginBottom: isMobile ? "1.25rem" : "1.75rem" }}>
+            <motion.span whileHover={{ scale: 1.05 }} style={{
+              display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              padding: "0.3rem 1rem", borderRadius: "9999px",
+              fontSize: "0.8rem", fontWeight: 500,
+              background: "var(--color-surface)", border: "1px solid var(--color-border)",
+              color: "var(--color-text)", cursor: "default",
+            }}>
+              <span className="status-dot" style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#10b981", display: "inline-block", flexShrink: 0 }} />
               Open to opportunities
             </motion.span>
           </motion.div>
 
           {/* Name — letter by letter */}
           <div style={{ marginBottom: "0.75rem", perspective: "600px" }}>
-            <motion.h1
-              variants={letters}
-              initial="hidden"
-              animate="show"
-              style={{
-                fontSize: "clamp(2.8rem, 9vw, 5rem)",
-                fontWeight: 800, lineHeight: 1.05,
-                color: "var(--color-text)", letterSpacing: "-0.045em",
-                display: "inline-block",
-              }}
-            >
+            <motion.h1 variants={letters} initial="hidden" animate="show" style={{
+              fontSize: isMobile ? "clamp(2rem, 10vw, 2.8rem)" : "clamp(2.8rem, 9vw, 5rem)",
+              fontWeight: 800, lineHeight: 1.05,
+              color: "var(--color-text)", letterSpacing: "-0.04em",
+              display: "inline-block",
+            }}>
               {personalInfo.name.split("").map((char, i) => (
-                <motion.span
-                  key={i}
-                  variants={letter}
-                  style={{ display: "inline-block", transformOrigin: "bottom center" }}
-                >
+                <motion.span key={i} variants={letter} style={{ display: "inline-block", transformOrigin: "bottom center" }}>
                   {char === " " ? "\u00A0" : char}
                 </motion.span>
               ))}
             </motion.h1>
           </div>
 
-          {/* Typewriter role */}
-          <motion.div variants={item} style={{ marginBottom: "1.75rem", minHeight: "2.8rem", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <h2 style={{
-              fontSize: "clamp(1.2rem, 3vw, 1.7rem)", fontWeight: 500,
-              color: "var(--color-muted)", letterSpacing: "-0.02em",
-            }}>
+          {/* Typewriter title */}
+          <motion.div variants={item} style={{ marginBottom: isMobile ? "1.25rem" : "1.75rem", minHeight: "2.4rem", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <h2 style={{ fontSize: isMobile ? "clamp(1rem, 4.5vw, 1.35rem)" : "clamp(1.2rem, 3vw, 1.7rem)", fontWeight: 500, color: "var(--color-muted)", letterSpacing: "-0.02em", textAlign: "center" }}>
               {typedTitle}
               {!typingDone && <span className="typing-cursor" />}
             </h2>
           </motion.div>
 
           {/* Bio */}
-          <motion.p variants={item} style={{
-            fontSize: "1.1rem", color: "var(--color-muted)", maxWidth: "580px",
-            lineHeight: 1.7, marginBottom: "2.5rem",
-          }}>
+          <motion.p variants={item} style={{ fontSize: isMobile ? "0.95rem" : "1.1rem", color: "var(--color-muted)", maxWidth: bioMaxW, lineHeight: 1.7, marginBottom: isMobile ? "1.75rem" : "2.5rem", textAlign: "center" }}>
             {personalInfo.bio}
           </motion.p>
 
           {/* Stats bar */}
           <motion.div variants={item} style={{
-            display: "flex", gap: "0", marginBottom: "2.75rem",
+            display: "flex", gap: "0", marginBottom: isMobile ? "1.75rem" : "2.75rem",
             border: "1px solid var(--color-border)", borderRadius: "0.75rem",
             overflow: "hidden", background: "var(--color-surface)",
+            width: isMobile ? "100%" : "auto",
           }}>
             {[
-              { ref: years.ref,     count: years.count,     suffix: "+", label: "Years Exp",   Icon: Briefcase },
-              { ref: companies.ref, count: companies.count, suffix: "",  label: "Companies",   Icon: Building2 },
-              { ref: projects.ref,  count: projects.count,  suffix: "+", label: "Projects",    Icon: FolderGit2 },
+              { ref: years.ref,     count: years.count,     suffix: "+", label: "Years Exp",  Icon: Briefcase },
+              { ref: companies.ref, count: companies.count, suffix: "",  label: "Companies",  Icon: Building2 },
+              { ref: projects.ref,  count: projects.count,  suffix: "+", label: "Projects",   Icon: FolderGit2 },
             ].map(({ ref, count, suffix, label, Icon }, i) => (
               <div key={label} ref={ref} style={{
-                flex: 1, padding: "1.25rem 1.5rem", textAlign: "center",
+                flex: 1, padding: statsPad, textAlign: "center",
                 borderRight: i < 2 ? "1px solid var(--color-border)" : "none",
-                display: "flex", flexDirection: "column", alignItems: "center", gap: "0.3rem",
+                display: "flex", flexDirection: "column", alignItems: "center", gap: "0.25rem",
+                minWidth: isMobile ? "0" : "110px",
               }}>
-                <Icon size={16} style={{ color: "var(--color-muted)", marginBottom: "0.25rem" }} />
-                <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "var(--color-text)", lineHeight: 1 }}>
+                <Icon size={isMobile ? 13 : 15} style={{ color: "var(--color-muted)" }} />
+                <div style={{ fontSize: statsNumSize, fontWeight: 800, color: "var(--color-text)", lineHeight: 1 }}>
                   {count}{suffix}
                 </div>
-                <div style={{ fontSize: "0.72rem", color: "var(--color-muted)", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <div style={{ fontSize: statsLblSize, color: "var(--color-muted)", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.07em" }}>
                   {label}
                 </div>
               </div>
@@ -189,14 +176,22 @@ export default function Hero() {
           </motion.div>
 
           {/* CTA buttons */}
-          <motion.div variants={item} style={{ display: "flex", gap: "1rem", flexWrap: "wrap", justifyContent: "center", marginBottom: "3rem" }}>
-            <Link to="projects" smooth duration={600} offset={-64}>
-              <motion.button className="btn btn-primary" whileHover={{ scale: 1.05, boxShadow: "0 8px 24px -4px rgba(99,102,241,0.4)" }} whileTap={{ scale: 0.97 }}>
+          <motion.div variants={item} style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center", marginBottom: "2.5rem", width: isMobile ? "100%" : "auto" }}>
+            <Link to="projects" smooth duration={600} offset={-64} style={isMobile ? { width: "100%" } : {}}>
+              <motion.button className="btn btn-primary"
+                whileHover={{ scale: 1.04, boxShadow: "0 8px 24px -4px rgba(99,102,241,0.4)" }}
+                whileTap={{ scale: 0.97 }}
+                style={isMobile ? { width: "100%", justifyContent: "center" } : {}}
+              >
                 View Projects
               </motion.button>
             </Link>
-            <div style={{ position: "relative" }}>
-              <motion.button className="btn btn-secondary" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }} onClick={() => setIsContactOpen(!isContactOpen)}>
+            <div style={{ position: "relative", width: isMobile ? "100%" : "auto" }}>
+              <motion.button className="btn btn-secondary"
+                whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                onClick={() => setIsContactOpen(!isContactOpen)}
+                style={isMobile ? { width: "100%", justifyContent: "center" } : {}}
+              >
                 Contact Me
               </motion.button>
               <AnimatePresence>
@@ -239,20 +234,17 @@ export default function Hero() {
               { href: personalInfo.linkedin,          Icon: LinkedinIcon, label: "LinkedIn" },
               { href: `mailto:${personalInfo.email}`, Icon: Mail,         label: "Email" },
             ].map(({ href, Icon, label }) => (
-              <motion.a
-                key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-                whileHover={{ scale: 1.2, y: -6, color: "var(--color-primary)" }}
-                whileTap={{ scale: 0.95 }}
+              <motion.a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
+                whileHover={{ scale: 1.2, y: -5 }} whileTap={{ scale: 0.95 }}
                 style={{ color: "var(--color-muted)", display: "flex", alignItems: "center", justifyContent: "center" }}
               >
-                <Icon size={22} />
+                <Icon size={isMobile ? 20 : 22} />
               </motion.a>
             ))}
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
       <div className="scroll-indicator">
         <span style={{ fontSize: "0.65rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>scroll</span>
         <ChevronDown size={16} />
@@ -276,9 +268,10 @@ function FloatingOrb({ color, style, duration, delay }) {
   );
 }
 
-function AvatarOrb({ name }) {
+function AvatarOrb({ name, size = 210 }) {
+  const px = `${size}px`;
   return (
-    <div style={{ position: "relative", width: "210px", height: "210px" }}>
+    <div style={{ position: "relative", width: px, height: px }}>
       {/* Outer glow pulse */}
       <motion.div
         animate={{ scale: [1, 1.12, 1], opacity: [0.4, 0.15, 0.4] }}
