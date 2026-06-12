@@ -90,7 +90,7 @@ export const education = [
       "GPA: 3.74 / 4.0",
     ],
     logo: "UF",
-    logoUrl: "logos/uf.png",
+    logoUrl: "logos/uf_seal.png",
     color: "#003087",
   },
   {
