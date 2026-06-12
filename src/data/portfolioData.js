@@ -22,7 +22,7 @@ export const experiences = [
     company: "FINRA",
     role: "Full Stack Engineer",
     duration: "Jun 2026 – Present",
-    location: "Remote, USA",
+    location: "Rockville, MD",
     logo: "FINRA",
     logoUrl: "https://logo.clearbit.com/finra.org",
     color: "#1d4ed8",
