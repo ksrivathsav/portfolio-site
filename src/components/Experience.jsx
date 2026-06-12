@@ -47,7 +47,7 @@ export function CompanyLogo({ url, company, color }) {
   const base = import.meta.env.BASE_URL;
   const src = url ? (url.startsWith("http") ? url : `${base}${url}`) : null;
   const isPng = src && src.endsWith(".png");
-  const isDarkBg = src && src.includes("uf.png") && !src.includes("uf_seal");
+  const isDarkBg = src && (src.includes("uf.png") && !src.includes("uf_seal"));
 
   return (
     <div style={{
@@ -56,7 +56,7 @@ export function CompanyLogo({ url, company, color }) {
       maxWidth: "100px",
       borderRadius: "6px",
       flexShrink: 0,
-      background: failed || !src ? `${color}14` : (isDarkBg ? "#000000" : isPng ? "#ffffff" : "var(--color-bg)"),
+      background: failed || !src ? `${color}14` : (isDarkBg ? "#0021A5" : isPng ? "#ffffff" : "var(--color-bg)"),
       border: `1.5px solid ${failed || !src ? color + "30" : "var(--color-border)"}`,
       display: "flex",
       alignItems: "center",
