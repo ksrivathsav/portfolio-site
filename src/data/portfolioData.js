@@ -25,7 +25,7 @@ export const experiences = [
     location: "Rockville, MD",
     logo: "FINRA",
     logoUrl: "logos/finra.svg",
-    color: "#1d4ed8",
+    color: "#003087",
     responsibilities: [],
   },
   {
@@ -36,7 +36,7 @@ export const experiences = [
     location: "Gainesville, FL",
     logo: "UF",
     logoUrl: "logos/uf.svg",
-    color: "#6366f1",
+    color: "#003087",
     responsibilities: [
       "Engineered FastAPI microservices using PostgreSQL and SQLAlchemy to streamline researcher onboarding, GPU workload provisioning, and enterprise compute resource coordination across high-performance computing environments.",
       "Automated CUDA, PyTorch, TensorFlow, and OpenCV installation procedures through Python and Bash scripting, reducing manual researcher setup effort by 45% across NVIDIA GPU clusters.",
@@ -53,7 +53,7 @@ export const experiences = [
     location: "Gainesville, FL",
     logo: "UF",
     logoUrl: "logos/uf.svg",
-    color: "#06b6d4",
+    color: "#FA4616",
     responsibilities: [
       "Engineered automated video processing pipeline (Python, OpenCV, AFFDEX 2.0) processing 500,000+ frames for an NSF-funded study, reducing manual annotation effort by 95%.",
       "Trained CNN-based deception detection model in PyTorch on multimodal features (FAUs, gaze, micro-expressions), achieving 97% classification accuracy.",
@@ -68,7 +68,7 @@ export const experiences = [
     location: "Hyderabad, India",
     logo: "TD",
     logoUrl: "logos/teradata.svg",
-    color: "#f59e0b",
+    color: "#F37440",
     responsibilities: [
       "Developed Python ETL services with SQLAlchemy and Apache Kafka pipelines, accelerating enterprise dataset ingestion, transformation, and synchronization processes within Azure SQL warehouse environments.",
       "Engineered Angular and TypeScript frontend applications connected with Django REST APIs and Flask backend services, supporting enterprise transaction management systems handling large-scale operational activities.",

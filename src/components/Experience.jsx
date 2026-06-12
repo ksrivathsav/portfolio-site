@@ -29,7 +29,7 @@ export default function Experience() {
         <SectionHeader title="Work Experience" subtitle="A timeline of my professional journey" />
         <div ref={timelineRef} style={{ position: "relative", paddingLeft: tlPL }}>
           <div style={{ position: "absolute", left: lineL, top: 0, bottom: 0, width: "1px", background: "var(--color-border)", zIndex: 0 }} />
-          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #1d4ed8, #6366f1, #06b6d4, #f59e0b)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
+          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #003087, #003087, #FA4616, #F37440)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
           <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem", position: "relative", zIndex: 1 }}>
             {experiences.map((exp, index) => (
               <TimelineItem key={exp.id} exp={exp} index={index} dotLeft={lineL} />
