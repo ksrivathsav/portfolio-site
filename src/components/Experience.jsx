@@ -41,8 +41,8 @@ export default function Experience() {
   );
 }
 
-/* ── Company logo with initials fallback ─────────────────── */
-function CompanyLogo({ url, company, color }) {
+/* ── Company logo with initials fallback (exported for reuse) */
+export function CompanyLogo({ url, company, color }) {
   const [failed, setFailed] = useState(false);
   const base = import.meta.env.BASE_URL;
   const src = url ? (url.startsWith("http") ? url : `${base}${url}`) : null;

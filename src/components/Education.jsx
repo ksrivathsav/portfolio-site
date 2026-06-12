@@ -1,7 +1,7 @@
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { education } from "../data/portfolioData";
-import { SectionHeader } from "./Experience";
+import { SectionHeader, CompanyLogo } from "./Experience";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 
 const highlightContainer = {
@@ -29,7 +29,7 @@ export default function Education() {
         <SectionHeader title="Education" subtitle="My academic background and achievements" />
         <div ref={timelineRef} style={{ position: "relative", paddingLeft: tlPL }}>
           <div style={{ position: "absolute", left: lineL, top: 0, bottom: 0, width: "1px", background: "var(--color-border)", zIndex: 0 }} />
-          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #6366f1, #06b6d4)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
+          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #003087, #7B1D1D)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
           <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem", position: "relative", zIndex: 1 }}>
             {education.map((edu, index) => (
               <TimelineItem key={edu.id} edu={edu} index={index} dotLeft={lineL} />
@@ -81,7 +81,8 @@ function TimelineItem({ edu, index, dotLeft = "1rem" }) {
         onMouseEnter={(e) => (e.currentTarget.style.borderLeftColor = edu.color)}
         onMouseLeave={(e) => (e.currentTarget.style.borderLeftColor = "transparent")}
       >
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.3rem" }}>
+        {/* Degree + year pill */}
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.5rem" }}>
           <h3 style={{ fontSize: isMobile ? "1rem" : "1.15rem", fontWeight: 700, color: "var(--color-text)", margin: 0, flex: 1, minWidth: 0 }}>
             {edu.degree}
           </h3>
@@ -89,9 +90,14 @@ function TimelineItem({ edu, index, dotLeft = "1rem" }) {
             {edu.year}
           </span>
         </div>
-        <div style={{ fontSize: "0.9rem", fontWeight: 600, color: edu.color, marginBottom: "0.875rem" }}>
-          {edu.institution}
+
+        {/* Institution logo + name */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.875rem", flexWrap: "wrap" }}>
+          <CompanyLogo url={edu.logoUrl} company={edu.institution} color={edu.color} />
+          <span style={{ fontSize: "0.9rem", fontWeight: 600, color: edu.color }}>{edu.institution}</span>
         </div>
+
+        {/* Highlights */}
         <motion.ul
           variants={highlightContainer}
           initial="hidden"

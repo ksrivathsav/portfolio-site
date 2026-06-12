@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="JNTUH logo">
+  <!-- Deep maroon circle background -->
+  <circle cx="60" cy="60" r="60" fill="#7B1D1D"/>
+  <!-- Outer gold ring -->
+  <circle cx="60" cy="60" r="56" fill="none" stroke="#D4A017" stroke-width="3"/>
+  <!-- Inner circle -->
+  <circle cx="60" cy="60" r="44" fill="none" stroke="#D4A017" stroke-width="1.5"/>
+  <!-- Gear teeth (8 teeth) -->
+  <g fill="#D4A017">
+    <rect x="57" y="16" width="6" height="10" rx="1"/>
+    <rect x="57" y="94" width="6" height="10" rx="1"/>
+    <rect x="16" y="57" width="10" height="6" rx="1"/>
+    <rect x="94" y="57" width="10" height="6" rx="1"/>
+    <rect x="27" y="27" width="7" height="7" rx="1" transform="rotate(45 30.5 30.5)"/>
+    <rect x="85" y="27" width="7" height="7" rx="1" transform="rotate(45 88.5 30.5)"/>
+    <rect x="27" y="85" width="7" height="7" rx="1" transform="rotate(45 30.5 88.5)"/>
+    <rect x="85" y="85" width="7" height="7" rx="1" transform="rotate(45 88.5 88.5)"/>
+  </g>
+  <!-- JNTUH text -->
+  <text x="60" y="55" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="18" fill="#F5E6A3" text-anchor="middle" letter-spacing="1">JNTUH</text>
+  <!-- Sub text -->
+  <text x="60" y="70" font-family="Arial,sans-serif" font-weight="500" font-size="6" fill="#D4A017" text-anchor="middle" letter-spacing="0.5">HYDERABAD</text>
+</svg>

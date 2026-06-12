@@ -86,11 +86,12 @@ export const education = [
     institution: "University of Florida",
     year: "2024 – 2025",
     highlights: [
-      "Major: Computer and Information Sciences ",
+      "Major: Computer and Information Sciences",
       "GPA: 3.74 / 4.0",
     ],
     logo: "UF",
-    color: "#6366f1",
+    logoUrl: "logos/uf.png",
+    color: "#003087",
   },
   {
     id: 2,
@@ -99,12 +100,13 @@ export const education = [
     year: "2019 – 2023",
     highlights: [
       "Major: Computer Science & Engineering",
-      "GPA: 8.28/ 10.0",
+      "GPA: 8.28 / 10.0",
       "Placement Coordinator, JNTUH Placement Cell",
       "Cloud Computing & Technical Team Member, Google Developer Students Clubs (GDSC), JNTUH",
     ],
     logo: "JNTUH",
-    color: "#06b6d4",
+    logoUrl: "logos/jntuh.svg",
+    color: "#7B1D1D",
   },
 ];
 
