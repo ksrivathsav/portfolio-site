@@ -29,7 +29,7 @@ export default function Experience() {
         <SectionHeader title="Work Experience" subtitle="A timeline of my professional journey" />
         <div ref={timelineRef} style={{ position: "relative", paddingLeft: tlPL }}>
           <div style={{ position: "absolute", left: lineL, top: 0, bottom: 0, width: "1px", background: "var(--color-border)", zIndex: 0 }} />
-          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #003087, #003087, #FA4616, #F37440)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
+          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #233E66, #0021A5, #FA4616, #F37440)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
           <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem", position: "relative", zIndex: 1 }}>
             {experiences.map((exp, index) => (
               <TimelineItem key={exp.id} exp={exp} index={index} dotLeft={lineL} />
@@ -47,6 +47,7 @@ export function CompanyLogo({ url, company, color }) {
   const base = import.meta.env.BASE_URL;
   const src = url ? (url.startsWith("http") ? url : `${base}${url}`) : null;
   const isPng = src && src.endsWith(".png");
+  const isDarkBg = src && src.includes("uf.png") && !src.includes("uf_seal");
 
   return (
     <div style={{
@@ -55,14 +56,14 @@ export function CompanyLogo({ url, company, color }) {
       maxWidth: "100px",
       borderRadius: "6px",
       flexShrink: 0,
-      background: failed || !src ? `${color}14` : (isPng ? "#ffffff" : "var(--color-bg)"),
+      background: failed || !src ? `${color}14` : (isDarkBg ? "#000000" : isPng ? "#ffffff" : "var(--color-bg)"),
       border: `1.5px solid ${failed || !src ? color + "30" : "var(--color-border)"}`,
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       overflow: "hidden",
       padding: failed || !src ? "0" : "3px 6px",
-      boxShadow: isPng && !failed ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+      boxShadow: (isPng || isDarkBg) && !failed ? "0 1px 4px rgba(0,0,0,0.12)" : "none",
     }}>
       {!failed && src ? (
         <img

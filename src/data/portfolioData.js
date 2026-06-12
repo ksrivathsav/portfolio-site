@@ -25,7 +25,7 @@ export const experiences = [
     location: "Rockville, MD",
     logo: "FINRA",
     logoUrl: "logos/finra.png",
-    color: "#003087",
+    color: "#233E66",
     responsibilities: [],
   },
   {
@@ -36,7 +36,7 @@ export const experiences = [
     location: "Gainesville, FL",
     logo: "UF",
     logoUrl: "logos/uf.png",
-    color: "#003087",
+    color: "#0021A5",
     responsibilities: [
       "Engineered FastAPI microservices using PostgreSQL and SQLAlchemy to streamline researcher onboarding, GPU workload provisioning, and enterprise compute resource coordination across high-performance computing environments.",
       "Automated CUDA, PyTorch, TensorFlow, and OpenCV installation procedures through Python and Bash scripting, reducing manual researcher setup effort by 45% across NVIDIA GPU clusters.",
@@ -91,7 +91,7 @@ export const education = [
     ],
     logo: "UF",
     logoUrl: "logos/uf_seal.png",
-    color: "#003087",
+    color: "#0021A5",
   },
   {
     id: 2,

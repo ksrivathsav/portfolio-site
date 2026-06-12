@@ -29,7 +29,7 @@ export default function Education() {
         <SectionHeader title="Education" subtitle="My academic background and achievements" />
         <div ref={timelineRef} style={{ position: "relative", paddingLeft: tlPL }}>
           <div style={{ position: "absolute", left: lineL, top: 0, bottom: 0, width: "1px", background: "var(--color-border)", zIndex: 0 }} />
-          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #003087, #7B1D1D)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
+          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #0021A5, #7B1D1D)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
           <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem", position: "relative", zIndex: 1 }}>
             {education.map((edu, index) => (
               <TimelineItem key={edu.id} edu={edu} index={index} dotLeft={lineL} />
