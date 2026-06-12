@@ -33,7 +33,7 @@ export const experiences = [
     company: "University of Florida",
     role: "Software Engineer",
     duration: "Aug 2025 – May 2026",
-    location: "FL, USA",
+    location: "Gainesville, FL",
     logo: "UF",
     logoUrl: "https://logo.clearbit.com/ufl.edu",
     color: "#6366f1",
