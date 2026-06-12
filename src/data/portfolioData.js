@@ -24,7 +24,7 @@ export const experiences = [
     duration: "Jun 2026 – Present",
     location: "Rockville, MD",
     logo: "FINRA",
-    logoUrl: "logos/finra.svg",
+    logoUrl: "logos/finra.png",
     color: "#003087",
     responsibilities: [],
   },
@@ -35,7 +35,7 @@ export const experiences = [
     duration: "Aug 2025 – May 2026",
     location: "Gainesville, FL",
     logo: "UF",
-    logoUrl: "logos/uf.svg",
+    logoUrl: "logos/uf.png",
     color: "#003087",
     responsibilities: [
       "Engineered FastAPI microservices using PostgreSQL and SQLAlchemy to streamline researcher onboarding, GPU workload provisioning, and enterprise compute resource coordination across high-performance computing environments.",
@@ -52,7 +52,7 @@ export const experiences = [
     duration: "Feb 2025 – Dec 2025",
     location: "Gainesville, FL",
     logo: "UF",
-    logoUrl: "logos/uf.svg",
+    logoUrl: "logos/uf.png",
     color: "#FA4616",
     responsibilities: [
       "Engineered automated video processing pipeline (Python, OpenCV, AFFDEX 2.0) processing 500,000+ frames for an NSF-funded study, reducing manual annotation effort by 95%.",
@@ -67,7 +67,7 @@ export const experiences = [
     duration: "Jan 2023 – Dec 2023",
     location: "Hyderabad, India",
     logo: "TD",
-    logoUrl: "logos/teradata.svg",
+    logoUrl: "logos/teradata.png",
     color: "#F37440",
     responsibilities: [
       "Developed Python ETL services with SQLAlchemy and Apache Kafka pipelines, accelerating enterprise dataset ingestion, transformation, and synchronization processes within Azure SQL warehouse environments.",

@@ -46,20 +46,29 @@ function CompanyLogo({ url, company, color }) {
   const [failed, setFailed] = useState(false);
   const base = import.meta.env.BASE_URL;
   const src = url ? (url.startsWith("http") ? url : `${base}${url}`) : null;
+  const isPng = src && src.endsWith(".png");
 
   return (
     <div style={{
-      height: "28px", minWidth: "28px", maxWidth: "80px", borderRadius: "6px", flexShrink: 0,
-      background: failed || !src ? `${color}14` : "var(--color-bg)",
+      height: "32px",
+      minWidth: "32px",
+      maxWidth: "100px",
+      borderRadius: "6px",
+      flexShrink: 0,
+      background: failed || !src ? `${color}14` : (isPng ? "#ffffff" : "var(--color-bg)"),
       border: `1.5px solid ${failed || !src ? color + "30" : "var(--color-border)"}`,
-      display: "flex", alignItems: "center", justifyContent: "center",
-      overflow: "hidden", padding: failed || !src ? "0" : "3px 5px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+      padding: failed || !src ? "0" : "3px 6px",
+      boxShadow: isPng && !failed ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
     }}>
       {!failed && src ? (
         <img
           src={src}
           alt={`${company} logo`}
-          style={{ height: "22px", width: "auto", maxWidth: "72px", objectFit: "contain", display: "block" }}
+          style={{ height: "24px", width: "auto", maxWidth: "92px", objectFit: "contain", display: "block" }}
           onError={() => setFailed(true)}
         />
       ) : (
