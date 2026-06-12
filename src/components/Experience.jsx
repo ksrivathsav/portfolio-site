@@ -44,23 +44,26 @@ export default function Experience() {
 /* ── Company logo with initials fallback ─────────────────── */
 function CompanyLogo({ url, company, color }) {
   const [failed, setFailed] = useState(false);
+  const base = import.meta.env.BASE_URL;
+  const src = url ? (url.startsWith("http") ? url : `${base}${url}`) : null;
+
   return (
     <div style={{
-      width: "28px", height: "28px", borderRadius: "6px", flexShrink: 0,
-      background: failed ? `${color}18` : "var(--color-bg)",
-      border: `1.5px solid ${failed ? color + "33" : "var(--color-border)"}`,
+      height: "28px", minWidth: "28px", maxWidth: "80px", borderRadius: "6px", flexShrink: 0,
+      background: failed || !src ? `${color}14` : "var(--color-bg)",
+      border: `1.5px solid ${failed || !src ? color + "30" : "var(--color-border)"}`,
       display: "flex", alignItems: "center", justifyContent: "center",
-      overflow: "hidden",
+      overflow: "hidden", padding: failed || !src ? "0" : "3px 5px",
     }}>
-      {!failed && url ? (
+      {!failed && src ? (
         <img
-          src={url}
+          src={src}
           alt={`${company} logo`}
-          style={{ width: "20px", height: "20px", objectFit: "contain" }}
+          style={{ height: "22px", width: "auto", maxWidth: "72px", objectFit: "contain", display: "block" }}
           onError={() => setFailed(true)}
         />
       ) : (
-        <span style={{ fontSize: "0.6rem", fontWeight: 800, color, letterSpacing: "-0.02em" }}>
+        <span style={{ fontSize: "0.6rem", fontWeight: 800, color, letterSpacing: "-0.02em", padding: "0 4px" }}>
           {company.slice(0, 2).toUpperCase()}
         </span>
       )}
