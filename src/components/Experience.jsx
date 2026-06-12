@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { MapPin, Calendar } from "lucide-react";
 import { experiences } from "../data/portfolioData";
@@ -29,7 +29,7 @@ export default function Experience() {
         <SectionHeader title="Work Experience" subtitle="A timeline of my professional journey" />
         <div ref={timelineRef} style={{ position: "relative", paddingLeft: tlPL }}>
           <div style={{ position: "absolute", left: lineL, top: 0, bottom: 0, width: "1px", background: "var(--color-border)", zIndex: 0 }} />
-          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #6366f1, #06b6d4, #10b981, #f59e0b)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
+          <motion.div style={{ position: "absolute", left: lineLC, top: 0, width: "2px", height: "100%", background: "linear-gradient(to bottom, #1d4ed8, #6366f1, #06b6d4, #f59e0b)", scaleY: lineScaleY, transformOrigin: "top", zIndex: 0 }} />
           <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem", position: "relative", zIndex: 1 }}>
             {experiences.map((exp, index) => (
               <TimelineItem key={exp.id} exp={exp} index={index} dotLeft={lineL} />
@@ -38,6 +38,33 @@ export default function Experience() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* ── Company logo with initials fallback ─────────────────── */
+function CompanyLogo({ url, company, color }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div style={{
+      width: "28px", height: "28px", borderRadius: "6px", flexShrink: 0,
+      background: failed ? `${color}18` : "var(--color-bg)",
+      border: `1.5px solid ${failed ? color + "33" : "var(--color-border)"}`,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      overflow: "hidden",
+    }}>
+      {!failed && url ? (
+        <img
+          src={url}
+          alt={`${company} logo`}
+          style={{ width: "20px", height: "20px", objectFit: "contain" }}
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        <span style={{ fontSize: "0.6rem", fontWeight: 800, color, letterSpacing: "-0.02em" }}>
+          {company.slice(0, 2).toUpperCase()}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -68,14 +95,10 @@ function TimelineItem({ exp, index, dotLeft = "1rem" }) {
           zIndex: 2,
         }}
       >
-        {/* Ripple ring */}
         <motion.div
           animate={isInView ? { scale: [1, 1.8, 1], opacity: [0.6, 0, 0.6] } : {}}
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          style={{
-            position: "absolute", inset: -4, borderRadius: "50%",
-            border: `1.5px solid ${exp.color}`,
-          }}
+          style={{ position: "absolute", inset: -4, borderRadius: "50%", border: `1.5px solid ${exp.color}` }}
         />
       </motion.div>
 
@@ -83,32 +106,29 @@ function TimelineItem({ exp, index, dotLeft = "1rem" }) {
       <motion.div
         whileHover={{ x: 6 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        style={{
-          borderLeft: "2px solid transparent",
-          paddingLeft: "1rem",
-          transition: "border-color 0.3s ease",
-        }}
+        style={{ borderLeft: "2px solid transparent", paddingLeft: "1rem", transition: "border-color 0.3s ease" }}
         onMouseEnter={(e) => (e.currentTarget.style.borderLeftColor = exp.color)}
         onMouseLeave={(e) => (e.currentTarget.style.borderLeftColor = "transparent")}
       >
         {/* Role + duration pill */}
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.3rem" }}>
-          <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--color-text)", margin: 0 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.5rem" }}>
+          <h3 style={{ fontSize: isMobile ? "1rem" : "1.15rem", fontWeight: 700, color: "var(--color-text)", margin: 0 }}>
             {exp.role}
           </h3>
           <span style={{
             fontSize: "0.78rem", fontWeight: 500,
             color: "var(--color-muted)", background: "var(--color-accent)",
             padding: "0.15rem 0.65rem", borderRadius: "9999px", whiteSpace: "nowrap",
-            display: "flex", alignItems: "center", gap: "0.3rem",
+            display: "flex", alignItems: "center", gap: "0.3rem", flexShrink: 0,
           }}>
             <Calendar size={11} />
             {exp.duration}
           </span>
         </div>
 
-        {/* Company + location */}
+        {/* Company logo + name + location */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem", flexWrap: "wrap" }}>
+          <CompanyLogo url={exp.logoUrl} company={exp.company} color={exp.color} />
           <span style={{ fontSize: "0.95rem", fontWeight: 600, color: exp.color }}>{exp.company}</span>
           <span style={{ color: "var(--color-border)", fontSize: "0.85rem" }}>·</span>
           <span style={{ fontSize: "0.82rem", color: "var(--color-muted)", display: "flex", alignItems: "center", gap: "0.2rem" }}>
@@ -117,26 +137,24 @@ function TimelineItem({ exp, index, dotLeft = "1rem" }) {
         </div>
 
         {/* Staggered responsibility bullets */}
-        <motion.ul
-          variants={bulletContainer}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.6rem" }}
-        >
-          {exp.responsibilities.map((desc, i) => (
-            <motion.li key={i} variants={bulletItem} style={{
-              color: "var(--color-muted)", fontSize: "0.9rem", lineHeight: 1.65,
-              position: "relative", paddingLeft: "1rem",
-            }}>
-              <span style={{
-                position: "absolute", left: 0, top: "0.62rem",
-                width: "4px", height: "4px", borderRadius: "50%",
-                background: exp.color, opacity: 0.75,
-              }} />
-              {desc}
-            </motion.li>
-          ))}
-        </motion.ul>
+        {exp.responsibilities.length > 0 && (
+          <motion.ul
+            variants={bulletContainer}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.6rem" }}
+          >
+            {exp.responsibilities.map((desc, i) => (
+              <motion.li key={i} variants={bulletItem} style={{
+                color: "var(--color-muted)", fontSize: "0.9rem", lineHeight: 1.65,
+                position: "relative", paddingLeft: "1rem",
+              }}>
+                <span style={{ position: "absolute", left: 0, top: "0.62rem", width: "4px", height: "4px", borderRadius: "50%", background: exp.color, opacity: 0.75 }} />
+                {desc}
+              </motion.li>
+            ))}
+          </motion.ul>
+        )}
       </motion.div>
     </motion.div>
   );
@@ -158,16 +176,12 @@ export function SectionHeader({ title, subtitle }) {
         {title}
       </motion.h2>
 
-      {/* Animated drawing divider */}
       <div style={{ position: "relative", height: "1px", background: "var(--color-border)", margin: "1.25rem 0", overflow: "hidden" }}>
         <motion.div
           initial={{ scaleX: 0 }}
           animate={inView ? { scaleX: 1 } : {}}
           transition={{ duration: 0.85, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            position: "absolute", inset: 0, transformOrigin: "left",
-            background: "linear-gradient(to right, #6366f1, #06b6d4, transparent)",
-          }}
+          style={{ position: "absolute", inset: 0, transformOrigin: "left", background: "linear-gradient(to right, #6366f1, #06b6d4, transparent)" }}
         />
       </div>
 
