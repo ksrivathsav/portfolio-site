@@ -105,7 +105,7 @@ export const education = [
       "Cloud Computing & Technical Team Member, Google Developer Students Clubs (GDSC), JNTUH",
     ],
     logo: "JNTUH",
-    logoUrl: "logos/jntuh.svg",
+    logoUrl: "logos/jntuh.png",
     color: "#7B1D1D",
   },
 ];
