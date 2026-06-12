@@ -62,22 +62,6 @@ export const experiences = [
       "Automated release validation, integration testing, and deployment activities through GitHub Actions pipelines, minimizing manual operational dependencies and accelerating enterprise software delivery timelines by 45%.",
     ],
   },
-  {
-    id: 4,
-    company: "Tata Consultancy Services (TCS)",
-    role: "Software Engineer",
-    duration: "Aug 2021 – Dec 2022",
-    location: "Remote, India",
-    logo: "TCS",
-    color: "#e11d48",
-    responsibilities: [
-      "Built React.js and Redux customer engagement dashboards connected with Spring Boot REST APIs and FastAPI services, improving operational accessibility by 30% across enterprise CRM management systems.",
-      "Strengthened enterprise application security through OAuth 2.0 authentication, JWT authorization mechanisms, and Redis-backed session management, reducing unauthorized access incidents by 38% across production services.",
-      "Designed PostgreSQL and DynamoDB-backed processing services supporting customer account synchronization, transaction handling, and enterprise operational reporting across large-scale business applications.",
-      "Developed Dockerized .NET Core webhook services utilizing WebSocket-based event notifications, improving downstream communication reliability and reducing enterprise processing delays by 28% overall.",
-      "Configured Nginx production environments and GitHub Actions deployment automation pipelines, increasing application stability and maintaining service availability during peak enterprise customer traffic periods.",
-    ],
-  },
 ];
 
 // ─── Education ──────────────────────────────────────────
