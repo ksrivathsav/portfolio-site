@@ -100,7 +100,7 @@ function MagneticButton({ children, disabled, strength = 0.28 }) {
 ══════════════════════════════════════════════════════════ */
 export default function Hero() {
   const [isContactOpen, setIsContactOpen] = useState(false);
-  const { isMobile, isTablet } = useBreakpoint();
+  const { isMobile, isTablet, isSmallPhone, isPhoneLandscape, isLargeScreen } = useBreakpoint();
   const isDesktop = !isMobile && !isTablet;
 
   const ROLES = [
@@ -115,20 +115,28 @@ export default function Hero() {
   const companies = useCounter(3);
   const projects  = useCounter(10);
 
-  const avatarSize = isMobile ? 160 : isTablet ? 190 : 240;
+  const avatarSize = isSmallPhone ? 130 : isMobile ? 160 : isTablet ? 190 : 240;
 
   return (
     <section
       id="hero"
       style={{
-        minHeight: "100vh",
+        /*
+         * 100dvh — Dynamic Viewport Height
+         * On iOS Safari, 100vh includes the browser chrome (address bar),
+         * causing content to be hidden. 100dvh adjusts dynamically.
+         * Falls back to 100vh for browsers that don't support dvh.
+         */
+        minHeight: isPhoneLandscape ? "auto" : "min(100dvh, 100vh)",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         position: "relative",
         overflow: "hidden",
-        padding: isMobile
-          ? "7rem 1.25rem 5rem"
+        padding: isPhoneLandscape
+          ? "5rem 1.5rem 3rem"
+          : isMobile
+          ? `calc(6rem + env(safe-area-inset-top, 0px)) 1.25rem calc(5rem + env(safe-area-inset-bottom, 0px))`
           : isTablet
           ? "8rem 2rem 5rem"
           : "0 3rem",
@@ -208,10 +216,14 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
             style={{
-              fontSize: isMobile
+              fontSize: isSmallPhone
+                ? "clamp(2rem, 10vw, 2.8rem)"
+                : isMobile
                 ? "clamp(2.4rem, 11vw, 3.2rem)"
                 : isTablet
                 ? "clamp(3rem, 7vw, 4.2rem)"
+                : isLargeScreen
+                ? "clamp(4.5rem, 5vw, 6.5rem)"
                 : "clamp(3.8rem, 5.5vw, 5.8rem)",
               fontWeight: 800,
               lineHeight: 1,
@@ -394,7 +406,7 @@ export default function Hero() {
             </div>
 
             {/* Stats */}
-            <div style={{ display: "flex", gap: isMobile ? "1.75rem" : "2.75rem" }}>
+            <div style={{ display: "flex", gap: isSmallPhone ? "1.25rem" : isMobile ? "1.75rem" : "2.75rem", flexWrap: "wrap" }}>
               {[
                 { ref: years.ref,     count: years.count,     suffix: "+", label: "Years Exp",  Icon: Briefcase },
                 { ref: companies.ref, count: companies.count, suffix: "",  label: "Companies",  Icon: Building2 },

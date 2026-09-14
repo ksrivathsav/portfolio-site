@@ -138,11 +138,21 @@ export default function Chatbot() {
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             style={{
               position: "fixed",
-              bottom: isMobile ? "0" : "6rem",
+              /*
+               * Mobile: full-width bottom sheet.
+               * On iOS the bottom sheet must sit ABOVE the home bar.
+               * We use padding-bottom inside the window (not here) to
+               * keep content clear of the safe area, because the sheet
+               * itself spans edge-to-edge.
+               */
+              bottom: isMobile ? "0" : "calc(6rem + env(safe-area-inset-bottom, 0px))",
               right:  isMobile ? "0" : "1.5rem",
               left:   isMobile ? "0" : "auto",
-              width:  isMobile ? "100vw" : "380px",
-              maxHeight: isMobile ? "85vh" : "580px",
+              width:  isMobile ? "100%" : "min(380px, calc(100vw - 3rem))",
+              /* Use svh/dvh for correct iOS height — fallback to 85vh */
+              maxHeight: isMobile
+                ? "min(85svh, 85dvh, 85vh)"
+                : "min(580px, 85dvh)",
               zIndex: 1100,
               display: "flex",
               flexDirection: "column",
@@ -311,7 +321,9 @@ export default function Chatbot() {
 
             {/* Input row */}
             <div style={{
-              padding: "0.75rem 1rem",
+              padding: isMobile
+                ? `0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px))`
+                : "0.75rem 1rem",
               borderTop: "1px solid var(--color-border)",
               display: "flex", gap: "0.5rem", alignItems: "flex-end",
               flexShrink: 0,
@@ -372,10 +384,10 @@ export default function Chatbot() {
         transition={{ delay: 1.2, type: "spring", stiffness: 320, damping: 20 }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.93 }}
-        aria-label="Open AI chat"
+        aria-label={open ? "Close AI chat" : "Open AI chat"}
         style={{
           position: "fixed",
-          bottom: "1.5rem",
+          bottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))",
           right:  "1.5rem",
           zIndex: 1050,
           width:  "56px",
@@ -388,6 +400,7 @@ export default function Chatbot() {
           boxShadow: "0 8px 32px -4px rgba(99,102,241,0.55)",
           color: open ? "var(--color-text)" : "#fff",
           transition: "background 0.25s, border-color 0.25s, color 0.25s",
+          touchAction: "manipulation",
         }}
       >
         <AnimatePresence mode="wait">
@@ -405,7 +418,10 @@ export default function Chatbot() {
           animate={{ scale: 1 }}
           transition={{ delay: 1.6 }}
           style={{
-            position: "fixed", bottom: "2.9rem", right: "1.35rem", zIndex: 1051,
+            position: "fixed",
+            bottom: "calc(2.9rem + env(safe-area-inset-bottom, 0px))",
+            right: "1.35rem",
+            zIndex: 1051,
             width: "10px", height: "10px", borderRadius: "50%",
             background: "#10b981",
             border: "2px solid var(--color-bg)",

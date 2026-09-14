@@ -29,9 +29,12 @@ export default function Navbar() {
   /* ── Shared nav pill style ── */
   const navStyle = {
     position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-    height: "56px",
+    /* On iPhone with notch/Dynamic Island, shift content below the safe area */
+    height: "calc(56px + env(safe-area-inset-top, 0px))",
+    paddingTop: "env(safe-area-inset-top, 0px)",
     display: "flex", alignItems: "center", justifyContent: "space-between",
     padding: "0 1.5rem",
+    paddingTop: "env(safe-area-inset-top, 0px)",
     transition: "background 0.35s ease, border-color 0.35s ease, backdrop-filter 0.35s ease",
     background: scrolled ? "var(--nav-bg)" : "transparent",
     backdropFilter: scrolled ? "blur(24px) saturate(180%)" : "none",
@@ -163,12 +166,15 @@ export default function Navbar() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
             style={{
-              position: "fixed", top: "56px", left: 0, right: 0, zIndex: 999,
+              position: "fixed",
+              top: "calc(56px + env(safe-area-inset-top, 0px))",
+              left: 0, right: 0, zIndex: 999,
               background: "var(--nav-bg)",
               backdropFilter: "blur(24px) saturate(180%)",
               WebkitBackdropFilter: "blur(24px) saturate(180%)",
               borderBottom: "1px solid var(--color-border)",
-              padding: "0.75rem 1rem 1.25rem",
+              padding: "0.75rem 1rem",
+              paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom, 0px))",
               display: "flex", flexDirection: "column", gap: "0.25rem",
               boxShadow: "0 12px 32px -8px rgba(0,0,0,0.15)",
             }}

@@ -88,7 +88,8 @@ export default function Contact() {
 
         <div style={{
           display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "1fr 1.5fr",
+          /* Pure CSS responsive: single column < 640px, two column ≥ 640px */
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
           gap: isMobile ? "2.5rem" : "4rem",
           alignItems: "start",
         }}>
