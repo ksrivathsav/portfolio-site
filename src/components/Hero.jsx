@@ -63,8 +63,8 @@ const letters = {
   show: { transition: { staggerChildren: 0.045 } },
 };
 const letter = {
-  hidden: { opacity: 0, y: 40, rotateX: -90 },
-  show:   { opacity: 1, y: 0,  rotateX: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+  hidden: { opacity: 0, y: 30 },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 };
 const container = {
   hidden: {},
@@ -133,7 +133,7 @@ export default function Hero() {
           </motion.div>
 
           {/* Name — letter by letter + gradient shimmer */}
-          <div style={{ marginBottom: "0.75rem", perspective: "600px" }}>
+          <div style={{ marginBottom: "0.75rem" }}>
             <motion.h1 variants={letters} initial="hidden" animate="show"
               className="gradient-name"
               style={{ fontSize: isMobile ? "clamp(2rem, 10vw, 2.8rem)" : "clamp(2.8rem, 9vw, 5rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.04em", display: "inline-block" }}>
