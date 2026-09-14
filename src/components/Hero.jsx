@@ -58,14 +58,6 @@ function useCounter(end, duration = 1800) {
 }
 
 /* ── Animation variants ──────────────────────────────────── */
-const letters = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.045 } },
-};
-const letter = {
-  hidden: { opacity: 0, y: 30 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
-};
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.14, delayChildren: 0.3 } },
@@ -132,16 +124,15 @@ export default function Hero() {
             </motion.span>
           </motion.div>
 
-          {/* Name — letter by letter + gradient shimmer */}
+          {/* Name — smooth fade-up + gradient shimmer */}
           <div style={{ marginBottom: "0.75rem" }}>
-            <motion.h1 variants={letters} initial="hidden" animate="show"
+            <motion.h1
               className="gradient-name"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
               style={{ fontSize: isMobile ? "clamp(2rem, 10vw, 2.8rem)" : "clamp(2.8rem, 9vw, 5rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.04em", display: "inline-block" }}>
-              {personalInfo.name.split("").map((char, i) => (
-                <motion.span key={i} variants={letter} style={{ display: "inline-block", transformOrigin: "bottom center" }}>
-                  {char === " " ? "\u00A0" : char}
-                </motion.span>
-              ))}
+              {personalInfo.name}
             </motion.h1>
           </div>
 
