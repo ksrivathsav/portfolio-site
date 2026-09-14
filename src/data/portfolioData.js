@@ -26,15 +26,7 @@ export const experiences = [
     logo: "FINRA",
     logoUrl: "logos/finra.png",
     color: "#233E66",
-    responsibilities: [
-      "Contributing to Spring Boot microservices for FINRA's enterprise messaging platform, supporting reliable, guaranteed-delivery event exchange across 12+ application teams.",
-      "Working with the platform's pub/sub and messaging architecture (AWS SNS, SQS, Kinesis, Apache Kafka, Apache Camel, AWS SES), supporting standardized event distribution and notification delivery across application teams — partnering with cross-functional teams to understand integration requirements.",
-      "Supporting self-service onboarding tooling (Angular, PostgreSQL-backed configuration, AWS Lambda with provisioned concurrency, S3, RDS) used by application teams to integrate with the messaging platform independently.",
-      "Working within CI/CD pipelines (Maven, Docker, Jenkins) deploying services across AWS EKS and ECS Fargate, gaining exposure to container orchestration and deployment strategies across the platform.",
-      "Ramping up on operational monitoring using AWS CloudWatch and Splunk, supporting message queue throughput tracking, delivery health checks, and incident diagnosis.",
-      "Exploring Kiro and other internal AI-assisted development tools to support day-to-day microservice development and code review.",
-      "Writing integration & unit tests for messaging platform microservices, validating event delivery paths across service boundaries.",
-    ],
+    responsibilities: [],
   },
   {
     id: 2,
@@ -45,14 +37,7 @@ export const experiences = [
     logo: "UF",
     logoUrl: "logos/uf.png",
     color: "#0021A5",
-    responsibilities: [
-      "Designed and built a full-stack infrastructure portal (FastAPI, PostgreSQL, SQLAlchemy, Angular UI) enabling self-service researcher onboarding and GPU environment management across shared clusters, deployed on Linux-based compute nodes.",
-      "Provisioned ML training environments on AWS EKS using Docker and Terraform, managing containerized distributed training workloads and improving infrastructure utilization by 27%.",
-      "Tuned SLURM scheduling policies and GPU allocation controls — partition configuration, job priority weighting, resource limits — reducing contention across concurrent research workloads and increasing batch-processing throughput by 24%.",
-      "Standardized GPU-enabled research environments by automating dependency installation for CUDA, OpenCV, PyTorch, and TensorFlow across Linux compute nodes, cutting researcher setup effort and improving environment consistency.",
-      "Built CI/CD pipelines with GitHub Actions and PyTest, validating API endpoints with Postman before deployment to catch regressions and improve platform reliability.",
-      "Built LLM-powered support assistants (LangChain, OpenAI API) using retrieval-augmented responses, integrated into researcher support workflows to help researchers self-resolve GPU and environment configuration issues faster.",
-    ],
+    responsibilities: [],
   },
   {
     id: 3,
@@ -63,11 +48,7 @@ export const experiences = [
     logo: "UF",
     logoUrl: "logos/uf.png",
     color: "#FA4616",
-    responsibilities: [
-      "Built an end-to-end video-processing pipeline (Python, OpenCV, DLib, AFFDEX 2.0, OpenFace, Py-Feat) extracting facial action units, gaze, and head pose across 500,000+ video frames, encompassing multimodal facial feature representations for training.",
-      "Designed and trained CNN-based deception detection models in PyTorch, using Scikit-learn for baseline model comparison and evaluation metrics, tracking experiments with MLflow, versioning datasets with DVC, iterating on architecture and hyperparameters through systematic experimentation to achieve 87% prediction accuracy.",
-      "Presented AI-driven behavioral analysis research, including the video-processing pipeline and deep learning methodology, at the NVIDIA AI Conference at the University of Florida to academic and industry audiences.",
-    ],
+    responsibilities: [],
   },
   {
     id: 4,
@@ -78,15 +59,7 @@ export const experiences = [
     logo: "TD",
     logoUrl: "logos/teradata.png",
     color: "#F37440",
-    responsibilities: [
-      "Built Spring Boot microservices for enterprise data operations, handling validation, transformation, and synchronization of operational records across distributed organizational systems, with structured error handling and retry logic for data consistency.",
-      "Built Angular dashboards integrated with Java REST APIs, giving operational teams centralized visibility into processing exceptions and reducing manual reconciliation activities by 26%.",
-      "Designed Kafka-driven event exchanges between platform services — including topic partitioning and consumer group design — improving data synchronization reliability and reducing processing bottlenecks during peak operational cycles.",
-      "Implemented gRPC communication patterns across distributed application components, using protocol buffers for schema-driven contracts, reducing service response latency by 34% under increasing transaction volumes.",
-      "Automated release verification and deployment workflows through Azure DevOps pipelines, accelerating software delivery and minimizing manual validation effort across environments.",
-      "Migrated legacy Perl-based install, update, migration, and backout (IUMB) automation scripts to Python, modernizing deployment lifecycle tooling and improving maintainability across environments.",
-      "Optimized Azure SQL data models and query execution plans (indexing strategy, query restructuring) to decrease reporting retrieval times, supporting enterprise operational analytics and governance requirements.",
-    ],
+    responsibilities: [],
   },
 ];
 
