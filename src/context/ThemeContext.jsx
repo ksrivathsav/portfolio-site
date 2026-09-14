@@ -2,6 +2,11 @@
 //  ThemeContext.jsx
 //  Provides dark/light theme state across the entire app.
 // ─────────────────────────────────────────────────────────
+/* eslint-disable react-refresh/only-export-components */
+/*
+ * Context files intentionally export both a Provider component and a hook.
+ * react-refresh/only-export-components is disabled here by convention.
+ */
 import { createContext, useContext, useEffect, useState } from "react";
 
 const ThemeContext = createContext();

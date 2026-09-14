@@ -1,16 +1,28 @@
 // ──────────────────────────────────────────────────────────
 //  src/context/ToastContext.jsx
 //  LLD: Global toast notification state
-//  HLD: Context provider → Toast component reads from here
+//  HLD: Context provider → ToastContainer reads from here
 // ──────────────────────────────────────────────────────────
-import { createContext, useContext, useCallback, useState } from "react";
+/* eslint-disable react-refresh/only-export-components */
+/*
+ * Context files intentionally export both a Provider component and hooks.
+ * This is standard React practice and is safe to disable for context modules.
+ * See: https://github.com/ArnaudBarre/eslint-plugin-react-refresh#options
+ */
+import { createContext, useContext, useCallback, useMemo, useState } from "react";
 
 const ToastContext = createContext(null);
 
 let _id = 0;
 
 /**
- * Provides toast({ type, message, duration }) anywhere in the tree.
+ * Provides a `toast` API with methods:
+ *   toast.success(msg, opts?)
+ *   toast.error(msg, opts?)
+ *   toast.info(msg, opts?)
+ *   toast.warning(msg, opts?)
+ *   toast.fire({ type, message, duration? })   ← low-level
+ *
  * type: "success" | "error" | "info" | "warning"
  */
 export function ToastProvider({ children }) {
@@ -20,7 +32,11 @@ export function ToastProvider({ children }) {
     setToasts((t) => t.filter((x) => x.id !== id));
   }, []);
 
-  const toast = useCallback(
+  /*
+   * Low-level fire function. We separate this from the convenience object
+   * so we don't mutate the value returned by useCallback (immutability rule).
+   */
+  const fire = useCallback(
     ({ type = "info", message, duration = 4000 }) => {
       const id = ++_id;
       setToasts((t) => [...t, { id, type, message }]);
@@ -30,11 +46,20 @@ export function ToastProvider({ children }) {
     [dismiss]
   );
 
-  /* Convenience shorthands */
-  toast.success = (msg, opts) => toast({ type: "success", message: msg, ...opts });
-  toast.error   = (msg, opts) => toast({ type: "error",   message: msg, ...opts });
-  toast.info    = (msg, opts) => toast({ type: "info",    message: msg, ...opts });
-  toast.warning = (msg, opts) => toast({ type: "warning", message: msg, ...opts });
+  /*
+   * Build the public toast API as a stable memoized plain object.
+   * Using useMemo (not direct mutation) satisfies react-hooks/immutability.
+   */
+  const toast = useMemo(
+    () => ({
+      fire,
+      success: (msg, opts) => fire({ type: "success", message: msg, ...opts }),
+      error:   (msg, opts) => fire({ type: "error",   message: msg, ...opts }),
+      info:    (msg, opts) => fire({ type: "info",    message: msg, ...opts }),
+      warning: (msg, opts) => fire({ type: "warning", message: msg, ...opts }),
+    }),
+    [fire]
+  );
 
   return (
     <ToastContext.Provider value={{ toast, toasts, dismiss }}>

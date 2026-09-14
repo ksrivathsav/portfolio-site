@@ -8,7 +8,6 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User, Sparkles, RefreshCw } from "lucide-react";
 import { useBreakpoint } from "../hooks/useBreakpoint";
-import { useToast }      from "../context/ToastContext";
 
 /* ── Starter questions visitors can tap ── */
 const STARTERS = [
@@ -86,7 +85,6 @@ export default function Chatbot() {
   const [open,  setOpen]  = useState(false);
   const [input, setInput] = useState("");
   const { isMobile }      = useBreakpoint();
-  const toast             = useToast();
 
   const { messages, loading, sendMessage, reset } = useChat();
   const bottomRef  = useRef(null);

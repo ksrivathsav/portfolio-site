@@ -12,6 +12,13 @@ export default function Navbar() {
   const [scrolled, setScrolled]  = useState(false);
   const [menuOpen, setMenuOpen]  = useState(false);
 
+  /*
+   * Derive whether the menu should actually be visible.
+   * This avoids a useEffect-based setState call (which triggers cascading renders)
+   * by computing a derived boolean instead.
+   */
+  const isMenuVisible = menuOpen && isMobileNav;
+
   /* Reading progress */
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
@@ -22,19 +29,17 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    if (!isMobileNav) setMenuOpen(false);
-  }, [isMobileNav]);
-
   /* ── Shared nav pill style ── */
   const navStyle = {
     position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-    /* On iPhone with notch/Dynamic Island, shift content below the safe area */
+    /* Height grows to clear iPhone notch / Dynamic Island */
     height: "calc(56px + env(safe-area-inset-top, 0px))",
+    display: "flex", alignItems: "flex-end", justifyContent: "space-between",
+    /* Side padding fixed; top padding = safe area so content sits below notch */
     paddingTop: "env(safe-area-inset-top, 0px)",
-    display: "flex", alignItems: "center", justifyContent: "space-between",
-    padding: "0 1.5rem",
-    paddingTop: "env(safe-area-inset-top, 0px)",
+    paddingBottom: "0.5rem",
+    paddingLeft: "1.5rem",
+    paddingRight: "1.5rem",
     transition: "background 0.35s ease, border-color 0.35s ease, backdrop-filter 0.35s ease",
     background: scrolled ? "var(--nav-bg)" : "transparent",
     backdropFilter: scrolled ? "blur(24px) saturate(180%)" : "none",
@@ -150,7 +155,7 @@ export default function Navbar() {
                 color: "var(--color-muted)",
               }}
             >
-              {menuOpen ? <X size={16} /> : <Menu size={16} />}
+              {isMenuVisible ? <X size={16} /> : <Menu size={16} />}
             </motion.button>
           )}
         </div>
@@ -158,7 +163,7 @@ export default function Navbar() {
 
       {/* Mobile drawer */}
       <AnimatePresence>
-        {menuOpen && isMobileNav && (
+        {isMenuVisible && (
           <motion.div
             key="mobile-menu"
             initial={{ opacity: 0, y: -8 }}

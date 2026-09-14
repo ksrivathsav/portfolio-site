@@ -95,21 +95,24 @@ function MagneticButton({ children, disabled, strength = 0.28 }) {
   );
 }
 
+/* ── Stable role list — defined OUTSIDE the component so the array
+   reference never changes between renders, preventing useTypewriter
+   from re-running unnecessarily. ─────────────────────────────── */
+const HERO_ROLES = [
+  personalInfo.title,
+  "Full-Stack Developer",
+  "Cloud & DevOps Engineer",
+  "ML / AI Engineer",
+];
+
 /* ══════════════════════════════════════════════════════════
    HERO
 ══════════════════════════════════════════════════════════ */
 export default function Hero() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const { isMobile, isTablet, isSmallPhone, isPhoneLandscape, isLargeScreen } = useBreakpoint();
-  const isDesktop = !isMobile && !isTablet;
 
-  const ROLES = [
-    personalInfo.title,
-    "Full-Stack Developer",
-    "Cloud & DevOps Engineer",
-    "ML / AI Engineer",
-  ];
-  const { displayed: typedTitle, showCursor } = useTypewriter(ROLES);
+  const { displayed: typedTitle, showCursor } = useTypewriter(HERO_ROLES);
 
   const years     = useCounter(3);
   const companies = useCounter(3);
