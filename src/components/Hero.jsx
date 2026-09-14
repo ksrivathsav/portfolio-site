@@ -473,6 +473,7 @@ export default function Hero() {
                       color: "var(--color-text)",
                       lineHeight: 1,
                       letterSpacing: "-0.05em",
+                      fontVariantNumeric: "tabular-nums", /* ui-skills: tabular-nums */
                     }}>
                       {count}
                     </span>

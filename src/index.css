@@ -64,14 +64,39 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Scrollbar */
+/* ── Tabular nums on all numeric content (ui-skills: tabular-nums) */
+.tabular-nums { font-variant-numeric: tabular-nums; }
+
+/* ── Smooth cursor for interactive elements */
+button, a, [role="button"], label { cursor: pointer; }
+
+/* ── Prevent layout shifts on images (ui-skills: aspect-ratio) */
+img { display: block; max-width: 100%; }
+
+/* ── Will-change hints for animated elements (performance) */
+.avatar-ring       { will-change: transform; }
+.gradient-name     { will-change: background-position; }
+.typing-cursor     { will-change: opacity; }
+.status-dot        { will-change: box-shadow; }
+.scroll-indicator  { will-change: transform; }
+
+/* ── Contain layout for cards (performance: contain) */
+.card { contain: layout style; }
+
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
 
-/* Selection */
+/* Selection — brand color */
 ::selection { background: rgba(99, 102, 241, 0.22); color: var(--color-text); }
+
+/* ── Page entry fade-in (anthropic-frontend-design) */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+body { animation: page-enter 0.5s ease both; }
 
 /* ═══════════════════════════════════════════════════════════
    TYPOGRAPHY
@@ -81,7 +106,20 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.03em;
+  text-wrap: balance;          /* vercel-web-design-guidelines: balance heading text */
 }
+
+/* ── Focus visible — accessibility (ui-skills: keyboard nav) */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* ── Minimum 44px touch targets (ui-skills playbook) */
+button, [role="button"] { min-height: 44px; min-width: 44px; }
+a.btn                   { min-height: 44px; }
 
 /* ═══════════════════════════════════════════════════════════
    LAYOUT UTILITIES
@@ -100,6 +138,16 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.14em;
   color: #6366f1;
   margin-bottom: 0.875rem;
+  position: relative;
+}
+/* Subtle glowing underline on eyebrow */
+.section-eyebrow::after {
+  content: "";
+  position: absolute;
+  bottom: -3px; left: 0;
+  width: 100%; height: 1px;
+  background: linear-gradient(to right, #6366f1, #a855f7, transparent);
+  opacity: 0.7;
 }
 
 .section-title {
@@ -181,6 +229,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: scale(1.03);
   box-shadow: 0 8px 28px -4px rgba(0, 0, 0, 0.28);
 }
+.btn-primary:active { transform: scale(0.97); box-shadow: none; }  /* ui-skills: scale feedback */
 
 .btn-secondary {
   background: var(--color-accent);
@@ -191,6 +240,7 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--color-primary);
   background: var(--color-surface);
 }
+.btn-secondary:active { transform: scale(0.97); }  /* ui-skills: scale feedback */
 
 /* Glass secondary in dark mode */
 .dark .btn-secondary {
@@ -204,7 +254,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   BADGE
+   BADGE  — micro-interactions (ui-skills: 5-state interactions)
 ═══════════════════════════════════════════════════════════ */
 .badge {
   display: inline-flex;
@@ -216,7 +266,9 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--color-accent);
   color: var(--color-text);
   border: 1px solid var(--color-border);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
+.badge:hover { transform: scale(1.06); }  /* micro-delight on hover */
 
 /* ═══════════════════════════════════════════════════════════
    DIVIDER
