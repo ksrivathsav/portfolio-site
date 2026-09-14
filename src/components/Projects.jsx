@@ -1,12 +1,11 @@
 import { useRef } from "react";
 import { motion, useInView, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { ExternalLink, Star } from "lucide-react";
-import { GithubIcon } from "./SocialIcons";
-import { projects } from "../data/portfolioData";
+import { GithubIcon }   from "./SocialIcons";
+import { projects }     from "../data/portfolioData";
 import { SectionHeader } from "./Experience";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 
-// Map Tailwind gradient strings → CSS hex colors for inline gradient strips
 const GRADIENT_MAP = {
   "from-indigo-500 to-cyan-500":     ["#6366f1", "#06b6d4"],
   "from-amber-500 to-yellow-400":    ["#f59e0b", "#facc15"],
@@ -19,12 +18,16 @@ const GRADIENT_MAP = {
 export default function Projects() {
   const { isMobile } = useBreakpoint();
   return (
-    <section id="projects" style={{ padding: "5rem 1.5rem" }}>
+    <section id="projects" style={{ padding: "6rem 1.5rem" }}>
       <div className="section" style={{ paddingTop: 0, paddingBottom: 0 }}>
-        <SectionHeader title="Featured Projects" />
+        <SectionHeader
+          eyebrow="Portfolio"
+          title="Featured Projects"
+          subtitle="A selection of things I've built"
+        />
         <div style={{
           display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(300px, 1fr))",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(310px, 1fr))",
           gap: isMobile ? "1rem" : "1.5rem",
         }}>
           {projects.map((project, idx) => (
@@ -38,9 +41,10 @@ export default function Projects() {
 
 function ProjectCard({ project, index }) {
   const { isTouch, isMobile } = useBreakpoint();
-  const ref = useRef(null);
+  const ref    = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
+  /* 3D tilt (desktop only) */
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const rotateX = useSpring(useTransform(y, [-80, 80], [6, -6]), { stiffness: 280, damping: 28 });
@@ -49,16 +53,16 @@ function ProjectCard({ project, index }) {
   const handleMouseMove = (e) => {
     if (isTouch || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
-    x.set(e.clientX - rect.left - rect.width / 2);
-    y.set(e.clientY - rect.top - rect.height / 2);
-    const sx = ((e.clientX - rect.left) / rect.width) * 100;
-    const sy = ((e.clientY - rect.top) / rect.height) * 100;
+    x.set(e.clientX - rect.left - rect.width  / 2);
+    y.set(e.clientY - rect.top  - rect.height / 2);
+    const sx = ((e.clientX - rect.left) / rect.width)  * 100;
+    const sy = ((e.clientY - rect.top)  / rect.height) * 100;
     ref.current.style.setProperty("--mouse-x", `${sx}%`);
     ref.current.style.setProperty("--mouse-y", `${sy}%`);
   };
   const handleMouseLeave = () => { x.set(0); y.set(0); };
 
-  const [gradFrom, gradTo] = GRADIENT_MAP[project.gradient] || ["#6366f1", "#06b6d4"];
+  const [gradFrom, gradTo] = GRADIENT_MAP[project.gradient] || ["#6366f1", "#a855f7"];
 
   return (
     <motion.div
@@ -71,7 +75,7 @@ function ProjectCard({ project, index }) {
       onMouseLeave={handleMouseLeave}
       className="card card-spotlight"
     >
-      {/* Colored gradient top strip */}
+      {/* Gradient top strip */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, height: "3px",
         borderRadius: "var(--radius) var(--radius) 0 0",
@@ -84,7 +88,7 @@ function ProjectCard({ project, index }) {
           position: "absolute", top: "1rem", right: "1rem",
           display: "flex", alignItems: "center", gap: "0.25rem",
           fontSize: "0.7rem", fontWeight: 600,
-          color: "var(--color-text)", background: "var(--color-bg)",
+          color: "var(--color-text)", background: "var(--color-surface)",
           border: "1px solid var(--color-border)",
           padding: "0.2rem 0.6rem", borderRadius: "9999px",
         }}>
@@ -93,10 +97,10 @@ function ProjectCard({ project, index }) {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, paddingTop: "0.5rem" }}>
-        <h3 style={{ fontSize: "1.2rem", fontWeight: 600, color: "var(--color-text)", marginBottom: "0.5rem" }}>
+        <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--color-text)", marginBottom: "0.5rem" }}>
           {project.title}
         </h3>
-        <p style={{ color: "var(--color-muted)", fontSize: "0.9rem", lineHeight: 1.65, marginBottom: "1.5rem", flexGrow: 1 }}>
+        <p style={{ color: "var(--color-muted)", fontSize: "0.9rem", lineHeight: 1.7, marginBottom: "1.5rem", flexGrow: 1 }}>
           {project.description}
         </p>
 
@@ -107,13 +111,18 @@ function ProjectCard({ project, index }) {
               fontSize: "0.72rem", fontWeight: 500,
               padding: "0.2rem 0.55rem",
               background: "var(--color-accent)", color: "var(--color-text)",
-              borderRadius: "0.25rem",
-            }}>{t}</span>
+              borderRadius: "0.3rem", border: "1px solid var(--color-border)",
+            }}>
+              {t}
+            </span>
           ))}
         </div>
 
         {/* Links */}
-        <div style={{ display: "flex", gap: "0.75rem", marginTop: "auto", borderTop: "1px solid var(--color-border)", paddingTop: "1rem" }}>
+        <div style={{
+          display: "flex", gap: "0.75rem", marginTop: "auto",
+          borderTop: "1px solid var(--color-border)", paddingTop: "1rem",
+        }}>
           <motion.a
             href={project.github}
             target="_blank"

@@ -1,88 +1,96 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-scroll";
+import { Link }            from "react-scroll";
 import { Menu, X, Sun, Moon, Code2 } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
-import { useTheme } from "../context/ThemeContext";
-import { navLinks } from "../data/portfolioData";
-import { useBreakpoint } from "../hooks/useBreakpoint";
+import { useTheme }        from "../context/ThemeContext";
+import { navLinks }        from "../data/portfolioData";
+import { useBreakpoint }   from "../hooks/useBreakpoint";
 
 export default function Navbar() {
-  const { isDark, toggleTheme } = useTheme();
-  const { isMobileNav } = useBreakpoint();
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const { isDark, toggleTheme }  = useTheme();
+  const { isMobileNav }          = useBreakpoint();
+  const [scrolled, setScrolled]  = useState(false);
+  const [menuOpen, setMenuOpen]  = useState(false);
 
+  /* Reading progress */
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close drawer when resizing to desktop
   useEffect(() => {
     if (!isMobileNav) setMenuOpen(false);
   }, [isMobileNav]);
 
-  const navBase = {
-    position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-    padding: "0 1.25rem", height: "4rem",
-    display: "flex", alignItems: "center", justifyContent: "space-between",
-    transition: "background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease",
-    borderBottom: scrolled ? "1px solid var(--color-border)" : "1px solid transparent",
-    backdropFilter: scrolled ? "blur(14px)" : "none",
-  };
-
+  /* ── Shared nav pill style ── */
   const navStyle = {
-    ...navBase,
-    background: scrolled ? "rgba(9,9,11,0.88)" : "transparent",
-  };
-  const lightNavStyle = {
-    ...navBase,
-    background: scrolled ? "rgba(255,255,255,0.92)" : "transparent",
+    position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
+    height: "56px",
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    padding: "0 1.5rem",
+    transition: "background 0.35s ease, border-color 0.35s ease, backdrop-filter 0.35s ease",
+    background: scrolled ? "var(--nav-bg)" : "transparent",
+    backdropFilter: scrolled ? "blur(24px) saturate(180%)" : "none",
+    WebkitBackdropFilter: scrolled ? "blur(24px) saturate(180%)" : "none",
+    borderBottom: scrolled
+      ? "1px solid var(--color-border)"
+      : "1px solid transparent",
   };
 
   return (
     <>
-      {/* Reading progress bar */}
-      <motion.div style={{
-        position: "fixed", top: 0, left: 0, right: 0, height: "2px",
-        background: "var(--color-primary)", scaleX, transformOrigin: "left", zIndex: 1001,
-      }} />
+      {/* Progress bar */}
+      <motion.div
+        style={{
+          position: "fixed", top: 0, left: 0, right: 0, height: "2px",
+          background: "linear-gradient(to right, #6366f1, #a855f7, #06b6d4)",
+          scaleX, transformOrigin: "left", zIndex: 1001,
+        }}
+      />
 
-      <nav style={isDark ? navStyle : lightNavStyle} aria-label="Main navigation">
+      <nav style={navStyle} aria-label="Main navigation">
+
         {/* Logo */}
         <Link to="hero" smooth duration={600} style={{ cursor: "pointer", flexShrink: 0 }}>
-          <motion.div whileHover={{ scale: 1.05 }} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+          >
             <div style={{
-              width: "1.875rem", height: "1.875rem", borderRadius: "0.25rem",
-              background: "var(--color-primary)",
+              width: "30px", height: "30px", borderRadius: "0.375rem",
+              background: "linear-gradient(135deg, #6366f1, #a855f7)",
               display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
             }}>
-              <Code2 size={15} color="var(--color-bg)" />
+              <Code2 size={15} color="#fff" />
             </div>
-            <span style={{ fontWeight: 800, fontSize: "1.05rem", color: "var(--color-text)", whiteSpace: "nowrap" }}>
+            <span style={{
+              fontWeight: 800, fontSize: "1.05rem",
+              color: "var(--color-text)", whiteSpace: "nowrap",
+              letterSpacing: "-0.02em",
+            }}>
               Srivathsav
             </span>
           </motion.div>
         </Link>
 
-        {/* Desktop links — only rendered when viewport >= 768px */}
+        {/* Desktop centre links */}
         {!isMobileNav && (
-          <div style={{ display: "flex", alignItems: "center", gap: "0.125rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
                 smooth
                 duration={600}
-                offset={-64}
+                offset={-56}
                 spy
                 activeClass="nav-active"
                 style={{
-                  padding: "0.375rem 0.75rem",
+                  padding: "0.375rem 0.875rem",
                   borderRadius: "0.5rem",
                   fontSize: "0.875rem",
                   fontWeight: 500,
@@ -90,9 +98,16 @@ export default function Navbar() {
                   color: "var(--color-muted)",
                   transition: "color 0.2s ease, background 0.2s ease",
                   whiteSpace: "nowrap",
+                  userSelect: "none",
                 }}
-                onMouseEnter={(e) => { e.target.style.color = "var(--color-text)"; e.target.style.background = "var(--color-accent)"; }}
-                onMouseLeave={(e) => { e.target.style.color = "var(--color-muted)"; e.target.style.background = "transparent"; }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = "var(--color-text)";
+                  e.target.style.background = "var(--color-accent)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = "var(--color-muted)";
+                  e.target.style.background = "transparent";
+                }}
               >
                 {link.label}
               </Link>
@@ -101,30 +116,32 @@ export default function Navbar() {
         )}
 
         {/* Right controls */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <motion.button
             onClick={toggleTheme}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             aria-label="Toggle theme"
             style={{
-              background: "var(--color-surface)", border: "1px solid var(--color-border)",
+              background: "var(--color-accent)",
+              border: "1px solid var(--color-border)",
               borderRadius: "0.5rem", padding: "0.4rem",
               cursor: "pointer", display: "flex", alignItems: "center",
               color: "var(--color-muted)", flexShrink: 0,
+              backdropFilter: "blur(8px)",
             }}
           >
             {isDark ? <Sun size={16} /> : <Moon size={16} />}
           </motion.button>
 
-          {/* Hamburger — only rendered when viewport < 768px */}
           {isMobileNav && (
             <motion.button
               onClick={() => setMenuOpen((o) => !o)}
               whileTap={{ scale: 0.9 }}
               aria-label="Toggle menu"
               style={{
-                background: "var(--color-surface)", border: "1px solid var(--color-border)",
+                background: "var(--color-accent)",
+                border: "1px solid var(--color-border)",
                 borderRadius: "0.5rem", padding: "0.4rem",
                 cursor: "pointer", display: "flex", alignItems: "center",
                 color: "var(--color-muted)",
@@ -136,22 +153,24 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile slide-down drawer */}
+      {/* Mobile drawer */}
       <AnimatePresence>
         {menuOpen && isMobileNav && (
           <motion.div
             key="mobile-menu"
-            initial={{ opacity: 0, y: -12 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.22 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
             style={{
-              position: "fixed", top: "4rem", left: 0, right: 0, zIndex: 999,
-              background: "var(--color-surface)",
+              position: "fixed", top: "56px", left: 0, right: 0, zIndex: 999,
+              background: "var(--nav-bg)",
+              backdropFilter: "blur(24px) saturate(180%)",
+              WebkitBackdropFilter: "blur(24px) saturate(180%)",
               borderBottom: "1px solid var(--color-border)",
-              padding: "0.75rem 1rem 1rem",
+              padding: "0.75rem 1rem 1.25rem",
               display: "flex", flexDirection: "column", gap: "0.25rem",
-              boxShadow: "0 8px 24px -4px rgba(0,0,0,0.1)",
+              boxShadow: "0 12px 32px -8px rgba(0,0,0,0.15)",
             }}
           >
             {navLinks.map((link) => (
@@ -160,16 +179,12 @@ export default function Navbar() {
                 to={link.to}
                 smooth
                 duration={600}
-                offset={-64}
+                offset={-56}
                 onClick={() => setMenuOpen(false)}
                 style={{
-                  padding: "0.75rem 1rem",
-                  borderRadius: "0.5rem",
-                  fontSize: "0.9375rem",
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  color: "var(--color-text)",
-                  transition: "background 0.2s ease",
+                  padding: "0.75rem 1rem", borderRadius: "0.625rem",
+                  fontSize: "1rem", fontWeight: 500, cursor: "pointer",
+                  color: "var(--color-text)", transition: "background 0.2s ease",
                 }}
                 onMouseEnter={(e) => { e.target.style.background = "var(--color-accent)"; }}
                 onMouseLeave={(e) => { e.target.style.background = "transparent"; }}

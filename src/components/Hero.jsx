@@ -1,17 +1,20 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, useInView, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import {
+  motion, AnimatePresence,
+  useMotionValue, useSpring,
+} from "framer-motion";
 import { Link } from "react-scroll";
-import { Mail, ChevronDown, Briefcase, Building2, FolderGit2 } from "lucide-react";
+import { Mail, ChevronDown, Briefcase, Building2, FolderGit2, ArrowRight } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 import { personalInfo } from "../data/portfolioData";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 
-/* ── Cycling typewriter hook ─────────────────────────────── */
-function useTypewriter(texts, speed = 55, pauseMs = 1800) {
+/* ── Cycling typewriter ─────────────────────────────────── */
+function useTypewriter(texts, speed = 52, pauseMs = 2000) {
   const list = Array.isArray(texts) ? texts : [texts];
   const [displayed, setDisplayed] = useState("");
-  const [phase, setPhase] = useState("typing");
-  const [idx, setIdx] = useState(0);
+  const [phase, setPhase]         = useState("typing");
+  const [idx, setIdx]             = useState(0);
 
   useEffect(() => {
     let timer;
@@ -22,7 +25,7 @@ function useTypewriter(texts, speed = 55, pauseMs = 1800) {
       } else {
         timer = setTimeout(() => setPhase("deleting"), pauseMs);
       }
-    } else if (phase === "deleting") {
+    } else {
       if (displayed.length > 0) {
         timer = setTimeout(() => setDisplayed(displayed.slice(0, -1)), speed / 2);
       } else {
@@ -33,44 +36,133 @@ function useTypewriter(texts, speed = 55, pauseMs = 1800) {
     return () => clearTimeout(timer);
   }, [displayed, phase, idx, list, speed, pauseMs]);
 
-  return { displayed, showCursor: phase === "typing" || phase === "deleting" };
+  return { displayed, showCursor: true };
 }
 
-/* ── Counting number hook ────────────────────────────────── */
+/* ── Counting number ────────────────────────────────────── */
 function useCounter(end, duration = 1800) {
   const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
+  const ref    = useRef(null);
+  const hasRun = useRef(false);
+
   useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const steps = 40;
-    const increment = end / steps;
-    const interval = duration / steps;
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) { setCount(end); clearInterval(timer); }
-      else setCount(Math.floor(start));
-    }, interval);
-    return () => clearInterval(timer);
-  }, [inView, end, duration]);
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasRun.current) {
+          hasRun.current = true;
+          let start = 0;
+          const steps    = 40;
+          const increment = end / steps;
+          const interval  = duration / steps;
+          const timer = setInterval(() => {
+            start += increment;
+            if (start >= end) { setCount(end); clearInterval(timer); }
+            else setCount(Math.floor(start));
+          }, interval);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [end, duration]);
+
   return { count, ref };
 }
 
-/* ── Animation variants ──────────────────────────────────── */
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.14, delayChildren: 0.3 } },
-};
-const item = {
-  hidden: { opacity: 0, y: 28 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.65, ease: "easeOut" } },
-};
+/* ── Glow orb (static, no JS animation — perf) ─────────── */
+function GlowOrb({ color, style }) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        borderRadius: "50%",
+        background: `radial-gradient(circle, ${color}, transparent 70%)`,
+        filter: "blur(72px)",
+        pointerEvents: "none",
+        zIndex: 0,
+        ...style,
+      }}
+    />
+  );
+}
 
-/* ── Main component ──────────────────────────────────────── */
+/* ── Avatar with spinning conic ring ────────────────────── */
+function AvatarOrb({ name, size = 220 }) {
+  const px = `${size}px`;
+  return (
+    <motion.div
+      animate={{ y: [0, -12, 0] }}
+      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+      style={{ position: "relative", width: px, height: px, flexShrink: 0 }}
+    >
+      {/* Outer pulse glow */}
+      <motion.div
+        animate={{ scale: [1, 1.14, 1], opacity: [0.35, 0.08, 0.35] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          position: "absolute", inset: "-18px", borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(99,102,241,0.35), transparent 70%)",
+          zIndex: 0,
+        }}
+      />
+      {/* Spinning conic ring */}
+      <div
+        className="avatar-ring"
+        style={{
+          position: "absolute", inset: 0, borderRadius: "50%",
+          background: "conic-gradient(from 0deg, #6366f1, #a855f7, #ec4899, #f59e0b, #10b981, #06b6d4, #6366f1)",
+          zIndex: 1,
+        }}
+      />
+      {/* Gap ring */}
+      <div style={{ position: "absolute", inset: "4px", borderRadius: "50%", background: "var(--color-bg)", zIndex: 2 }} />
+      {/* Photo */}
+      <div style={{ position: "absolute", inset: "9px", borderRadius: "50%", overflow: "hidden", zIndex: 3 }}>
+        <img
+          src={`${import.meta.env.BASE_URL}avatar.jpg`}
+          alt={`${name} — profile photo`}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
+        />
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── Magnetic button (desktop only) ────────────────────── */
+function MagneticButton({ children, disabled, strength = 0.28 }) {
+  const ref = useRef(null);
+  const x   = useMotionValue(0);
+  const y   = useMotionValue(0);
+  const sx  = useSpring(x, { stiffness: 200, damping: 18 });
+  const sy  = useSpring(y, { stiffness: 200, damping: 18 });
+  if (disabled) return children;
+  return (
+    <motion.div
+      ref={ref}
+      style={{ x: sx, y: sy, display: "inline-block" }}
+      onMouseMove={(e) => {
+        if (!ref.current) return;
+        const r = ref.current.getBoundingClientRect();
+        x.set((e.clientX - (r.left + r.width  / 2)) * strength);
+        y.set((e.clientY - (r.top  + r.height / 2)) * strength);
+      }}
+      onMouseLeave={() => { x.set(0); y.set(0); }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════════════ */
 export default function Hero() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const { isMobile, isTablet } = useBreakpoint();
+  const isDesktop = !isMobile && !isTablet;
 
   const ROLES = [
     personalInfo.title,
@@ -84,145 +176,238 @@ export default function Hero() {
   const companies = useCounter(3);
   const projects  = useCounter(10);
 
-  const avatarSize   = isMobile ? 148 : isTablet ? 178 : 210;
-  const heroPadding  = isMobile ? "5.5rem 1rem 3rem" : isTablet ? "7rem 1.5rem 3.5rem" : "8rem 1.5rem 4rem";
-  const statsPad     = isMobile ? "0.75rem 0.5rem" : "1.25rem 1.5rem";
-  const statsNumSize = isMobile ? "1.5rem" : isTablet ? "1.7rem" : "1.9rem";
-  const statsLblSize = isMobile ? "0.62rem" : "0.72rem";
-  const bioMaxW      = isMobile ? "100%" : "580px";
+  const avatarSize = isMobile ? 160 : isTablet ? 190 : 240;
 
   return (
     <section
       id="hero"
-      className="hero-grid-bg"
-      style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", padding: heroPadding, overflow: "hidden" }}
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        position: "relative",
+        overflow: "hidden",
+        padding: isMobile
+          ? "7rem 1.25rem 5rem"
+          : isTablet
+          ? "8rem 2rem 5rem"
+          : "0 3rem",
+      }}
     >
-      {/* Floating orbs */}
-      {!isMobile && <FloatingOrb color="rgba(99,102,241,0.18)" style={{ top: "5%", right: "2%", width: "560px", height: "560px" }} duration={11} delay={0} />}
-      <FloatingOrb color="rgba(6,182,212,0.13)" style={{ bottom: "10%", left: "0%", width: isMobile ? "220px" : "420px", height: isMobile ? "220px" : "420px" }} duration={14} delay={3} />
-      {!isMobile && <FloatingOrb color="rgba(16,185,129,0.10)" style={{ top: "45%", left: "38%", width: "300px", height: "300px" }} duration={17} delay={6} />}
-      {!isMobile && <FloatingOrb color="rgba(245,158,11,0.08)" style={{ top: "70%", right: "15%", width: "240px", height: "240px" }} duration={20} delay={2} />}
+      {/* ── Background glows ── */}
+      <GlowOrb color="rgba(99,102,241,0.15)"  style={{ top: "10%",  right: "0%",   width: "700px", height: "700px" }} />
+      <GlowOrb color="rgba(168,85,247,0.10)"  style={{ bottom: "5%", left: "-5%",  width: "550px", height: "550px" }} />
+      <GlowOrb color="rgba(6,182,212,0.07)"   style={{ top: "50%",  left: "38%",   width: "320px", height: "320px" }} />
 
-      <div style={{ maxWidth: "840px", margin: "0 auto", width: "100%", textAlign: "center", position: "relative", zIndex: 1 }}>
-        <motion.div variants={container} initial="hidden" animate="show" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-
-          {/* Avatar with spinning ring */}
-          <motion.div variants={item} style={{ marginBottom: isMobile ? "1.5rem" : "2.5rem" }}>
+      {/* ── Main row ── */}
+      <div
+        style={{
+          maxWidth: "1140px",
+          margin: "0 auto",
+          width: "100%",
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: "center",
+          gap: isMobile ? "2.5rem" : isTablet ? "3rem" : "7rem",
+          zIndex: 1,
+          position: "relative",
+        }}
+      >
+        {/* ── Avatar: top on mobile, right on desktop ── */}
+        {isMobile && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          >
             <AvatarOrb name={personalInfo.name} size={avatarSize} />
           </motion.div>
+        )}
 
+        {/* ── Left / text column ── */}
+        <div
+          style={{
+            flex: "1 1 55%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: isMobile ? "center" : "flex-start",
+            textAlign: isMobile ? "center" : "left",
+          }}
+        >
           {/* Status badge */}
-          <motion.div variants={item} style={{ marginBottom: isMobile ? "1.25rem" : "1.75rem" }}>
-            <motion.span whileHover={{ scale: 1.05 }} style={{
-              display: "inline-flex", alignItems: "center", gap: "0.5rem",
-              padding: "0.3rem 1rem", borderRadius: "9999px", fontSize: "0.8rem", fontWeight: 500,
-              background: "var(--color-surface)", border: "1px solid var(--color-border)",
-              color: "var(--color-text)", cursor: "default",
-            }}>
-              <span className="status-dot" style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#10b981", display: "inline-block", flexShrink: 0 }} />
-              Open to opportunities
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+            style={{ marginBottom: "1.5rem" }}
+          >
+            <motion.span
+              whileHover={{ scale: 1.04 }}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "0.5rem",
+                padding: "0.35rem 1.1rem", borderRadius: "9999px",
+                fontSize: "0.8rem", fontWeight: 500,
+                background: "var(--color-surface)",
+                border: "1px solid var(--color-border)",
+                color: "var(--color-text)",
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              <span
+                className="status-dot"
+                style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#10b981", flexShrink: 0 }}
+              />
+              Open to new opportunities
             </motion.span>
           </motion.div>
 
-          {/* Name — smooth fade-up + gradient shimmer */}
-          <div style={{ marginBottom: "0.75rem" }}>
-            <motion.h1
-              className="gradient-name"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-              style={{ fontSize: isMobile ? "clamp(2rem, 10vw, 2.8rem)" : "clamp(2.8rem, 9vw, 5rem)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.04em", display: "inline-block" }}>
-              {personalInfo.name}
-            </motion.h1>
-          </div>
+          {/* Name */}
+          <motion.h1
+            className="gradient-name"
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              fontSize: isMobile
+                ? "clamp(2.4rem, 11vw, 3.2rem)"
+                : isTablet
+                ? "clamp(3rem, 7vw, 4.2rem)"
+                : "clamp(3.8rem, 5.5vw, 5.8rem)",
+              fontWeight: 800,
+              lineHeight: 1,
+              letterSpacing: "-0.04em",
+              marginBottom: "1rem",
+              display: "block",
+            }}
+          >
+            {personalInfo.name}
+          </motion.h1>
 
-          {/* Cycling typewriter role */}
-          <motion.div variants={item} style={{ marginBottom: isMobile ? "1.25rem" : "1.75rem", minHeight: "2.4rem", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <h2 style={{ fontSize: isMobile ? "clamp(1rem, 4.5vw, 1.35rem)" : "clamp(1.2rem, 3vw, 1.7rem)", fontWeight: 500, color: "var(--color-muted)", letterSpacing: "-0.02em", textAlign: "center" }}>
+          {/* Typewriter role */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.38, duration: 0.6 }}
+            style={{
+              marginBottom: "1.5rem",
+              minHeight: isMobile ? "1.8rem" : "2.2rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: isMobile ? "center" : "flex-start",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: isMobile ? "1.05rem" : isTablet ? "1.25rem" : "1.5rem",
+                fontWeight: 400,
+                color: "var(--color-muted)",
+                letterSpacing: "-0.02em",
+              }}
+            >
               {typedTitle}
               {showCursor && <span className="typing-cursor" />}
             </h2>
           </motion.div>
 
           {/* Bio */}
-          <motion.p variants={item} style={{ fontSize: isMobile ? "0.95rem" : "1.1rem", color: "var(--color-muted)", maxWidth: bioMaxW, lineHeight: 1.7, marginBottom: isMobile ? "1.75rem" : "2.5rem", textAlign: "center" }}>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            style={{
+              fontSize: isMobile ? "0.95rem" : "1.05rem",
+              color: "var(--color-muted)",
+              maxWidth: isMobile ? "100%" : "480px",
+              lineHeight: 1.75,
+              marginBottom: "2rem",
+            }}
+          >
             {personalInfo.bio}
           </motion.p>
 
-          {/* Stats bar */}
-          <motion.div variants={item} style={{
-            display: "flex", gap: "0", marginBottom: isMobile ? "1.75rem" : "2.75rem",
-            border: "1px solid var(--color-border)", borderRadius: "0.75rem",
-            overflow: "hidden", background: "var(--color-surface)", width: isMobile ? "100%" : "auto",
-          }}>
-            {[
-              { ref: years.ref,     count: years.count,     suffix: "+", label: "Years Exp",  Icon: Briefcase },
-              { ref: companies.ref, count: companies.count, suffix: "",  label: "Companies",  Icon: Building2 },
-              { ref: projects.ref,  count: projects.count,  suffix: "+", label: "Projects",   Icon: FolderGit2 },
-            ].map(({ ref, count, suffix, label, Icon }, i) => (
-              <div key={label} ref={ref} style={{
-                flex: 1, padding: statsPad, textAlign: "center",
-                borderRight: i < 2 ? "1px solid var(--color-border)" : "none",
-                display: "flex", flexDirection: "column", alignItems: "center", gap: "0.25rem",
-                minWidth: isMobile ? "0" : "110px",
-              }}>
-                <Icon size={isMobile ? 13 : 15} style={{ color: "var(--color-muted)" }} />
-                <div style={{ fontSize: statsNumSize, fontWeight: 800, color: "var(--color-text)", lineHeight: 1 }}>
-                  {count}{suffix}
-                </div>
-                <div style={{ fontSize: statsLblSize, color: "var(--color-muted)", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.07em" }}>
-                  {label}
-                </div>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* CTA buttons with magnetic effect on desktop */}
-          <motion.div variants={item} style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center", marginBottom: "2.5rem", width: isMobile ? "100%" : "auto" }}>
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+            style={{
+              display: "flex",
+              gap: "0.75rem",
+              flexWrap: "wrap",
+              justifyContent: isMobile ? "center" : "flex-start",
+              marginBottom: "2rem",
+              width: isMobile ? "100%" : "auto",
+            }}
+          >
             <Link to="projects" smooth duration={600} offset={-64} style={isMobile ? { width: "100%" } : {}}>
               <MagneticButton disabled={isMobile}>
-                <motion.button className="btn btn-primary"
-                  whileHover={{ scale: 1.04, boxShadow: "0 8px 28px -4px rgba(99,102,241,0.45)" }}
+                <motion.button
+                  className="btn btn-primary"
+                  whileHover={{ scale: 1.04, boxShadow: "0 10px 32px -6px rgba(99,102,241,0.45)" }}
                   whileTap={{ scale: 0.97 }}
                   style={isMobile ? { width: "100%", justifyContent: "center" } : {}}
                 >
-                  View Projects
+                  View My Work <ArrowRight size={15} />
                 </motion.button>
               </MagneticButton>
             </Link>
+
+            {/* Contact dropdown */}
             <div style={{ position: "relative", width: isMobile ? "100%" : "auto" }}>
               <MagneticButton disabled={isMobile}>
-                <motion.button className="btn btn-secondary"
-                  whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-                  onClick={() => setIsContactOpen(!isContactOpen)}
+                <motion.button
+                  className="btn btn-secondary"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setIsContactOpen((o) => !o)}
                   style={isMobile ? { width: "100%", justifyContent: "center" } : {}}
                 >
                   Contact Me
                 </motion.button>
               </MagneticButton>
+
               <AnimatePresence>
                 {isContactOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.93 }}
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.93 }}
-                    transition={{ duration: 0.2 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    transition={{ duration: 0.18 }}
                     style={{
-                      position: "absolute", top: "calc(100% + 0.5rem)", left: "50%", transform: "translateX(-50%)",
-                      background: "var(--color-surface)", border: "1px solid var(--color-border)",
-                      borderRadius: "0.5rem", padding: "0.5rem",
+                      position: "absolute",
+                      top: "calc(100% + 0.5rem)",
+                      left: isMobile ? 0 : "50%",
+                      transform: isMobile ? "none" : "translateX(-50%)",
+                      background: "var(--color-surface)",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: "0.75rem",
+                      padding: "0.5rem",
                       display: "flex", flexDirection: "column", gap: "0.25rem",
-                      minWidth: "152px", boxShadow: "0 12px 28px -6px rgba(0,0,0,0.14)", zIndex: 50,
+                      minWidth: "160px",
+                      boxShadow: "0 16px 40px -8px rgba(0,0,0,0.2)",
+                      zIndex: 50,
+                      backdropFilter: "blur(20px)",
                     }}
                   >
                     {[
                       { href: `mailto:${personalInfo.email}`, Icon: Mail, label: "Email" },
                       { href: personalInfo.linkedin, Icon: LinkedinIcon, label: "LinkedIn", ext: true },
                     ].map(({ href, Icon, label, ext }) => (
-                      <a key={label} href={href} target={ext ? "_blank" : undefined} rel={ext ? "noopener noreferrer" : undefined}
-                        style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0.75rem", borderRadius: "0.25rem", color: "var(--color-text)", textDecoration: "none", fontSize: "0.875rem", fontWeight: 500, transition: "background 0.2s" }}
-                        onMouseEnter={(e) => e.currentTarget.style.background = "var(--color-accent)"}
-                        onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                      <a
+                        key={label}
+                        href={href}
+                        target={ext ? "_blank" : undefined}
+                        rel={ext ? "noopener noreferrer" : undefined}
+                        style={{
+                          display: "flex", alignItems: "center", gap: "0.5rem",
+                          padding: "0.5rem 0.875rem", borderRadius: "0.5rem",
+                          color: "var(--color-text)", textDecoration: "none",
+                          fontSize: "0.875rem", fontWeight: 500,
+                          transition: "background 0.15s",
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--color-accent)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                       >
                         <Icon size={15} /> {label}
                       </a>
@@ -233,94 +418,101 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Social links */}
-          <motion.div variants={item} style={{ display: "flex", gap: "1.5rem", justifyContent: "center" }}>
-            {[
-              { href: personalInfo.github,            Icon: GithubIcon,   label: "GitHub" },
-              { href: personalInfo.linkedin,          Icon: LinkedinIcon, label: "LinkedIn" },
-              { href: `mailto:${personalInfo.email}`, Icon: Mail,         label: "Email" },
-            ].map(({ href, Icon, label }) => (
-              <motion.a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-                whileHover={{ scale: 1.2, y: -5 }} whileTap={{ scale: 0.95 }}
-                style={{ color: "var(--color-muted)", display: "flex", alignItems: "center", justifyContent: "center" }}
-              >
-                <Icon size={isMobile ? 20 : 22} />
-              </motion.a>
-            ))}
+          {/* Social links + stats */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.72, duration: 0.6 }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1.5rem",
+              alignItems: isMobile ? "center" : "flex-start",
+            }}
+          >
+            {/* Socials */}
+            <div style={{ display: "flex", gap: "1.25rem" }}>
+              {[
+                { href: personalInfo.github,            Icon: GithubIcon,   label: "GitHub" },
+                { href: personalInfo.linkedin,          Icon: LinkedinIcon, label: "LinkedIn" },
+                { href: `mailto:${personalInfo.email}`, Icon: Mail,         label: "Email" },
+              ].map(({ href, Icon, label }) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  target={label !== "Email" ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  whileHover={{ scale: 1.2, y: -3 }}
+                  whileTap={{ scale: 0.95 }}
+                  style={{ color: "var(--color-muted)", display: "flex", alignItems: "center", transition: "color 0.2s" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = "var(--color-text)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = "var(--color-muted)"; }}
+                >
+                  <Icon size={isMobile ? 20 : 22} />
+                </motion.a>
+              ))}
+            </div>
+
+            {/* Stats */}
+            <div style={{ display: "flex", gap: isMobile ? "1.75rem" : "2.75rem" }}>
+              {[
+                { ref: years.ref,     count: years.count,     suffix: "+", label: "Years Exp",  Icon: Briefcase },
+                { ref: companies.ref, count: companies.count, suffix: "",  label: "Companies",  Icon: Building2 },
+                { ref: projects.ref,  count: projects.count,  suffix: "+", label: "Projects",   Icon: FolderGit2 },
+              ].map(({ ref, count, suffix, label, Icon }) => (
+                <div
+                  key={label}
+                  ref={ref}
+                  style={{ display: "flex", flexDirection: "column", alignItems: isMobile ? "center" : "flex-start", gap: "0.15rem" }}
+                >
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "0.1rem" }}>
+                    <span style={{
+                      fontSize: isMobile ? "1.7rem" : "2.1rem",
+                      fontWeight: 800,
+                      color: "var(--color-text)",
+                      lineHeight: 1,
+                      letterSpacing: "-0.05em",
+                    }}>
+                      {count}
+                    </span>
+                    <span style={{ fontSize: isMobile ? "1.1rem" : "1.3rem", fontWeight: 800, color: "var(--color-text)", letterSpacing: "-0.04em" }}>
+                      {suffix}
+                    </span>
+                  </div>
+                  <div style={{
+                    fontSize: "0.68rem",
+                    color: "var(--color-muted)",
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                  }}>
+                    {label}
+                  </div>
+                </div>
+              ))}
+            </div>
           </motion.div>
-        </motion.div>
+        </div>
+
+        {/* ── Right / avatar column (tablet + desktop) ── */}
+        {!isMobile && (
+          <motion.div
+            initial={{ opacity: 0, x: 40, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ delay: 0.25, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+            style={{ flex: "0 0 auto" }}
+          >
+            <AvatarOrb name={personalInfo.name} size={avatarSize} />
+          </motion.div>
+        )}
       </div>
 
+      {/* Scroll indicator */}
       <div className="scroll-indicator">
-        <span style={{ fontSize: "0.65rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>scroll</span>
+        <span>scroll</span>
         <ChevronDown size={16} />
       </div>
     </section>
-  );
-}
-
-/* ── Magnetic button wrapper (desktop only) ─────────────── */
-function MagneticButton({ children, disabled, strength = 0.28 }) {
-  const ref = useRef(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 200, damping: 18 });
-  const sy = useSpring(y, { stiffness: 200, damping: 18 });
-
-  if (disabled) return children;
-
-  return (
-    <motion.div
-      ref={ref}
-      style={{ x: sx, y: sy, display: "inline-block" }}
-      onMouseMove={(e) => {
-        if (!ref.current) return;
-        const rect = ref.current.getBoundingClientRect();
-        x.set((e.clientX - (rect.left + rect.width / 2)) * strength);
-        y.set((e.clientY - (rect.top + rect.height / 2)) * strength);
-      }}
-      onMouseLeave={() => { x.set(0); y.set(0); }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-/* ── Floating orb ────────────────────────────────────────── */
-function FloatingOrb({ color, style, duration, delay }) {
-  return (
-    <motion.div
-      animate={{ y: [0, -35, 12, 0], x: [0, 18, -12, 0], scale: [1, 1.06, 0.95, 1] }}
-      transition={{ duration, delay, repeat: Infinity, ease: "easeInOut" }}
-      style={{
-        position: "absolute", borderRadius: "50%",
-        background: `radial-gradient(circle, ${color}, transparent 70%)`,
-        filter: "blur(52px)", pointerEvents: "none", zIndex: 0,
-        ...style,
-      }}
-    />
-  );
-}
-
-/* ── Avatar with spinning conic ring ────────────────────── */
-function AvatarOrb({ name, size = 210 }) {
-  const px = `${size}px`;
-  return (
-    <div style={{ position: "relative", width: px, height: px }}>
-      <motion.div
-        animate={{ scale: [1, 1.12, 1], opacity: [0.4, 0.15, 0.4] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        style={{ position: "absolute", inset: "-12px", borderRadius: "50%", background: "radial-gradient(circle, rgba(99,102,241,0.25), transparent 70%)", zIndex: 0 }}
-      />
-      <div className="avatar-ring" style={{ position: "absolute", inset: 0, borderRadius: "50%", background: "conic-gradient(from 0deg, #6366f1, #06b6d4, #10b981, #f59e0b, #ec4899, #8b5cf6, #6366f1)", zIndex: 1 }} />
-      <div style={{ position: "absolute", inset: "4px", borderRadius: "50%", background: "var(--color-bg)", zIndex: 2 }} />
-      <div style={{ position: "absolute", inset: "8px", borderRadius: "50%", overflow: "hidden", zIndex: 3 }}>
-        <img
-          src={`${import.meta.env.BASE_URL}avatar.jpg`}
-          alt={`${name} — profile photo`}
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", display: "block" }}
-        />
-      </div>
-    </div>
   );
 }

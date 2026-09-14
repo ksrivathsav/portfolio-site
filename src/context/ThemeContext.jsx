@@ -7,10 +7,10 @@ import { createContext, useContext, useEffect, useState } from "react";
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  // Default to light mode for the minimalist aesthetic
+  // Default to dark mode for the Apple-pro aesthetic
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem("theme");
-    return saved ? saved === "dark" : false;
+    return saved ? saved === "dark" : true;
   });
 
   // Apply/remove "dark" class on <html> for CSS variable switching
