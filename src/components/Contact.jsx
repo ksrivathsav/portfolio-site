@@ -1,33 +1,37 @@
 // ──────────────────────────────────────────────────────────
 //  Contact.jsx
-//  Section: Smart contact form with Resend email delivery
-//  LLD: Form state → /api/contact → success/error feedback
+//  Section: Smart contact form — secured, reliable, with toast notifications
+//  Security: honeypot field, client-side length limits, email validation
+//  Reliability: toast-based feedback + in-form status fallback
 // ──────────────────────────────────────────────────────────
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Send, CheckCircle2, AlertCircle, Mail } from "lucide-react";
-import { SectionHeader } from "./shared";
+import { SectionHeader }     from "./shared";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
-import { useBreakpoint }   from "../hooks/useBreakpoint";
-import { personalInfo }    from "../data/portfolioData";
+import { useBreakpoint }     from "../hooks/useBreakpoint";
+import { useToast }          from "../context/ToastContext";
+import { personalInfo }      from "../data/portfolioData";
 
 const INITIAL_FORM = { name: "", email: "", subject: "", message: "" };
 
 export default function Contact() {
-  const { isMobile }            = useBreakpoint();
-  const [form,   setForm]       = useState(INITIAL_FORM);
-  const [status, setStatus]     = useState("idle");   // idle | loading | success | error
-  const [errMsg, setErrMsg]     = useState("");
+  const { isMobile }           = useBreakpoint();
+  const toast                  = useToast();
+  const [form,   setForm]      = useState(INITIAL_FORM);
+  const [status, setStatus]    = useState("idle");   // idle | loading | success | error
+  const [errMsg, setErrMsg]    = useState("");
   const formRef = useRef(null);
   const inView  = useInView(formRef, { once: true, margin: "-60px" });
 
-  /* ── Determine API base (Vercel) vs. fallback ── */
+  /* ── API base ── */
   const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 
-  const handleChange = (e) => {
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
     if (status !== "idle") setStatus("idle");
-  };
+  }, [status]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,7 +42,8 @@ export default function Contact() {
       const res = await fetch(`${API_BASE}/api/contact`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(form),
+        // _honeypot is intentionally left empty by real users
+        body: JSON.stringify({ ...form, _honeypot: "" }),
       });
 
       const data = await res.json();
@@ -46,9 +51,11 @@ export default function Contact() {
 
       setStatus("success");
       setForm(INITIAL_FORM);
+      toast.success("Message sent! I'll get back to you within 24–48 hours. 🎉");
     } catch (err) {
       setStatus("error");
       setErrMsg(err.message);
+      toast.error(err.message.slice(0, 120));
     }
   };
 
@@ -63,6 +70,7 @@ export default function Contact() {
     fontFamily: "inherit",
     outline: "none",
     transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+    boxSizing: "border-box",
   };
 
   return (
@@ -93,13 +101,13 @@ export default function Contact() {
             ref={formRef}
           >
             <h3 style={{ fontSize: "1.25rem", fontWeight: 700, marginBottom: "1rem", color: "var(--color-text)" }}>
-              Let's work together
+              Let&apos;s work together
             </h3>
             <p style={{ color: "var(--color-muted)", lineHeight: 1.75, marginBottom: "2rem", fontSize: "0.95rem" }}>
-              I'm currently open to full-time roles, contract work, and interesting collaborations. Fill out the form and I'll get back to you within 24–48 hours — or you can reach me directly.
+              I&apos;m currently open to full-time roles, contract work, and interesting collaborations.
+              Fill out the form and I&apos;ll get back to you within 24–48 hours — or reach me directly below.
             </p>
 
-            {/* Direct links */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               {[
                 { icon: <Mail size={17} />, label: personalInfo.email, href: `mailto:${personalInfo.email}` },
@@ -141,6 +149,17 @@ export default function Contact() {
             transition={{ duration: 0.55, delay: 0.1 }}
             style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
           >
+            {/* ── Honeypot: hidden from real users, traps bots ── */}
+            <input
+              name="_honeypot"
+              type="text"
+              autoComplete="off"
+              tabIndex={-1}
+              aria-hidden="true"
+              style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", opacity: 0 }}
+              readOnly
+            />
+
             {/* Row: name + email */}
             <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1rem" }}>
               <div>
@@ -153,6 +172,7 @@ export default function Contact() {
                   onChange={handleChange}
                   placeholder="Your name"
                   required
+                  maxLength={100}
                   style={inputStyle}
                   onFocus={(e) => { e.target.style.borderColor = "#6366f1"; e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.12)"; }}
                   onBlur={(e)  => { e.target.style.borderColor = "var(--color-border)"; e.target.style.boxShadow = "none"; }}
@@ -169,6 +189,7 @@ export default function Contact() {
                   onChange={handleChange}
                   placeholder="you@example.com"
                   required
+                  maxLength={254}
                   style={inputStyle}
                   onFocus={(e) => { e.target.style.borderColor = "#6366f1"; e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.12)"; }}
                   onBlur={(e)  => { e.target.style.borderColor = "var(--color-border)"; e.target.style.boxShadow = "none"; }}
@@ -186,6 +207,7 @@ export default function Contact() {
                 value={form.subject}
                 onChange={handleChange}
                 placeholder="What's this about?"
+                maxLength={200}
                 style={inputStyle}
                 onFocus={(e) => { e.target.style.borderColor = "#6366f1"; e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.12)"; }}
                 onBlur={(e)  => { e.target.style.borderColor = "var(--color-border)"; e.target.style.boxShadow = "none"; }}
@@ -204,6 +226,7 @@ export default function Contact() {
                 placeholder="Tell me about your project, role, or just say hi…"
                 required
                 rows={5}
+                maxLength={2000}
                 style={{ ...inputStyle, resize: "vertical", minHeight: "130px" }}
                 onFocus={(e) => { e.target.style.borderColor = "#6366f1"; e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.12)"; }}
                 onBlur={(e)  => { e.target.style.borderColor = "var(--color-border)"; e.target.style.boxShadow = "none"; }}
@@ -213,7 +236,7 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Status messages */}
+            {/* In-form status (backup visual, toast is primary) */}
             <AnimatePresence mode="wait">
               {status === "success" && (
                 <motion.div
@@ -229,7 +252,7 @@ export default function Contact() {
                   }}
                 >
                   <CheckCircle2 size={16} />
-                  Message sent! I'll be in touch within 24–48 hours.
+                  Message sent! I&apos;ll be in touch within 24–48 hours.
                 </motion.div>
               )}
               {status === "error" && (
@@ -256,15 +279,16 @@ export default function Contact() {
               type="submit"
               disabled={status === "loading"}
               whileHover={status !== "loading" ? { scale: 1.02 } : {}}
-              whileTap={status !== "loading" ? { scale: 0.97 } : {}}
+              whileTap={status !== "loading"  ? { scale: 0.97 } : {}}
               className="btn btn-primary"
               style={{
-                alignSelf: isMobile ? "stretch" : "flex-start",
+                alignSelf:    isMobile ? "stretch" : "flex-start",
                 justifyContent: "center",
-                opacity: status === "loading" ? 0.7 : 1,
-                cursor: status === "loading" ? "not-allowed" : "pointer",
-                paddingLeft: "2rem", paddingRight: "2rem",
-                minHeight: "48px",
+                opacity:      status === "loading" ? 0.7 : 1,
+                cursor:       status === "loading" ? "not-allowed" : "pointer",
+                paddingLeft:  "2rem",
+                paddingRight: "2rem",
+                minHeight:    "48px",
               }}
             >
               {status === "loading" ? (

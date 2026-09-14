@@ -8,6 +8,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User, Sparkles, RefreshCw } from "lucide-react";
 import { useBreakpoint } from "../hooks/useBreakpoint";
+import { useToast }      from "../context/ToastContext";
 
 /* ── Starter questions visitors can tap ── */
 const STARTERS = [
@@ -48,6 +49,11 @@ function useChat() {
         body:    JSON.stringify({ messages: next }),
       });
 
+      if (res.status === 429) {
+        const data = await res.json();
+        throw new Error(data.error ?? "Too many messages. Please wait a moment.");
+      }
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Failed to get response");
 
@@ -80,10 +86,24 @@ export default function Chatbot() {
   const [open,  setOpen]  = useState(false);
   const [input, setInput] = useState("");
   const { isMobile }      = useBreakpoint();
+  const toast             = useToast();
 
   const { messages, loading, sendMessage, reset } = useChat();
   const bottomRef  = useRef(null);
   const inputRef   = useRef(null);
+
+  /* ── Keyboard shortcut: press "/" to open chatbot ── */
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "/" && !["INPUT","TEXTAREA"].includes(document.activeElement?.tagName)) {
+        e.preventDefault();
+        setOpen((o) => !o);
+      }
+      if (e.key === "Escape" && open) setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   /* Auto-scroll to newest message */
   useEffect(() => {
@@ -154,7 +174,7 @@ export default function Chatbot() {
                   Talk to Srivathsav AI
                 </div>
                 <div style={{ fontSize: "0.72rem", color: "var(--color-muted)" }}>
-                  Powered by GPT-4o · Ask me anything
+                  Powered by GPT-4o · Press <kbd style={{ background: "rgba(255,255,255,0.1)", borderRadius: "3px", padding: "1px 4px", fontSize: "0.68rem", fontFamily: "monospace", border: "1px solid rgba(255,255,255,0.15)" }}>/</kbd> to toggle
                 </div>
               </div>
               <div style={{ display: "flex", gap: "0.25rem" }}>

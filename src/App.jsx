@@ -2,43 +2,80 @@
 //  App.jsx  — HLD: Application Root
 //
 //  Architecture:
-//    ThemeProvider  (context layer)
-//    ├─ CursorGlow  (UI: mouse glow effect)
-//    ├─ ScrollToTop (UI: scroll-to-top button)
-//    ├─ Chatbot     (UI: AI floating chat widget)
-//    ├─ Navbar      (layout: fixed navigation)
-//    └─ main
-//       ├─ Hero       (section: landing)
-//       ├─ Experience (section: timeline)
-//       ├─ Education  (section: timeline)
-//       ├─ Skills     (section: grid)
-//       ├─ Projects   (section: cards)
-//       └─ Contact    (section: form + email)
-//    └─ Footer
+//    ToastProvider   (global notification layer)
+//    └─ ThemeProvider  (context layer)
+//       ├─ CursorGlow  (UI: mouse glow effect)
+//       ├─ ScrollToTop (UI: scroll-to-top button)
+//       ├─ Chatbot     (UI: AI floating chat widget)
+//       ├─ ToastContainer (UI: notification stack)
+//       ├─ Navbar      (layout: fixed navigation)
+//       └─ main
+//          ├─ Hero       (eager — above the fold)
+//          ├─ Experience (lazy — code split)
+//          ├─ Education  (lazy — code split)
+//          ├─ Skills     (lazy — code split)
+//          ├─ Projects   (lazy — code split)
+//          └─ Contact    (lazy — code split)
+//       └─ Footer
 // ──────────────────────────────────────────────────────────
-import { useEffect } from "react";
-import Lenis         from "lenis";
-import { ThemeProvider } from "./context/ThemeContext";
-import Navbar     from "./components/Navbar";
-import Hero       from "./components/Hero";
-import Experience from "./components/Experience";
-import Education  from "./components/Education";
-import Projects   from "./components/Projects";
-import Skills     from "./components/Skills";
-import Contact    from "./components/Contact";
-import Footer     from "./components/Footer";
+import { useEffect, lazy, Suspense, memo } from "react";
+import Lenis from "lenis";
+
+import { ThemeProvider }            from "./context/ThemeContext";
+import { ToastProvider }            from "./context/ToastContext";
+import { ToastContainer }           from "./components/ui/Toast";
+import { ErrorBoundary }            from "./components/ui/ErrorBoundary";
+
+/* ── Hero loads eagerly (above the fold, critical path) ── */
+import Hero    from "./components/Hero";
+import Navbar  from "./components/Navbar";
+
+/* ── All other sections are code-split for faster initial load ── */
+const Experience = lazy(() => import("./components/Experience"));
+const Education  = lazy(() => import("./components/Education"));
+const Projects   = lazy(() => import("./components/Projects"));
+const Skills     = lazy(() => import("./components/Skills"));
+const Contact    = lazy(() => import("./components/Contact"));
+const Footer     = lazy(() => import("./components/Footer"));
+
 import CursorGlow  from "./components/CursorGlow";
 import ScrollToTop from "./components/ScrollToTop";
 import Chatbot     from "./components/Chatbot";
 
-export default function App() {
+/* Lightweight skeleton shown while lazy sections hydrate */
+const SectionSkeleton = memo(() => (
+  <div
+    style={{
+      minHeight: "60vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "4rem 2rem",
+    }}
+  >
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "900px",
+        height: "320px",
+        borderRadius: "20px",
+        background: "linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 50%, var(--color-surface) 75%)",
+        backgroundSize: "200% 100%",
+        animation: "shimmer 1.6s infinite",
+      }}
+    />
+  </div>
+));
+SectionSkeleton.displayName = "SectionSkeleton";
+
+function AppInner() {
   /* ── Lenis smooth scroll ── */
   useEffect(() => {
     const lenis = new Lenis({
-      duration:     1.3,
-      easing:       (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation:  "vertical",
-      smoothWheel:  true,
+      duration:        1.3,
+      easing:          (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation:     "vertical",
+      smoothWheel:     true,
       wheelMultiplier: 0.9,
     });
 
@@ -56,10 +93,11 @@ export default function App() {
   }, []);
 
   return (
-    <ThemeProvider>
+    <>
       <CursorGlow />
       <ScrollToTop />
       <Chatbot />
+      <ToastContainer />
 
       {/* Accessibility: skip to main content */}
       <a
@@ -79,15 +117,56 @@ export default function App() {
       <Navbar />
 
       <main id="main-content">
+        {/* Hero — eager, no ErrorBoundary needed (simple static content) */}
         <Hero />
-        <Experience />
-        <Education />
-        <Skills />
-        <Projects />
-        <Contact />
+
+        {/* Each section is isolated in its own error boundary + suspense */}
+        <ErrorBoundary>
+          <Suspense fallback={<SectionSkeleton />}>
+            <Experience />
+          </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <Suspense fallback={<SectionSkeleton />}>
+            <Education />
+          </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <Suspense fallback={<SectionSkeleton />}>
+            <Skills />
+          </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <Suspense fallback={<SectionSkeleton />}>
+            <Projects />
+          </Suspense>
+        </ErrorBoundary>
+
+        <ErrorBoundary>
+          <Suspense fallback={<SectionSkeleton />}>
+            <Contact />
+          </Suspense>
+        </ErrorBoundary>
       </main>
 
-      <Footer />
-    </ThemeProvider>
+      <ErrorBoundary>
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
+      </ErrorBoundary>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <ToastProvider>
+      <ThemeProvider>
+        <AppInner />
+      </ThemeProvider>
+    </ToastProvider>
   );
 }
