@@ -1,5 +1,23 @@
+// ──────────────────────────────────────────────────────────
+//  App.jsx  — HLD: Application Root
+//
+//  Architecture:
+//    ThemeProvider  (context layer)
+//    ├─ CursorGlow  (UI: mouse glow effect)
+//    ├─ ScrollToTop (UI: scroll-to-top button)
+//    ├─ Chatbot     (UI: AI floating chat widget)
+//    ├─ Navbar      (layout: fixed navigation)
+//    └─ main
+//       ├─ Hero       (section: landing)
+//       ├─ Experience (section: timeline)
+//       ├─ Education  (section: timeline)
+//       ├─ Skills     (section: grid)
+//       ├─ Projects   (section: cards)
+//       └─ Contact    (section: form + email)
+//    └─ Footer
+// ──────────────────────────────────────────────────────────
 import { useEffect } from "react";
-import Lenis from "lenis";
+import Lenis         from "lenis";
 import { ThemeProvider } from "./context/ThemeContext";
 import Navbar     from "./components/Navbar";
 import Hero       from "./components/Hero";
@@ -7,18 +25,20 @@ import Experience from "./components/Experience";
 import Education  from "./components/Education";
 import Projects   from "./components/Projects";
 import Skills     from "./components/Skills";
+import Contact    from "./components/Contact";
 import Footer     from "./components/Footer";
-import CursorGlow from "./components/CursorGlow";
+import CursorGlow  from "./components/CursorGlow";
 import ScrollToTop from "./components/ScrollToTop";
+import Chatbot     from "./components/Chatbot";
 
 export default function App() {
   /* ── Lenis smooth scroll ── */
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.3,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      smoothWheel: true,
+      duration:     1.3,
+      easing:       (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation:  "vertical",
+      smoothWheel:  true,
       wheelMultiplier: 0.9,
     });
 
@@ -39,8 +59,9 @@ export default function App() {
     <ThemeProvider>
       <CursorGlow />
       <ScrollToTop />
+      <Chatbot />
 
-      {/* Skip-to-content for accessibility */}
+      {/* Accessibility: skip to main content */}
       <a
         href="#hero"
         style={{
@@ -63,6 +84,7 @@ export default function App() {
         <Education />
         <Skills />
         <Projects />
+        <Contact />
       </main>
 
       <Footer />

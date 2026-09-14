@@ -1,109 +1,21 @@
-import { useState, useRef } from "react";
+// ──────────────────────────────────────────────────────────
+//  Experience.jsx
+//  HLD: Section component — Work Experience timeline
+//  LLD: Imports shared components from shared/ module boundary
+//       Re-exports SectionHeader + CompanyLogo for legacy consumers
+// ──────────────────────────────────────────────────────────
+import { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { MapPin, Calendar } from "lucide-react";
-import { experiences }    from "../data/portfolioData";
-import { useBreakpoint }  from "../hooks/useBreakpoint";
+import { experiences }     from "../data/portfolioData";
+import { useBreakpoint }   from "../hooks/useBreakpoint";
+import { SectionHeader, CompanyLogo } from "./shared";
+
+/* ── Re-export so Education/Skills/Projects don't need updating ── */
+export { SectionHeader, CompanyLogo };
 
 /* ══════════════════════════════════════════════════════════
-   SECTION HEADER  — shared export (used by Skills, Projects…)
-══════════════════════════════════════════════════════════ */
-export function SectionHeader({ title, subtitle, eyebrow }) {
-  const ref   = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
-
-  return (
-    <div ref={ref} style={{ marginBottom: "3.5rem" }}>
-      {eyebrow && (
-        <motion.p
-          className="section-eyebrow"
-          initial={{ opacity: 0, y: 12 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-        >
-          {eyebrow}
-        </motion.p>
-      )}
-
-      <motion.h2
-        className="section-title"
-        initial={{ opacity: 0, y: 20 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.55, ease: "easeOut" }}
-      >
-        {title}
-      </motion.h2>
-
-      {/* Animated gradient underline */}
-      <div style={{ position: "relative", height: "2px", background: "var(--color-border)", margin: "1.25rem 0", overflow: "hidden" }}>
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={inView ? { scaleX: 1 } : {}}
-          transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            position: "absolute", inset: 0, transformOrigin: "left",
-            background: "linear-gradient(to right, #6366f1, #a855f7, #06b6d4, transparent)",
-          }}
-        />
-      </div>
-
-      {subtitle && (
-        <motion.p
-          className="section-subtitle"
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.35 }}
-          style={{ marginBottom: 0 }}
-        >
-          {subtitle}
-        </motion.p>
-      )}
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════
-   COMPANY LOGO  — exported for Education
-══════════════════════════════════════════════════════════ */
-export function CompanyLogo({ url, company, color }) {
-  const [failed, setFailed] = useState(false);
-  const base   = import.meta.env.BASE_URL;
-  const src    = url ? (url.startsWith("http") ? url : `${base}${url}`) : null;
-  const isPng  = src && src.endsWith(".png");
-  const isDarkBg = src && src.includes("uf.png") && !src.includes("uf_seal");
-
-  return (
-    <div style={{
-      height: "34px", minWidth: "34px", maxWidth: "108px",
-      borderRadius: "8px", flexShrink: 0,
-      background: failed || !src
-        ? `${color}18`
-        : isDarkBg ? "#0021A5"
-        : isPng    ? "#ffffff"
-        : "var(--color-bg)",
-      border: `1.5px solid ${failed || !src ? color + "30" : "var(--color-border)"}`,
-      display: "flex", alignItems: "center", justifyContent: "center",
-      overflow: "hidden",
-      padding: failed || !src ? 0 : "3px 6px",
-      boxShadow: (isPng || isDarkBg) && !failed ? "0 1px 6px rgba(0,0,0,0.14)" : "none",
-    }}>
-      {!failed && src ? (
-        <img
-          src={src}
-          alt={`${company} logo`}
-          style={{ height: "26px", width: "auto", maxWidth: "96px", objectFit: "contain", display: "block" }}
-          onError={() => setFailed(true)}
-        />
-      ) : (
-        <span style={{ fontSize: "0.62rem", fontWeight: 800, color, letterSpacing: "-0.02em", padding: "0 4px" }}>
-          {company.slice(0, 2).toUpperCase()}
-        </span>
-      )}
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════
-   EXPERIENCE  (main export)
+   EXPERIENCE  (default export)
 ══════════════════════════════════════════════════════════ */
 export default function Experience() {
   const { isMobile }  = useBreakpoint();

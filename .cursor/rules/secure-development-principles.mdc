@@ -1,0 +1,35 @@
+---
+description: "Secure development principles for this React + Vercel Serverless portfolio"
+globs: ["api/**/*.js", "src/**/*.{js,jsx}"]
+alwaysApply: true
+---
+
+# Secure Development Principles
+
+## API Routes (`api/`)
+
+1. **Validate all inputs** before using them — check types, lengths, formats.
+2. **Always cap array inputs** (e.g. chat message history ≤ 40 turns) to prevent prompt injection abuse.
+3. **Return generic error messages** to the client — never expose stack traces or internal details.
+4. **Rate limit awareness** — avoid unbounded loops or recursive API calls that could exhaust quotas.
+5. **Use CORS headers** only as needed — the current `*` is fine for a public portfolio; tighten if auth is added.
+
+## React Frontend (`src/`)
+
+1. **Never use `dangerouslySetInnerHTML`** with user-provided content.
+2. **Sanitize any content** rendered from external sources before display.
+3. **All external links** must have `rel="noopener noreferrer"` when `target="_blank"`.
+4. **Form inputs** should have `maxLength` limits to prevent oversized payloads.
+5. **No `eval()`, `new Function()`, or dynamic `import()`** with user-controlled strings.
+
+## Dependencies
+
+1. Run `npm audit` regularly and address HIGH/CRITICAL vulnerabilities.
+2. Pin major versions in `package.json` to avoid unexpected breaking changes.
+3. Prefer well-maintained packages with recent activity.
+
+## Git hygiene
+
+1. Add `.env.local` and `.env.production` to `.gitignore`.
+2. Never commit `node_modules/`, `dist/`, or build artifacts.
+3. Review diffs before pushing — watch for accidentally committed keys.

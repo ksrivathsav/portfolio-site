@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   motion, AnimatePresence,
   useMotionValue, useSpring,
@@ -7,70 +7,9 @@ import { Link } from "react-scroll";
 import { Mail, ChevronDown, Briefcase, Building2, FolderGit2, ArrowRight } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 import { personalInfo } from "../data/portfolioData";
-import { useBreakpoint } from "../hooks/useBreakpoint";
-
-/* ── Cycling typewriter ─────────────────────────────────── */
-function useTypewriter(texts, speed = 52, pauseMs = 2000) {
-  const list = Array.isArray(texts) ? texts : [texts];
-  const [displayed, setDisplayed] = useState("");
-  const [phase, setPhase]         = useState("typing");
-  const [idx, setIdx]             = useState(0);
-
-  useEffect(() => {
-    let timer;
-    const current = list[idx];
-    if (phase === "typing") {
-      if (displayed.length < current.length) {
-        timer = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), speed);
-      } else {
-        timer = setTimeout(() => setPhase("deleting"), pauseMs);
-      }
-    } else {
-      if (displayed.length > 0) {
-        timer = setTimeout(() => setDisplayed(displayed.slice(0, -1)), speed / 2);
-      } else {
-        setIdx((i) => (i + 1) % list.length);
-        setPhase("typing");
-      }
-    }
-    return () => clearTimeout(timer);
-  }, [displayed, phase, idx, list, speed, pauseMs]);
-
-  return { displayed, showCursor: true };
-}
-
-/* ── Counting number ────────────────────────────────────── */
-function useCounter(end, duration = 1800) {
-  const [count, setCount] = useState(0);
-  const ref    = useRef(null);
-  const hasRun = useRef(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasRun.current) {
-          hasRun.current = true;
-          let start = 0;
-          const steps    = 40;
-          const increment = end / steps;
-          const interval  = duration / steps;
-          const timer = setInterval(() => {
-            start += increment;
-            if (start >= end) { setCount(end); clearInterval(timer); }
-            else setCount(Math.floor(start));
-          }, interval);
-        }
-      },
-      { threshold: 0.3 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [end, duration]);
-
-  return { count, ref };
-}
+import { useBreakpoint }  from "../hooks/useBreakpoint";
+import { useTypewriter }  from "../hooks/useTypewriter";
+import { useCounter }     from "../hooks/useCounter";
 
 /* ── Glow orb (static, no JS animation — perf) ─────────── */
 function GlowOrb({ color, style }) {

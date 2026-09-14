@@ -227,9 +227,10 @@ export const skillCategories = [
 
 // ─── Nav Links ──────────────────────────────────────────
 export const navLinks = [
-  { label: "Home", to: "hero" },
+  { label: "Home",       to: "hero"       },
   { label: "Experience", to: "experience" },
-  { label: "Education", to: "education" },
-  { label: "Skills", to: "skills" },
-  { label: "Projects", to: "projects" },
+  { label: "Education",  to: "education"  },
+  { label: "Skills",     to: "skills"     },
+  { label: "Projects",   to: "projects"   },
+  { label: "Contact",    to: "contact"    },
 ];
