@@ -1,8 +1,3 @@
-// ──────────────────────────────────────────────────────────
-//  src/components/ui/ErrorBoundary.jsx
-//  LLD: Class component — last-resort error catch per section
-//  HLD: Wraps each lazy-loaded section so one failure ≠ full crash
-// ──────────────────────────────────────────────────────────
 import { Component } from "react";
 import { motion }    from "framer-motion";
 

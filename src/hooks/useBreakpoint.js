@@ -1,8 +1,3 @@
-// ──────────────────────────────────────────────────────────
-//  useBreakpoint.js
-//  LLD: Single-responsibility — tracks viewport dimensions
-//  Returns granular breakpoint flags for all device types
-// ──────────────────────────────────────────────────────────
 import { useState, useEffect } from "react";
 
 export function useBreakpoint() {
@@ -35,32 +30,25 @@ export function useBreakpoint() {
     width,
     height,
 
-    // ── Phone tiers ──────────────────────────────────────
-    isSmallPhone:  width < 375,                     // iPhone SE (old), budget Android
-    isPhone:       width < 640,                     // all phones
-    isMobile:      width < 640,                     // alias — widely used in codebase
+    isSmallPhone:  width < 375,
+    isPhone:       width < 640,
+    isMobile:      width < 640,
 
-    // ── Tablet ────────────────────────────────────────────
-    isTablet:      width >= 640 && width < 1024,    // iPad mini → iPad Pro landscape
-    isTabletSmall: width >= 640 && width < 768,     // iPad mini portrait
-    isTabletLarge: width >= 768 && width < 1024,    // iPad Air/Pro portrait
+    isTablet:      width >= 640 && width < 1024,
+    isTabletSmall: width >= 640 && width < 768,
+    isTabletLarge: width >= 768 && width < 1024,
 
-    // ── Laptop / Desktop ──────────────────────────────────
     isDesktop:     width >= 1024,
-    isLaptop:      width >= 1024 && width < 1440,   // 13" / 15" laptops
-    isLargeScreen: width >= 1440,                   // MacBook Pro 14/16", iMac
-    isXLarge:      width >= 1920,                   // Full HD monitors, iMac 27"
-    isUltrawide:   width >= 2560,                   // 4K / 5K / ultrawide
+    isLaptop:      width >= 1024 && width < 1440,
+    isLargeScreen: width >= 1440,
+    isXLarge:      width >= 1920,
+    isUltrawide:   width >= 2560,
 
-    // ── Nav breakpoint ────────────────────────────────────
-    isMobileNav:   width < 768,                     // hamburger menu threshold
+    isMobileNav:   width < 768,
+    isTouch:       width < 1024,
 
-    // ── Touch / hover ─────────────────────────────────────
-    isTouch:       width < 1024,                    // disable JS hover effects
-
-    // ── Orientation ───────────────────────────────────────
-    isLandscape:   width > height,
-    isPortrait:    width <= height,
-    isPhoneLandscape: width < 900 && width > height, // phone in landscape mode
+    isLandscape:      width > height,
+    isPortrait:       width <= height,
+    isPhoneLandscape: width < 900 && width > height,
   };
 }

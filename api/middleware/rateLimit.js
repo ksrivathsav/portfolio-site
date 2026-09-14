@@ -1,12 +1,7 @@
-// ──────────────────────────────────────────────────────────
-//  api/middleware/rateLimit.js
-//  LLD: IP-based sliding-window rate limiter
-//  Works per Vercel function instance (in-memory).
-//  For distributed rate limiting at scale → swap store with
-//  Upstash Redis: https://upstash.com/docs/redis/sdks/ts/ratelimit
-// ──────────────────────────────────────────────────────────
+// In-memory, IP-based sliding-window rate limiter.
+// Works per Vercel function instance. For distributed setups, swap with Upstash Redis.
 
-const WINDOW_MS = 60_000; // 1-minute window
+const WINDOW_MS = 60_000;
 
 /** Per-endpoint limits (requests per window per IP) */
 const LIMITS = {

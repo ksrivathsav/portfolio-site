@@ -1,9 +1,3 @@
-// ──────────────────────────────────────────────────────────
-//  Chatbot.jsx  — AI "Talk to Srivathsav" widget
-//  HLD: Frontend → /api/chat → OpenAI GPT-4o → response
-//  LLD: useChat hook handles message state & API calls.
-//       ChatWidget handles UI rendering.
-// ──────────────────────────────────────────────────────────
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User, Sparkles, RefreshCw } from "lucide-react";
@@ -18,10 +12,8 @@ const STARTERS = [
   "What's your experience with cloud?",
 ];
 
-/* ── Determine API base URL ── */
 const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 
-/* ── useChat hook — LLD: single responsibility ── */
 function useChat() {
   const [messages, setMessages] = useState([
     {
@@ -80,7 +72,6 @@ function useChat() {
   return { messages, loading, error, sendMessage, reset };
 }
 
-/* ── Main exported component ── */
 export default function Chatbot() {
   const [open,  setOpen]  = useState(false);
   const [input, setInput] = useState("");

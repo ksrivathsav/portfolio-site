@@ -1,8 +1,3 @@
-// ──────────────────────────────────────────────────────────
-//  useCounter.js
-//  LLD: Single-responsibility hook — animates a number
-//       from 0 → end when the element enters the viewport
-// ──────────────────────────────────────────────────────────
 import { useState, useEffect, useRef } from "react";
 
 /**

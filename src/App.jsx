@@ -1,36 +1,16 @@
-// ──────────────────────────────────────────────────────────
-//  App.jsx  — HLD: Application Root
-//
-//  Architecture:
-//    ToastProvider   (global notification layer)
-//    └─ ThemeProvider  (context layer)
-//       ├─ CursorGlow  (UI: mouse glow effect)
-//       ├─ ScrollToTop (UI: scroll-to-top button)
-//       ├─ Chatbot     (UI: AI floating chat widget)
-//       ├─ ToastContainer (UI: notification stack)
-//       ├─ Navbar      (layout: fixed navigation)
-//       └─ main
-//          ├─ Hero       (eager — above the fold)
-//          ├─ Experience (lazy — code split)
-//          ├─ Education  (lazy — code split)
-//          ├─ Skills     (lazy — code split)
-//          ├─ Projects   (lazy — code split)
-//          └─ Contact    (lazy — code split)
-//       └─ Footer
-// ──────────────────────────────────────────────────────────
 import { useEffect, lazy, Suspense, memo } from "react";
 import Lenis from "lenis";
 
-import { ThemeProvider }            from "./context/ThemeContext";
-import { ToastProvider }            from "./context/ToastContext";
-import { ToastContainer }           from "./components/ui/Toast";
-import { ErrorBoundary }            from "./components/ui/ErrorBoundary";
+import { ThemeProvider }  from "./context/ThemeContext";
+import { ToastProvider }  from "./context/ToastContext";
+import { ToastContainer } from "./components/ui/Toast";
+import { ErrorBoundary }  from "./components/ui/ErrorBoundary";
 
-/* ── Hero loads eagerly (above the fold, critical path) ── */
-import Hero    from "./components/Hero";
-import Navbar  from "./components/Navbar";
+// Hero loads eagerly — above the fold, on the critical path
+import Hero   from "./components/Hero";
+import Navbar from "./components/Navbar";
 
-/* ── All other sections are code-split for faster initial load ── */
+// All other sections are code-split for a faster initial load
 const Experience = lazy(() => import("./components/Experience"));
 const Education  = lazy(() => import("./components/Education"));
 const Projects   = lazy(() => import("./components/Projects"));
@@ -69,7 +49,7 @@ const SectionSkeleton = memo(() => (
 SectionSkeleton.displayName = "SectionSkeleton";
 
 function AppInner() {
-  /* ── Lenis smooth scroll ── */
+  // Lenis smooth scroll
   useEffect(() => {
     const lenis = new Lenis({
       duration:        1.3,
@@ -117,10 +97,9 @@ function AppInner() {
       <Navbar />
 
       <main id="main-content">
-        {/* Hero — eager, no ErrorBoundary needed (simple static content) */}
         <Hero />
 
-        {/* Each section is isolated in its own error boundary + suspense */}
+        {/* Each section has its own boundary so one failure can't crash the rest */}
         <ErrorBoundary>
           <Suspense fallback={<SectionSkeleton />}>
             <Experience />

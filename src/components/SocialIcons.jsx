@@ -1,8 +1,4 @@
-// ─────────────────────────────────────────────────────────
-//  SocialIcons.jsx
-//  Custom SVG icons for platforms not in lucide-react.
-// ─────────────────────────────────────────────────────────
-
+// Custom SVG icons for platforms not included in lucide-react.
 export function GithubIcon({ size = 18, ...props }) {
   return (
     <svg

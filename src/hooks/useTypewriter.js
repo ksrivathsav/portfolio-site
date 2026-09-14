@@ -1,12 +1,3 @@
-// ──────────────────────────────────────────────────────────
-//  useTypewriter.js
-//  LLD: Single-responsibility hook — cycling typewriter
-//
-//  Uses useReducer so ALL state transitions happen in a pure
-//  reducer, satisfying react-hooks/set-state-in-effect.
-//  Timing (delays) is managed by the useEffect — the reducer
-//  itself never touches time.
-// ──────────────────────────────────────────────────────────
 import { useReducer, useEffect } from "react";
 
 /**

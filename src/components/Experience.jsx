@@ -1,22 +1,13 @@
-// ──────────────────────────────────────────────────────────
-//  Experience.jsx
-//  HLD: Section component — Work Experience timeline
-//  LLD: Imports shared components from shared/ module boundary
-//       Re-exports SectionHeader + CompanyLogo for legacy consumers
-// ──────────────────────────────────────────────────────────
 import { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { MapPin, Calendar } from "lucide-react";
-import { experiences }     from "../data/portfolioData";
-import { useBreakpoint }   from "../hooks/useBreakpoint";
+import { experiences }    from "../data/portfolioData";
+import { useBreakpoint }  from "../hooks/useBreakpoint";
 import { SectionHeader, CompanyLogo } from "./shared";
 
-/* ── Re-export so Education/Skills/Projects don't need updating ── */
+// Re-export so Education/Skills/Projects can still import from here
 export { SectionHeader, CompanyLogo };
 
-/* ══════════════════════════════════════════════════════════
-   EXPERIENCE  (default export)
-══════════════════════════════════════════════════════════ */
 export default function Experience() {
   const { isMobile }  = useBreakpoint();
   const timelineRef   = useRef(null);
@@ -69,7 +60,6 @@ export default function Experience() {
   );
 }
 
-/* ── Single timeline card ─────────────────────────────── */
 function TimelineItem({ exp, dotLeft = "1rem" }) {
   const { isMobile } = useBreakpoint();
   const ref    = useRef(null);

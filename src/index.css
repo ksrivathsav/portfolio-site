@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
-/* ─── Custom dark variant ────────────────────────────────── */
+/* Dark mode overrides */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ═══════════════════════════════════════════════════════════
-   DESIGN TOKENS  — Apple-inspired palette
+   DESIGN TOKENS
 ═══════════════════════════════════════════════════════════ */
 :root {
   /* Light: Apple's clean white */

@@ -1,19 +1,11 @@
-// ──────────────────────────────────────────────────────────
-//  api/contact.js  — Vercel Serverless Function
-//  Secured: rate limiting · honeypot · input validation · sanitization
-//  Connected: optional webhook delivery to Slack/Discord/n8n
+// api/contact.js — Vercel serverless function for the contact form.
 //
-//  Required env vars:
-//    RESEND_API_KEY    — resend.com
-//    CONTACT_EMAIL     — notification recipient
-//  Optional:
-//    WEBHOOK_URL       — POST contact payload to any endpoint (Slack/Discord/Zapier/n8n)
-//    WEBHOOK_SECRET    — HMAC-SHA256 signature for webhook verification
-// ──────────────────────────────────────────────────────────
-import { Resend }           from "resend";
-import { applyRateLimit }   from "./middleware/rateLimit.js";
+// Required env vars:  RESEND_API_KEY, CONTACT_EMAIL
+// Optional:           WEBHOOK_URL (Slack/Discord/n8n), WEBHOOK_SECRET (HMAC sig)
+import { Resend }             from "resend";
+import { applyRateLimit }     from "./middleware/rateLimit.js";
 import { validateContact, sanitize } from "./middleware/validate.js";
-import { createHmac }       from "crypto";
+import { createHmac }         from "crypto";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM   = "Portfolio <onboarding@resend.dev>";

@@ -1,12 +1,7 @@
-// ──────────────────────────────────────────────────────────
-//  src/hooks/useRetry.js
-//  LLD: Async function wrapper with exponential back-off retry
-//       + AbortController support for in-flight cancellation
-//  Usage:
-//    const { run, loading, error, cancel } = useRetry(fetchFn)
-//    await run(arg1, arg2)
-//    cancel()  ← aborts the current in-flight request
-// ──────────────────────────────────────────────────────────
+// Async wrapper with exponential back-off retry and AbortController support.
+// Usage:
+//   const { run, loading, error, cancel } = useRetry(fetchFn)
+//   await run(arg1, arg2)   cancel()   ← aborts in-flight
 import { useState, useCallback, useRef } from "react";
 
 /**

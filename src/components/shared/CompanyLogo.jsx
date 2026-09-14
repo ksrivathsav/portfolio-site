@@ -1,8 +1,3 @@
-// ──────────────────────────────────────────────────────────
-//  CompanyLogo.jsx  — shared UI component
-//  LLD: Renders a company/institution logo with graceful
-//       fallback to initials when the image fails or is absent
-// ──────────────────────────────────────────────────────────
 import { useState } from "react";
 
 /**

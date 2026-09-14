@@ -1,8 +1,5 @@
-// ─────────────────────────────────────────────────────────
-//  portfolioData.js
-//  Centralised data for the portfolio — update this file
-//  to customise your personal information.
-// ─────────────────────────────────────────────────────────
+// All portfolio content — name, experience, education, projects, skills.
+// Edit this file to update your information.
 
 export const personalInfo = {
   name: "Srivathsav Kommineni",
@@ -15,7 +12,6 @@ export const personalInfo = {
   location: "United States",
 };
 
-// ─── Work Experience ────────────────────────────────────
 export const experiences = [
   {
     id: 1,
@@ -63,7 +59,6 @@ export const experiences = [
   },
 ];
 
-// ─── Education ──────────────────────────────────────────
 export const education = [
   {
     id: 1,
@@ -95,7 +90,6 @@ export const education = [
   },
 ];
 
-// ─── Projects ───────────────────────────────────────────
 export const projects = [
   {
     id: 1,
@@ -191,7 +185,6 @@ export const projects = [
 
 ];
 
-// ─── Skills ─────────────────────────────────────────────
 export const skillCategories = [
   {
     label: "Frontend",
@@ -225,7 +218,6 @@ export const skillCategories = [
   },
 ];
 
-// ─── Nav Links ──────────────────────────────────────────
 export const navLinks = [
   { label: "Home",       to: "hero"       },
   { label: "Experience", to: "experience" },

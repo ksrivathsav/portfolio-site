@@ -1,15 +1,10 @@
-// ──────────────────────────────────────────────────────────
-//  api/chat.js  — Vercel Serverless Function
-//  Secured: rate limiting · input validation · token capping
-//  Scalable: edge-compatible, max 40-turn context window
-// ──────────────────────────────────────────────────────────
 import OpenAI from "openai";
-import { applyRateLimit }  from "./middleware/rateLimit.js";
-import { validateChat, sanitize } from "./middleware/validate.js";
+import { applyRateLimit }             from "./middleware/rateLimit.js";
+import { validateChat, sanitize }     from "./middleware/validate.js";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-/* ── Srivathsav's full context ── */
+// Srivathsav's context — fed to the model as the system prompt
 const SYSTEM_PROMPT = `You are Srivathsav Kommineni, a Full Stack Software Engineer. You are chatting with visitors on your personal portfolio website. Answer as yourself — in first person, professionally, warmly, and with technical depth. Keep replies concise (2-4 short paragraphs max). If you genuinely don't know something, say so naturally.
 
 == ABOUT ME ==

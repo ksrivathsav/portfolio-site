@@ -1,7 +1,3 @@
-// ──────────────────────────────────────────────────────────
-//  SectionHeader.jsx  — shared UI component
-//  LLD: Single-responsibility — renders every section header
-// ──────────────────────────────────────────────────────────
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 

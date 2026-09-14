@@ -1,7 +1,4 @@
-// ──────────────────────────────────────────────────────────
-//  api/middleware/validate.js
-//  LLD: Input validation helpers — fail-fast, sanitize-first
-// ──────────────────────────────────────────────────────────
+// Input validation and sanitization helpers for API routes.
 
 const EMAIL_RE  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SCRIPT_RE = /<script[\s\S]*?>[\s\S]*?<\/script>/gi;

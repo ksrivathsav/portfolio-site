@@ -11,7 +11,6 @@ import { useBreakpoint }  from "../hooks/useBreakpoint";
 import { useTypewriter }  from "../hooks/useTypewriter";
 import { useCounter }     from "../hooks/useCounter";
 
-/* ── Glow orb (static, no JS animation — perf) ─────────── */
 function GlowOrb({ color, style }) {
   return (
     <div
@@ -28,7 +27,6 @@ function GlowOrb({ color, style }) {
   );
 }
 
-/* ── Avatar with spinning conic ring ────────────────────── */
 function AvatarOrb({ name, size = 220 }) {
   const px = `${size}px`;
   return (
@@ -70,7 +68,6 @@ function AvatarOrb({ name, size = 220 }) {
   );
 }
 
-/* ── Magnetic button (desktop only) ────────────────────── */
 function MagneticButton({ children, disabled, strength = 0.28 }) {
   const ref = useRef(null);
   const x   = useMotionValue(0);
@@ -95,9 +92,7 @@ function MagneticButton({ children, disabled, strength = 0.28 }) {
   );
 }
 
-/* ── Stable role list — defined OUTSIDE the component so the array
-   reference never changes between renders, preventing useTypewriter
-   from re-running unnecessarily. ─────────────────────────────── */
+// Defined outside component so the array reference stays stable across renders
 const HERO_ROLES = [
   personalInfo.title,
   "Full-Stack Developer",
@@ -105,9 +100,6 @@ const HERO_ROLES = [
   "ML / AI Engineer",
 ];
 
-/* ══════════════════════════════════════════════════════════
-   HERO
-══════════════════════════════════════════════════════════ */
 export default function Hero() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const { isMobile, isTablet, isSmallPhone, isPhoneLandscape, isLargeScreen } = useBreakpoint();
@@ -427,7 +419,7 @@ export default function Hero() {
                       color: "var(--color-text)",
                       lineHeight: 1,
                       letterSpacing: "-0.05em",
-                      fontVariantNumeric: "tabular-nums", /* ui-skills: tabular-nums */
+                      fontVariantNumeric: "tabular-nums",
                     }}>
                       {count}
                     </span>

@@ -1,14 +1,5 @@
-// ──────────────────────────────────────────────────────────
-//  src/context/ToastContext.jsx
-//  LLD: Global toast notification state
-//  HLD: Context provider → ToastContainer reads from here
-// ──────────────────────────────────────────────────────────
 /* eslint-disable react-refresh/only-export-components */
-/*
- * Context files intentionally export both a Provider component and hooks.
- * This is standard React practice and is safe to disable for context modules.
- * See: https://github.com/ArnaudBarre/eslint-plugin-react-refresh#options
- */
+// Context files export both a Provider and hooks — this is standard React practice.
 import { createContext, useContext, useCallback, useMemo, useState } from "react";
 
 const ToastContext = createContext(null);

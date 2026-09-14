@@ -1,7 +1,3 @@
-// ──────────────────────────────────────────────────────────
-//  src/components/ui/Toast.jsx
-//  LLD: Renders the live toast stack at the viewport corner
-// ──────────────────────────────────────────────────────────
 import { AnimatePresence, motion } from "framer-motion";
 import { useToastState }           from "../../context/ToastContext";
 

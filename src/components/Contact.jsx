@@ -1,9 +1,3 @@
-// ──────────────────────────────────────────────────────────
-//  Contact.jsx
-//  Section: Smart contact form — secured, reliable, with toast notifications
-//  Security: honeypot field, client-side length limits, email validation
-//  Reliability: toast-based feedback + in-form status fallback
-// ──────────────────────────────────────────────────────────
 import { useState, useRef, useCallback } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Send, CheckCircle2, AlertCircle, Mail } from "lucide-react";
@@ -24,7 +18,6 @@ export default function Contact() {
   const formRef = useRef(null);
   const inView  = useInView(formRef, { once: true, margin: "-60px" });
 
-  /* ── API base ── */
   const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 
   const handleChange = useCallback((e) => {
