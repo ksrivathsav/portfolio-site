@@ -67,6 +67,8 @@
 
 html {
   font-size: 16px;
+  /* Native smooth scroll — no JS library needed, never breaks position:fixed */
+  scroll-behavior: smooth;
   /* Prevent layout shift when scrollbar appears */
   scrollbar-gutter: stable;
 }

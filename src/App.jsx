@@ -1,5 +1,4 @@
-import { useEffect, lazy, Suspense, memo } from "react";
-import Lenis from "lenis";
+import { lazy, Suspense, memo } from "react";
 
 import { ThemeProvider }  from "./context/ThemeContext";
 import { ErrorBoundary }  from "./components/ui/ErrorBoundary";
@@ -19,63 +18,24 @@ import CursorGlow  from "./components/CursorGlow";
 import ScrollToTop from "./components/ScrollToTop";
 import Chatbot     from "./components/Chatbot";
 
-/* Lightweight skeleton shown while lazy sections hydrate */
 const SectionSkeleton = memo(() => (
-  <div
-    style={{
-      minHeight: "60vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "4rem 2rem",
-    }}
-  >
-    <div
-      style={{
-        width: "100%",
-        maxWidth: "900px",
-        height: "320px",
-        borderRadius: "20px",
-        background: "linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 50%, var(--color-surface) 75%)",
-        backgroundSize: "200% 100%",
-        animation: "shimmer 1.6s infinite",
-      }}
-    />
+  <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "4rem 2rem" }}>
+    <div style={{
+      width: "100%", maxWidth: "900px", height: "320px", borderRadius: "20px",
+      background: "linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 50%, var(--color-surface) 75%)",
+      backgroundSize: "200% 100%", animation: "shimmer 1.6s infinite",
+    }} />
   </div>
 ));
 SectionSkeleton.displayName = "SectionSkeleton";
 
 function AppInner() {
-  // Lenis smooth scroll
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration:        1.3,
-      easing:          (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation:     "vertical",
-      smoothWheel:     true,
-      wheelMultiplier: 0.9,
-    });
-
-    let rafId;
-    function raf(time) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      lenis.destroy();
-    };
-  }, []);
-
   return (
     <>
       <CursorGlow />
       <ScrollToTop />
       <Chatbot />
 
-      {/* Accessibility: skip to main content */}
       <a
         href="#hero"
         style={{
@@ -95,7 +55,6 @@ function AppInner() {
       <main id="main-content">
         <Hero />
 
-        {/* Each section has its own boundary so one failure can't crash the rest */}
         <ErrorBoundary>
           <Suspense fallback={<SectionSkeleton />}>
             <Experience />

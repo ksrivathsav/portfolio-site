@@ -31,11 +31,9 @@ export default function Navbar() {
   /* ── Shared nav pill style ── */
   const navStyle = {
     position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-    /* Height grows to clear iPhone notch / Dynamic Island */
-    height: "calc(56px + env(safe-area-inset-top, 0px))",
-    display: "flex", alignItems: "flex-end", justifyContent: "space-between",
-    /* Side padding fixed; top padding = safe area so content sits below notch */
-    paddingTop: "env(safe-area-inset-top, 0px)",
+    minHeight: "56px",
+    display: "flex", alignItems: "center", justifyContent: "space-between",
+    paddingTop: "calc(0.5rem + env(safe-area-inset-top, 0px))",
     paddingBottom: "0.5rem",
     paddingLeft: "1.5rem",
     paddingRight: "1.5rem",
