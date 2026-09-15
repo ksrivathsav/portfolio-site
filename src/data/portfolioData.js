@@ -93,7 +93,7 @@ export const education = [
 export const projects = [
   {
     id: 1,
-    title: "PDF Chat  AI ",
+    title: "PDF Chat AI",
     description: "An AI-powered RAG system over PDFs and structured documents, chunking and embedding content with LangChain, storing vectors in QdrantDB, and enabling contextual retrieval to improve answer accuracy.",
     tech: ["React", "TypeScript", "Vite", "OpenAI API", "QdrantDB", "LangChain", "Tailwind CSS", "pdfjs-dist"],
     github: "https://github.com/ksrivathsav/Pdf-Chat-Ai",
@@ -138,7 +138,7 @@ export const projects = [
   },
   {
     id: 6,
-    title: "Software Quality Prediction Dashboard ",
+    title: "Software Quality Prediction Dashboard",
     description: "Built ML classification system with interactive Flask visualization dashboard translating complex model outputs into clear, actionable insights for non-technical stakeholders.",
     tech: ["Python", "XGBoost", "Scikit-learn", "Flask", "Seaborn"],
     github: "https://github.com/ksrivathsav/",

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   motion, AnimatePresence,
   useMotionValue, useSpring,
@@ -315,7 +315,7 @@ export default function Hero() {
             </Link>
 
             {/* Contact dropdown */}
-              <div ref={contactDropRef} style={{ position: "relative", width: isMobile ? "100%" : "auto" }}>
+            <div ref={contactDropRef} style={{ position: "relative", width: isMobile ? "100%" : "auto" }}>
               <MagneticButton disabled={isMobile}>
                 <motion.button
                   className="btn btn-secondary"
@@ -361,6 +361,7 @@ export default function Hero() {
                         href={href}
                         target={ext ? "_blank" : undefined}
                         rel={ext ? "noopener noreferrer" : undefined}
+                        onClick={() => setIsContactOpen(false)}
                         style={{
                           display: "flex", alignItems: "center", gap: "0.5rem",
                           padding: "0.5rem 0.875rem", borderRadius: "0.5rem",

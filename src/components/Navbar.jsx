@@ -8,7 +8,7 @@ import { useBreakpoint }   from "../hooks/useBreakpoint";
 
 export default function Navbar() {
   const { isDark, toggleTheme }  = useTheme();
-  const { isMobileNav, isTouch } = useBreakpoint();
+  const { isTouch } = useBreakpoint();
   const [scrolled, setScrolled]  = useState(false);
   const [menuOpen, setMenuOpen]  = useState(false);
 
