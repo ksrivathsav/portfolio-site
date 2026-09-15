@@ -32,6 +32,9 @@ SectionSkeleton.displayName = "SectionSkeleton";
 function AppInner() {
   return (
     <>
+      {/* Film-grain noise texture — adds depth without JS */}
+      <div className="grain-overlay" aria-hidden="true" />
+
       <CursorGlow />
       <ScrollToTop />
       <Chatbot />

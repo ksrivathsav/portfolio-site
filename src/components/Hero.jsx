@@ -9,43 +9,69 @@ import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 import { personalInfo } from "../data/portfolioData";
 import { useBreakpoint }  from "../hooks/useBreakpoint";
 import { useTypewriter }  from "../hooks/useTypewriter";
+import { useScramble }    from "../hooks/useScramble";
 import { useCounter }     from "../hooks/useCounter";
 
-function GlowOrb({ color, style }) {
+/* ── Aurora animated background ─────────────────────────── */
+function AuroraBackground() {
+  const orbs = [
+    {
+      color: "rgba(99,102,241,0.22)",
+      style: { top: "5%", left: "55%", width: "620px", height: "620px" },
+      animation: "aurora-1 20s ease-in-out infinite",
+    },
+    {
+      color: "rgba(168,85,247,0.18)",
+      style: { top: "55%", left: "-8%", width: "520px", height: "520px" },
+      animation: "aurora-2 25s ease-in-out infinite",
+    },
+    {
+      color: "rgba(6,182,212,0.13)",
+      style: { top: "-15%", left: "18%", width: "420px", height: "420px" },
+      animation: "aurora-3 18s ease-in-out infinite",
+    },
+    {
+      color: "rgba(236,72,153,0.10)",
+      style: { top: "40%", left: "42%", width: "340px", height: "340px" },
+      animation: "aurora-4 28s ease-in-out infinite",
+    },
+  ];
+
   return (
-    <div
-      style={{
-        position: "absolute",
-        borderRadius: "50%",
-        background: `radial-gradient(circle, ${color}, transparent 70%)`,
-        filter: "blur(72px)",
-        pointerEvents: "none",
-        zIndex: 0,
-        ...style,
-      }}
-    />
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 0, pointerEvents: "none" }}>
+      {orbs.map((orb, i) => (
+        <div
+          key={i}
+          className="aurora-orb"
+          style={{
+            background: `radial-gradient(circle, ${orb.color}, transparent 70%)`,
+            animation: orb.animation,
+            ...orb.style,
+          }}
+        />
+      ))}
+    </div>
   );
 }
 
+/* ── Avatar with spinning rainbow ring ───────────────────── */
 function AvatarOrb({ name, size = 220 }) {
   const px = `${size}px`;
   return (
     <motion.div
-      animate={{ y: [0, -12, 0] }}
-      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+      animate={{ y: [0, -14, 0] }}
+      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       style={{ position: "relative", width: px, height: px, flexShrink: 0 }}
     >
-      {/* Outer pulse glow */}
       <motion.div
-        animate={{ scale: [1, 1.14, 1], opacity: [0.35, 0.08, 0.35] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+        animate={{ scale: [1, 1.18, 1], opacity: [0.3, 0.07, 0.3] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         style={{
-          position: "absolute", inset: "-18px", borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(99,102,241,0.35), transparent 70%)",
+          position: "absolute", inset: "-22px", borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(99,102,241,0.4), transparent 70%)",
           zIndex: 0,
         }}
       />
-      {/* Spinning conic ring */}
       <div
         className="avatar-ring"
         style={{
@@ -54,9 +80,7 @@ function AvatarOrb({ name, size = 220 }) {
           zIndex: 1,
         }}
       />
-      {/* Gap ring */}
       <div style={{ position: "absolute", inset: "4px", borderRadius: "50%", background: "var(--color-bg)", zIndex: 2 }} />
-      {/* Photo */}
       <div style={{ position: "absolute", inset: "9px", borderRadius: "50%", overflow: "hidden", zIndex: 3 }}>
         <img
           src={`${import.meta.env.BASE_URL}avatar.jpg`}
@@ -68,6 +92,7 @@ function AvatarOrb({ name, size = 220 }) {
   );
 }
 
+/* ── Magnetic wrapper (desktop only) ─────────────────────── */
 function MagneticButton({ children, disabled, strength = 0.28 }) {
   const ref = useRef(null);
   const x   = useMotionValue(0);
@@ -92,7 +117,6 @@ function MagneticButton({ children, disabled, strength = 0.28 }) {
   );
 }
 
-// Defined outside component so the array reference stays stable across renders
 const HERO_ROLES = [
   personalInfo.title,
   "Full-Stack Developer",
@@ -103,24 +127,25 @@ const HERO_ROLES = [
 export default function Hero() {
   const { isMobile, isTablet, isSmallPhone, isPhoneLandscape, isLargeScreen } = useBreakpoint();
 
+  const scrambledName = useScramble(personalInfo.name, { delay: 0.15, speed: 42 });
   const { displayed: typedTitle, showCursor } = useTypewriter(HERO_ROLES);
 
   const years     = useCounter(3);
   const companies = useCounter(3);
   const projects  = useCounter(10);
 
-  const avatarSize = isSmallPhone ? 130 : isMobile ? 160 : isTablet ? 190 : 240;
+  const avatarSize = isSmallPhone ? 130 : isMobile ? 160 : isTablet ? 200 : 248;
+
+  const statItems = [
+    { ref: years.ref,     count: years.count,     suffix: "+", label: "Years Exp",  Icon: Briefcase  },
+    { ref: companies.ref, count: companies.count, suffix: "",  label: "Companies",  Icon: Building2  },
+    { ref: projects.ref,  count: projects.count,  suffix: "+", label: "Projects",   Icon: FolderGit2 },
+  ];
 
   return (
     <section
       id="hero"
       style={{
-        /*
-         * 100dvh — Dynamic Viewport Height
-         * On iOS Safari, 100vh includes the browser chrome (address bar),
-         * causing content to be hidden. 100dvh adjusts dynamically.
-         * Falls back to 100vh for browsers that don't support dvh.
-         */
         minHeight: isPhoneLandscape ? "auto" : "min(100dvh, 100vh)",
         display: "flex",
         flexDirection: "column",
@@ -136,10 +161,7 @@ export default function Hero() {
           : "0 3rem",
       }}
     >
-      {/* ── Background glows ── */}
-      <GlowOrb color="rgba(99,102,241,0.15)"  style={{ top: "10%",  right: "0%",   width: "700px", height: "700px" }} />
-      <GlowOrb color="rgba(168,85,247,0.10)"  style={{ bottom: "5%", left: "-5%",  width: "550px", height: "550px" }} />
-      <GlowOrb color="rgba(6,182,212,0.07)"   style={{ top: "50%",  left: "38%",   width: "320px", height: "320px" }} />
+      <AuroraBackground />
 
       {/* ── Main row ── */}
       <div
@@ -150,15 +172,15 @@ export default function Hero() {
           display: "flex",
           flexDirection: isMobile ? "column" : "row",
           alignItems: "center",
-          gap: isMobile ? "2.5rem" : isTablet ? "3rem" : "7rem",
+          gap: isMobile ? "2.5rem" : isTablet ? "3rem" : "6rem",
           zIndex: 1,
           position: "relative",
         }}
       >
-        {/* ── Avatar: top on mobile, right on desktop ── */}
+        {/* ── Avatar: top on mobile ── */}
         {isMobile && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
@@ -166,7 +188,7 @@ export default function Hero() {
           </motion.div>
         )}
 
-        {/* ── Left / text column ── */}
+        {/* ── Text column ── */}
         <div
           style={{
             flex: "1 1 55%",
@@ -180,7 +202,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.6 }}
+            transition={{ delay: 0.05, duration: 0.6 }}
             style={{ marginBottom: "1.5rem" }}
           >
             <motion.span
@@ -188,11 +210,12 @@ export default function Hero() {
               style={{
                 display: "inline-flex", alignItems: "center", gap: "0.5rem",
                 padding: "0.35rem 1.1rem", borderRadius: "9999px",
-                fontSize: "0.8rem", fontWeight: 500,
+                fontSize: "0.78rem", fontWeight: 500,
                 background: "var(--color-surface)",
                 border: "1px solid var(--color-border)",
                 color: "var(--color-text)",
-                backdropFilter: "blur(10px)",
+                backdropFilter: "blur(12px)",
+                letterSpacing: "0.04em",
               }}
             >
               <span
@@ -203,12 +226,12 @@ export default function Hero() {
             </motion.span>
           </motion.div>
 
-          {/* Name */}
+          {/* Scramble name */}
           <motion.h1
             className="gradient-name"
-            initial={{ opacity: 0, y: 28 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ delay: 0.12, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             style={{
               fontSize: isSmallPhone
                 ? "clamp(2rem, 10vw, 2.8rem)"
@@ -224,30 +247,30 @@ export default function Hero() {
               letterSpacing: "-0.04em",
               marginBottom: "1rem",
               display: "block",
+              fontVariantNumeric: "tabular-nums",
             }}
           >
-            {personalInfo.name}
+            {scrambledName}
           </motion.h1>
 
           {/* Typewriter role */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.38, duration: 0.6 }}
+            transition={{ delay: 0.32, duration: 0.6 }}
             style={{
               marginBottom: "1.5rem",
               minHeight: isMobile ? "1.8rem" : "2.2rem",
-              display: "flex",
-              alignItems: "center",
+              display: "flex", alignItems: "center",
               justifyContent: isMobile ? "center" : "flex-start",
             }}
           >
             <h2
               style={{
-                fontSize: isMobile ? "1.05rem" : isTablet ? "1.25rem" : "1.5rem",
+                fontSize: isMobile ? "1.05rem" : isTablet ? "1.25rem" : "1.45rem",
                 fontWeight: 400,
                 color: "var(--color-muted)",
-                letterSpacing: "-0.02em",
+                letterSpacing: "-0.01em",
               }}
             >
               {typedTitle}
@@ -259,23 +282,23 @@ export default function Hero() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
+            transition={{ delay: 0.46, duration: 0.6 }}
             style={{
               fontSize: isMobile ? "0.95rem" : "1.05rem",
               color: "var(--color-muted)",
               maxWidth: isMobile ? "100%" : "480px",
-              lineHeight: 1.75,
+              lineHeight: 1.78,
               marginBottom: "2rem",
             }}
           >
             {personalInfo.bio}
           </motion.p>
 
-          {/* CTAs */}
+          {/* CTA */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
+            transition={{ delay: 0.56, duration: 0.6 }}
             style={{
               display: "flex",
               gap: "0.75rem",
@@ -289,7 +312,7 @@ export default function Hero() {
               <MagneticButton disabled={isMobile}>
                 <motion.button
                   className="btn btn-primary"
-                  whileHover={{ scale: 1.04, boxShadow: "0 10px 32px -6px rgba(99,102,241,0.45)" }}
+                  whileHover={{ scale: 1.04, boxShadow: "0 10px 36px -6px rgba(99,102,241,0.5)" }}
                   whileTap={{ scale: 0.97 }}
                   style={isMobile ? { width: "100%", justifyContent: "center" } : {}}
                 >
@@ -297,24 +320,35 @@ export default function Hero() {
                 </motion.button>
               </MagneticButton>
             </Link>
+            <MagneticButton disabled={isMobile}>
+              <motion.a
+                href={personalInfo.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary"
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                style={isMobile ? { width: "100%", justifyContent: "center", display: "inline-flex" } : {}}
+              >
+                <GithubIcon size={15} /> GitHub
+              </motion.a>
+            </MagneticButton>
           </motion.div>
 
-          {/* Social links + stats */}
+          {/* Social icons */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.72, duration: 0.6 }}
+            transition={{ delay: 0.68, duration: 0.6 }}
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "1.5rem",
+              gap: "1.75rem",
               alignItems: isMobile ? "center" : "flex-start",
             }}
           >
-            {/* Socials */}
-            <div style={{ display: "flex", gap: "1.25rem" }}>
+            <div style={{ display: "flex", gap: "1.1rem" }}>
               {[
-                { href: personalInfo.github,            Icon: GithubIcon,   label: "GitHub" },
                 { href: personalInfo.linkedin,          Icon: LinkedinIcon, label: "LinkedIn" },
                 { href: `mailto:${personalInfo.email}`, Icon: Mail,         label: "Email" },
               ].map(({ href, Icon, label }) => (
@@ -324,7 +358,7 @@ export default function Hero() {
                   target={label !== "Email" ? "_blank" : undefined}
                   rel="noopener noreferrer"
                   aria-label={label}
-                  whileHover={{ scale: 1.2, y: -3 }}
+                  whileHover={{ scale: 1.22, y: -3 }}
                   whileTap={{ scale: 0.95 }}
                   style={{ color: "var(--color-muted)", display: "flex", alignItems: "center", transition: "color 0.2s" }}
                   onMouseEnter={(e) => { e.currentTarget.style.color = "var(--color-text)"; }}
@@ -335,21 +369,18 @@ export default function Hero() {
               ))}
             </div>
 
-            {/* Stats */}
-            <div style={{ display: "flex", gap: isSmallPhone ? "1.25rem" : isMobile ? "1.75rem" : "2.75rem", flexWrap: "wrap" }}>
-              {[
-                { ref: years.ref,     count: years.count,     suffix: "+", label: "Years Exp",  Icon: Briefcase },
-                { ref: companies.ref, count: companies.count, suffix: "",  label: "Companies",  Icon: Building2 },
-                { ref: projects.ref,  count: projects.count,  suffix: "+", label: "Projects",   Icon: FolderGit2 },
-              ].map(({ ref, count, suffix, label, Icon }) => (
-                <div
-                  key={label}
-                  ref={ref}
-                  style={{ display: "flex", flexDirection: "column", alignItems: isMobile ? "center" : "flex-start", gap: "0.15rem" }}
-                >
-                  <div style={{ display: "flex", alignItems: "baseline", gap: "0.1rem" }}>
+            {/* Stat strip */}
+            <motion.div
+              className="stat-strip"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.82, duration: 0.55 }}
+            >
+              {statItems.map(({ ref, count, suffix, label }) => (
+                <div key={label} className="stat-strip-item" ref={ref}>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: "0.06rem" }}>
                     <span style={{
-                      fontSize: isMobile ? "1.7rem" : "2.1rem",
+                      fontSize: isMobile ? "1.55rem" : "1.9rem",
                       fontWeight: 800,
                       color: "var(--color-text)",
                       lineHeight: 1,
@@ -358,31 +389,32 @@ export default function Hero() {
                     }}>
                       {count}
                     </span>
-                    <span style={{ fontSize: isMobile ? "1.1rem" : "1.3rem", fontWeight: 800, color: "var(--color-text)", letterSpacing: "-0.04em" }}>
+                    <span style={{ fontSize: isMobile ? "1rem" : "1.2rem", fontWeight: 800, color: "var(--color-text)", letterSpacing: "-0.04em" }}>
                       {suffix}
                     </span>
                   </div>
                   <div style={{
-                    fontSize: "0.68rem",
+                    fontSize: "0.65rem",
                     color: "var(--color-muted)",
-                    fontWeight: 500,
+                    fontWeight: 600,
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
+                    whiteSpace: "nowrap",
                   }}>
                     {label}
                   </div>
                 </div>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         </div>
 
-        {/* ── Right / avatar column (tablet + desktop) ── */}
+        {/* ── Avatar: right on tablet/desktop ── */}
         {!isMobile && (
           <motion.div
-            initial={{ opacity: 0, x: 40, scale: 0.9 }}
+            initial={{ opacity: 0, x: 40, scale: 0.88 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ delay: 0.25, duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ delay: 0.2, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             style={{ flex: "0 0 auto" }}
           >
             <AvatarOrb name={personalInfo.name} size={avatarSize} />
