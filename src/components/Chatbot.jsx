@@ -365,12 +365,12 @@ export default function Chatbot() {
         )}
       </AnimatePresence>
 
-      {/* ── Floating toggle button ── */}
+      {/* Floating toggle button — always fixed bottom-right */}
       <motion.button
         onClick={() => setOpen((o) => !o)}
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 1.2, type: "spring", stiffness: 320, damping: 20 }}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.93 }}
         aria-label={open ? "Close AI chat" : "Open AI chat"}
@@ -378,7 +378,7 @@ export default function Chatbot() {
           position: "fixed",
           bottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))",
           right:  "1.5rem",
-          zIndex: 1050,
+          zIndex: 1200,
           width:  "56px",
           height: "56px",
           borderRadius: "50%",
@@ -410,7 +410,7 @@ export default function Chatbot() {
             position: "fixed",
             bottom: "calc(2.9rem + env(safe-area-inset-bottom, 0px))",
             right: "1.35rem",
-            zIndex: 1051,
+            zIndex: 1201,
             width: "10px", height: "10px", borderRadius: "50%",
             background: "#10b981",
             border: "2px solid var(--color-bg)",

@@ -8,16 +8,15 @@ import { useBreakpoint }   from "../hooks/useBreakpoint";
 
 export default function Navbar() {
   const { isDark, toggleTheme }  = useTheme();
-  const { isMobileNav }          = useBreakpoint();
+  const { isMobileNav, isTouch } = useBreakpoint();
   const [scrolled, setScrolled]  = useState(false);
   const [menuOpen, setMenuOpen]  = useState(false);
 
-  /*
-   * Derive whether the menu should actually be visible.
-   * This avoids a useEffect-based setState call (which triggers cascading renders)
-   * by computing a derived boolean instead.
-   */
-  const isMenuVisible = menuOpen && isMobileNav;
+  // Show hamburger on anything narrower than 1024px so 7 links don't crowd
+  const useHamburger = isTouch;   // isTouch = width < 1024
+
+  // Derive visibility — avoids setState inside a useEffect
+  const isMenuVisible = menuOpen && useHamburger;
 
   /* Reading progress */
   const { scrollYProgress } = useScroll();
@@ -85,8 +84,8 @@ export default function Navbar() {
           </motion.div>
         </Link>
 
-        {/* Desktop centre links */}
-        {!isMobileNav && (
+        {/* Desktop centre links — only on 1024px+ */}
+        {!useHamburger && (
           <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
             {navLinks.map((link) => (
               <Link
@@ -142,7 +141,7 @@ export default function Navbar() {
             {isDark ? <Sun size={16} /> : <Moon size={16} />}
           </motion.button>
 
-          {isMobileNav && (
+          {useHamburger && (
             <motion.button
               onClick={() => setMenuOpen((o) => !o)}
               whileTap={{ scale: 0.9 }}
@@ -161,49 +160,68 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer + tap-outside backdrop */}
       <AnimatePresence>
         {isMenuVisible && (
-          <motion.div
-            key="mobile-menu"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            style={{
-              position: "fixed",
-              top: "calc(56px + env(safe-area-inset-top, 0px))",
-              left: 0, right: 0, zIndex: 999,
-              background: "var(--nav-bg)",
-              backdropFilter: "blur(24px) saturate(180%)",
-              WebkitBackdropFilter: "blur(24px) saturate(180%)",
-              borderBottom: "1px solid var(--color-border)",
-              padding: "0.75rem 1rem",
-              paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom, 0px))",
-              display: "flex", flexDirection: "column", gap: "0.25rem",
-              boxShadow: "0 12px 32px -8px rgba(0,0,0,0.15)",
-            }}
-          >
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                smooth
-                duration={600}
-                offset={-56}
-                onClick={() => setMenuOpen(false)}
-                style={{
-                  padding: "0.75rem 1rem", borderRadius: "0.625rem",
-                  fontSize: "1rem", fontWeight: 500, cursor: "pointer",
-                  color: "var(--color-text)", transition: "background 0.2s ease",
-                }}
-                onMouseEnter={(e) => { e.target.style.background = "var(--color-accent)"; }}
-                onMouseLeave={(e) => { e.target.style.background = "transparent"; }}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </motion.div>
+          <>
+            {/* Invisible backdrop — tap anywhere outside to close */}
+            <motion.div
+              key="mobile-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                position: "fixed",
+                inset: 0,
+                zIndex: 997,
+                background: "rgba(0,0,0,0.25)",
+                backdropFilter: "blur(2px)",
+              }}
+            />
+
+            <motion.div
+              key="mobile-menu"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                position: "fixed",
+                top: "calc(56px + env(safe-area-inset-top, 0px))",
+                left: 0, right: 0, zIndex: 998,
+                background: "var(--nav-bg)",
+                backdropFilter: "blur(24px) saturate(180%)",
+                WebkitBackdropFilter: "blur(24px) saturate(180%)",
+                borderBottom: "1px solid var(--color-border)",
+                padding: "0.75rem 1rem",
+                paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom, 0px))",
+                display: "flex", flexDirection: "column", gap: "0.25rem",
+                boxShadow: "0 12px 32px -8px rgba(0,0,0,0.15)",
+              }}
+            >
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  smooth
+                  duration={600}
+                  offset={-56}
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    padding: "0.75rem 1rem", borderRadius: "0.625rem",
+                    fontSize: "1rem", fontWeight: 500, cursor: "pointer",
+                    color: "var(--color-text)", transition: "background 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => { e.target.style.background = "var(--color-accent)"; }}
+                  onMouseLeave={(e) => { e.target.style.background = "transparent"; }}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
