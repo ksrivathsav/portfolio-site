@@ -4,7 +4,7 @@ import {
   useMotionValue, useSpring,
 } from "framer-motion";
 import { Link } from "react-scroll";
-import { Mail, ChevronDown, Briefcase, Building2, FolderGit2, ArrowRight, FileText } from "lucide-react";
+import { Mail, ChevronDown, Briefcase, Building2, FolderGit2, ArrowRight } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 import { personalInfo } from "../data/portfolioData";
 import { useBreakpoint }  from "../hooks/useBreakpoint";
@@ -374,30 +374,6 @@ export default function Hero() {
                         <Icon size={15} /> {label}
                       </a>
                     ))}
-
-                    {/* Divider */}
-                    <div style={{ height: "1px", background: "var(--color-border)", margin: "0.25rem 0.5rem" }} />
-
-                    {/* Contact Form — scrolls to the form section */}
-                    <Link
-                      to="contact"
-                      smooth
-                      duration={600}
-                      offset={-60}
-                      onClick={() => setIsContactOpen(false)}
-                      style={{
-                        display: "flex", alignItems: "center", gap: "0.5rem",
-                        padding: "0.5rem 0.875rem", borderRadius: "0.5rem",
-                        color: "#6366f1", textDecoration: "none",
-                        fontSize: "0.875rem", fontWeight: 600,
-                        transition: "background 0.15s",
-                        cursor: "pointer",
-                      }}
-                      onMouseEnter={(e) => { e.currentTarget.style.background = "var(--color-accent)"; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                    >
-                      <FileText size={15} /> Contact Form
-                    </Link>
                   </motion.div>
                 )}
               </AnimatePresence>

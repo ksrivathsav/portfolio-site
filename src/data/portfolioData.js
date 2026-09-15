@@ -224,5 +224,4 @@ export const navLinks = [
   { label: "Education",  to: "education"  },
   { label: "Skills",     to: "skills"     },
   { label: "Projects",   to: "projects"   },
-  { label: "Contact",    to: "contact"    },
 ];

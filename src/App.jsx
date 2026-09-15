@@ -2,8 +2,6 @@ import { useEffect, lazy, Suspense, memo } from "react";
 import Lenis from "lenis";
 
 import { ThemeProvider }  from "./context/ThemeContext";
-import { ToastProvider }  from "./context/ToastContext";
-import { ToastContainer } from "./components/ui/Toast";
 import { ErrorBoundary }  from "./components/ui/ErrorBoundary";
 
 // Hero loads eagerly — above the fold, on the critical path
@@ -15,7 +13,6 @@ const Experience = lazy(() => import("./components/Experience"));
 const Education  = lazy(() => import("./components/Education"));
 const Projects   = lazy(() => import("./components/Projects"));
 const Skills     = lazy(() => import("./components/Skills"));
-const Contact    = lazy(() => import("./components/Contact"));
 const Footer     = lazy(() => import("./components/Footer"));
 
 import CursorGlow  from "./components/CursorGlow";
@@ -77,7 +74,6 @@ function AppInner() {
       <CursorGlow />
       <ScrollToTop />
       <Chatbot />
-      <ToastContainer />
 
       {/* Accessibility: skip to main content */}
       <a
@@ -123,12 +119,6 @@ function AppInner() {
             <Projects />
           </Suspense>
         </ErrorBoundary>
-
-        <ErrorBoundary>
-          <Suspense fallback={<SectionSkeleton />}>
-            <Contact />
-          </Suspense>
-        </ErrorBoundary>
       </main>
 
       <ErrorBoundary>
@@ -142,10 +132,8 @@ function AppInner() {
 
 export default function App() {
   return (
-    <ToastProvider>
-      <ThemeProvider>
-        <AppInner />
-      </ThemeProvider>
-    </ToastProvider>
+    <ThemeProvider>
+      <AppInner />
+    </ThemeProvider>
   );
 }
