@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import {
-  motion, AnimatePresence,
+  motion,
   useMotionValue, useSpring,
 } from "framer-motion";
 import { Link } from "react-scroll";
@@ -101,22 +101,6 @@ const HERO_ROLES = [
 ];
 
 export default function Hero() {
-  const [isContactOpen, setIsContactOpen] = useState(false);
-  const contactDropRef = useRef(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    if (!isContactOpen) return;
-    const handler = (e) => {
-      if (!contactDropRef.current?.contains(e.target)) setIsContactOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    document.addEventListener("touchstart", handler);
-    return () => {
-      document.removeEventListener("mousedown", handler);
-      document.removeEventListener("touchstart", handler);
-    };
-  }, [isContactOpen]);
   const { isMobile, isTablet, isSmallPhone, isPhoneLandscape, isLargeScreen } = useBreakpoint();
 
   const { displayed: typedTitle, showCursor } = useTypewriter(HERO_ROLES);
@@ -313,72 +297,6 @@ export default function Hero() {
                 </motion.button>
               </MagneticButton>
             </Link>
-
-            {/* Contact dropdown */}
-            <div ref={contactDropRef} style={{ position: "relative", width: isMobile ? "100%" : "auto" }}>
-              <MagneticButton disabled={isMobile}>
-                <motion.button
-                  className="btn btn-secondary"
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => setIsContactOpen((o) => !o)}
-                  style={isMobile ? { width: "100%", justifyContent: "center" } : {}}
-                >
-                  Contact Me
-                </motion.button>
-              </MagneticButton>
-
-              <AnimatePresence>
-                {isContactOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                    transition={{ duration: 0.18 }}
-                    style={{
-                      position: "absolute",
-                      top: "calc(100% + 0.5rem)",
-                      left: isMobile ? 0 : "50%",
-                      transform: isMobile ? "none" : "translateX(-50%)",
-                      background: "var(--color-surface)",
-                      border: "1px solid var(--color-border)",
-                      borderRadius: "0.75rem",
-                      padding: "0.5rem",
-                      display: "flex", flexDirection: "column", gap: "0.25rem",
-                      minWidth: "160px",
-                      boxShadow: "0 16px 40px -8px rgba(0,0,0,0.2)",
-                      zIndex: 50,
-                      backdropFilter: "blur(20px)",
-                    }}
-                  >
-                    {/* Email + LinkedIn — direct contact links */}
-                    {[
-                      { href: `mailto:${personalInfo.email}`, Icon: Mail, label: "Email" },
-                      { href: personalInfo.linkedin, Icon: LinkedinIcon, label: "LinkedIn", ext: true },
-                    ].map(({ href, Icon, label, ext }) => (
-                      <a
-                        key={label}
-                        href={href}
-                        target={ext ? "_blank" : undefined}
-                        rel={ext ? "noopener noreferrer" : undefined}
-                        onClick={() => setIsContactOpen(false)}
-                        style={{
-                          display: "flex", alignItems: "center", gap: "0.5rem",
-                          padding: "0.5rem 0.875rem", borderRadius: "0.5rem",
-                          color: "var(--color-text)", textDecoration: "none",
-                          fontSize: "0.875rem", fontWeight: 500,
-                          transition: "background 0.15s",
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--color-accent)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                      >
-                        <Icon size={15} /> {label}
-                      </a>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
           </motion.div>
 
           {/* Social links + stats */}
