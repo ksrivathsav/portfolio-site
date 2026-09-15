@@ -2,7 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      viewport-fit=cover: lets content extend into iPhone notch / home-bar area
+      so we can then use env(safe-area-inset-*) to pad only what's needed.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- SEO Meta Tags -->
     <title>Srivathsav Kommineni | Full Stack Developer</title>
@@ -15,15 +19,24 @@
     <meta property="og:description" content="Personal portfolio of Srivathsav Kommineni — Full Stack Developer." />
     <meta property="og:type" content="website" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- Mobile browser chrome color -->
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)" />
 
-    <!-- Google Fonts: Inter -->
+    <!-- Apple PWA / full-screen meta -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/portfolio-site/favicon.svg" />
+
+    <!-- Google Fonts: Inter (preconnect to reduce TTFB) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/portfolio-site/assets/index-DCTpv9b-.js"></script>
-    <link rel="stylesheet" crossorigin href="/portfolio-site/assets/index-AwOdLucS.css">
+    <script type="module" crossorigin src="/portfolio-site/assets/index-Bbx6vgPS.js"></script>
+    <link rel="modulepreload" crossorigin href="/portfolio-site/assets/portfolioData-ifFkFkCm.js">
+    <link rel="stylesheet" crossorigin href="/portfolio-site/assets/index-nIpwGiuU.css">
   </head>
   <body>
     <div id="root"></div>
