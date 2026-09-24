@@ -65,12 +65,11 @@ function SkillCard({ category, index, span }) {
       animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
       transition={{ duration: 0.55, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
       style={{
-        gridColumn: `span ${span}`,
         ...(isTouch ? {} : { rotateX, rotateY, perspective: 900, transformStyle: "preserve-3d" }),
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="card card-spotlight skill-card-hover"
+      className={`card card-spotlight skill-card-hover bento-${span}`}
     >
       {/* Accent strip at top */}
       <div style={{

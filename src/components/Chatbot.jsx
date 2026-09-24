@@ -50,10 +50,23 @@ function useChat() {
 
       setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
     } catch (err) {
-      setError(err.message);
+      // Hide raw browser/network errors (JSON parse failures, DOMExceptions, etc.)
+      const isRawBrowserErr =
+        !err.message ||
+        err.message.toLowerCase().includes("json") ||
+        err.message.toLowerCase().includes("pattern") ||
+        err.message.toLowerCase().includes("failed to fetch") ||
+        err.message.toLowerCase().includes("networkerror") ||
+        err.message.toLowerCase().includes("load failed");
+
+      const display = isRawBrowserErr
+        ? "The chat service is temporarily unavailable."
+        : err.message;
+
+      setError(display);
       setMessages((prev) => [...prev, {
         role:    "assistant",
-        content: `Sorry, I ran into an issue: ${err.message}. Please try again or email me directly at srivathsavkommineni@gmail.com.`,
+        content: `I'm having trouble connecting right now. You can email me directly at srivathsavkommineni@gmail.com or try again later.`,
       }]);
     } finally {
       setLoading(false);
