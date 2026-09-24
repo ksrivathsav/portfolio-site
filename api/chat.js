@@ -1,8 +1,5 @@
-import Groq from "groq-sdk";
 import { applyRateLimit }             from "./middleware/rateLimit.js";
 import { validateChat, sanitize }     from "./middleware/validate.js";
-
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 // Srivathsav's context — fed to the model as the system prompt
 const SYSTEM_PROMPT = `You are Srivathsav Kommineni, a Full Stack Software Engineer. You are chatting with visitors on your personal portfolio website. Answer as yourself — in first person, professionally, warmly, and with technical depth. Keep replies concise (2-4 short paragraphs max). If you genuinely don't know something, say so naturally.
@@ -61,32 +58,38 @@ export default async function handler(req, res) {
     .map((m) => ({ role: m.role, content: sanitize(m.content) }))
     .filter((m) => m.role === "user" || m.role === "assistant"); // strip injected system msgs
 
-  /* ── Groq (Llama 3.1 — free tier) ── */
+  /* ── Groq REST API (Llama 3.1 — free tier) ── */
   try {
-    const completion = await groq.chat.completions.create({
-      model:       "llama-3.1-8b-instant",
-      messages:    [{ role: "system", content: SYSTEM_PROMPT }, ...sanitized],
-      max_tokens:  450,
-      temperature: 0.72,
+    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model:       "llama-3.1-8b-instant",
+        messages:    [{ role: "system", content: SYSTEM_PROMPT }, ...sanitized],
+        max_tokens:  450,
+        temperature: 0.72,
+      }),
     });
 
-    const reply = completion.choices[0]?.message?.content
+    if (!groqRes.ok) {
+      const errBody = await groqRes.json().catch(() => ({}));
+      console.error("[api/chat] Groq HTTP error:", groqRes.status, JSON.stringify(errBody));
+      if (groqRes.status === 401) return res.status(500).json({ error: "AI service configuration error — check GROQ_API_KEY." });
+      if (groqRes.status === 429) return res.status(503).json({ error: "AI service is busy. Please try again in a moment." });
+      return res.status(500).json({ error: "AI service temporarily unavailable." });
+    }
+
+    const data = await groqRes.json();
+    const reply = data.choices?.[0]?.message?.content
       ?? "I couldn't generate a response right now — please try again.";
 
-    return res.status(200).json({
-      reply,
-      usage: completion.usage, // token usage for observability
-    });
+    return res.status(200).json({ reply, usage: data.usage });
 
   } catch (err) {
-    console.error("[api/chat] Groq error:", err.status, err.message);
-
-    if (err.status === 429) {
-      return res.status(503).json({ error: "AI service is busy. Please try again in a moment." });
-    }
-    if (err.status === 401) {
-      return res.status(500).json({ error: "AI service configuration error." });
-    }
+    console.error("[api/chat] fetch error:", err.message);
     return res.status(500).json({ error: "AI service temporarily unavailable." });
   }
 }
