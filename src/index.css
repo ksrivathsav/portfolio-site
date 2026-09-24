@@ -117,10 +117,13 @@ img { display: block; max-width: 100%; height: auto; }
 /* Selection — brand color */
 ::selection { background: rgba(99, 102, 241, 0.22); color: var(--color-text); }
 
-/* ── Page entry fade-in */
+/* ── Page entry fade-in
+   NOTE: Do NOT add transform here — any transform on <body> creates a
+   new containing block for position:fixed descendants (navbar, chatbot).
+   Opacity-only is safe: it never creates a fixed-element containing block. */
 @keyframes page-enter {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 body { animation: page-enter 0.5s ease both; }
 
