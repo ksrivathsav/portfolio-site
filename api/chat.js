@@ -58,6 +58,12 @@ export default async function handler(req, res) {
     .map((m) => ({ role: m.role, content: sanitize(m.content) }))
     .filter((m) => m.role === "user" || m.role === "assistant"); // strip injected system msgs
 
+  /* ── Check API key is set ── */
+  if (!process.env.GROQ_API_KEY) {
+    console.error("[api/chat] GROQ_API_KEY environment variable is not set");
+    return res.status(500).json({ error: "GROQ_API_KEY not configured on server." });
+  }
+
   /* ── Groq REST API (Llama 3.1 — free tier) ── */
   try {
     const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -89,7 +95,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ reply, usage: data.usage });
 
   } catch (err) {
-    console.error("[api/chat] fetch error:", err.message);
-    return res.status(500).json({ error: "AI service temporarily unavailable." });
+    console.error("[api/chat] fetch error:", err.message, err.cause?.message);
+    return res.status(500).json({ error: "AI service temporarily unavailable.", _debug: err.message });
   }
 }
