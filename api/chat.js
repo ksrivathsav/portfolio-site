@@ -1,8 +1,8 @@
-import OpenAI from "openai";
+import Groq from "groq-sdk";
 import { applyRateLimit }             from "./middleware/rateLimit.js";
 import { validateChat, sanitize }     from "./middleware/validate.js";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 // Srivathsav's context — fed to the model as the system prompt
 const SYSTEM_PROMPT = `You are Srivathsav Kommineni, a Full Stack Software Engineer. You are chatting with visitors on your personal portfolio website. Answer as yourself — in first person, professionally, warmly, and with technical depth. Keep replies concise (2-4 short paragraphs max). If you genuinely don't know something, say so naturally.
@@ -61,10 +61,10 @@ export default async function handler(req, res) {
     .map((m) => ({ role: m.role, content: sanitize(m.content) }))
     .filter((m) => m.role === "user" || m.role === "assistant"); // strip injected system msgs
 
-  /* ── OpenAI call ── */
+  /* ── Groq (Llama 3.1 — free tier) ── */
   try {
-    const completion = await openai.chat.completions.create({
-      model:       "gpt-4o-mini",
+    const completion = await groq.chat.completions.create({
+      model:       "llama-3.1-8b-instant",
       messages:    [{ role: "system", content: SYSTEM_PROMPT }, ...sanitized],
       max_tokens:  450,
       temperature: 0.72,
@@ -79,9 +79,8 @@ export default async function handler(req, res) {
     });
 
   } catch (err) {
-    console.error("[api/chat] OpenAI error:", err.status, err.message);
+    console.error("[api/chat] Groq error:", err.status, err.message);
 
-    /* Graceful degradation by error type */
     if (err.status === 429) {
       return res.status(503).json({ error: "AI service is busy. Please try again in a moment." });
     }

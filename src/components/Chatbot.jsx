@@ -186,7 +186,7 @@ export default function Chatbot() {
                   Talk to Srivathsav AI
                 </div>
                 <div style={{ fontSize: "0.72rem", color: "var(--color-muted)" }}>
-                  Powered by GPT-4o · Press <kbd style={{ background: "rgba(255,255,255,0.1)", borderRadius: "3px", padding: "1px 4px", fontSize: "0.68rem", fontFamily: "monospace", border: "1px solid rgba(255,255,255,0.15)" }}>/</kbd> to toggle
+                  Powered by Llama 3.1 · Press <kbd style={{ background: "rgba(255,255,255,0.1)", borderRadius: "3px", padding: "1px 4px", fontSize: "0.68rem", fontFamily: "monospace", border: "1px solid rgba(255,255,255,0.15)" }}>/</kbd> to toggle
                 </div>
               </div>
               <div style={{ display: "flex", gap: "0.25rem" }}>
