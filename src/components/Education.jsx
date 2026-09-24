@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { education }     from "../data/portfolioData";
-import { SectionHeader, CompanyLogo } from "./Experience";
+import { SectionHeader, CompanyLogo } from "./shared";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 
 export default function Education() {

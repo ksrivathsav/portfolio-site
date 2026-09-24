@@ -5,9 +5,6 @@ import { experiences }    from "../data/portfolioData";
 import { useBreakpoint }  from "../hooks/useBreakpoint";
 import { SectionHeader, CompanyLogo } from "./shared";
 
-// Re-export so Education/Skills/Projects can still import from here
-export { SectionHeader, CompanyLogo };
-
 export default function Experience() {
   const { isMobile }  = useBreakpoint();
   const timelineRef   = useRef(null);

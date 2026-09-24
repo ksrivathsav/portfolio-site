@@ -143,7 +143,7 @@ export const projects = [
     tech: ["Python", "XGBoost", "Scikit-learn", "Flask", "Seaborn"],
     github: "https://github.com/ksrivathsav/",
     featured: false,
-    gradient: "from-amber-500 to-yellow-400",
+    gradient: "from-rose-500 to-orange-500",
   },
   {
     id: 7,
@@ -161,7 +161,7 @@ export const projects = [
     tech: ["Python", "TensorFlow", "ProtT5", "CAFA 5 Dataset", "Kaggle"],
     github: "https://github.com/ksrivathsav/Amino_Acid_Seq_Func_Prediction",
     featured: false,
-    gradient: "from-amber-500 to-yellow-400",
+    gradient: "from-violet-500 to-fuchsia-500",
   },
   {
     id: 9,
@@ -170,7 +170,7 @@ export const projects = [
     tech: ["Python", "Hugging Face Transformers", "Jupyter Notebook", "Anvil", "HTML/CSS"],
     github: "https://github.com/ksrivathsav/Abstractive-Text-Summarizer",
     featured: false,
-    gradient: "from-amber-500 to-yellow-400",
+    gradient: "from-sky-500 to-blue-600",
   },
   {
     id: 10,
@@ -198,7 +198,7 @@ export const skillCategories = [
   },
   {
     label: "Artificial Intelligence and Machine Learning",
-    icon: "",
+    icon: "🤖",
     skills: ["Pandas", "NumPy", "Scikit-learn", "PyTorch", "TensorFlow", "Hugging Face Transformers", "CNNs", "Vision Transformers", "LLMs", "Generative AI", "RAG", "Graph RAG", "LangChain", "LangGraph", "OpenAI API", "FAISS", "QdrantDB", "CUDA", "NLP", "SpaCy", "OpenCV", "Fine-tuning", "Transfer Learning", "ONNX", "MLflow", "DVC", "Weights & Biases"],
   },
   {

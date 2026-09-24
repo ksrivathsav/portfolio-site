@@ -3,13 +3,14 @@ import { motion, useInView, useMotionValue, useTransform, useSpring } from "fram
 import { ExternalLink, Star } from "lucide-react";
 import { GithubIcon }   from "./SocialIcons";
 import { projects }     from "../data/portfolioData";
-import { SectionHeader } from "./Experience";
+import { SectionHeader } from "./shared";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 
 const GRADIENT_MAP = {
   "from-indigo-500 to-cyan-500":     ["#6366f1", "#06b6d4"],
   "from-amber-500 to-yellow-400":    ["#f59e0b", "#facc15"],
   "from-orange-500 to-rose-500":     ["#f97316", "#f43f5e"],
+  "from-rose-500 to-orange-500":     ["#f43f5e", "#f97316"],
   "from-violet-500 to-fuchsia-500":  ["#8b5cf6", "#d946ef"],
   "from-sky-500 to-blue-600":        ["#0ea5e9", "#2563eb"],
   "from-emerald-500 to-teal-500":    ["#10b981", "#14b8a6"],

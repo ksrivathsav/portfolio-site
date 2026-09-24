@@ -135,7 +135,7 @@ export default function Footer() {
               <motion.a
                 key={i}
                 href={href}
-                target="_blank"
+                target={href.startsWith("mailto") ? undefined : "_blank"}
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.2, y: -3 }}
                 style={{ color: "var(--color-muted)" }}

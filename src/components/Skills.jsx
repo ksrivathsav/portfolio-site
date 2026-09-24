@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { skillCategories } from "../data/portfolioData";
-import { SectionHeader }   from "./Experience";
+import { SectionHeader }   from "./shared";
 import { useBreakpoint }   from "../hooks/useBreakpoint";
 
 /* Bento span per category index: [Frontend, Backend, AI/ML, Databases, Cloud, Core&Tools] */
