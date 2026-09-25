@@ -73,7 +73,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model:       "llama-3.1-8b-instant",
+        model:       "llama3-8b-8192",
         messages:    [{ role: "system", content: SYSTEM_PROMPT }, ...sanitized],
         max_tokens:  450,
         temperature: 0.72,
@@ -86,7 +86,7 @@ export default async function handler(req, res) {
       if (groqRes.status === 401) return res.status(500).json({ error: "AI service configuration error — check GROQ_API_KEY." });
       if (groqRes.status === 429) return res.status(503).json({ error: "AI service is busy. Please try again in a moment." });
       // Expose full error for debugging
-      return res.status(500).json({ error: "AI service temporarily unavailable.", _status: groqRes.status, _groq: errBody });
+      return res.status(500).json({ error: "AI service temporarily unavailable." });
     }
 
     const data = await groqRes.json();
