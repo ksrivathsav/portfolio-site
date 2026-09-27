@@ -1,16 +1,10 @@
 import { useState } from "react";
 
-/**
- * @param {string} url       - Relative or absolute image URL
- * @param {string} company   - Company name (used for alt text + fallback initials)
- * @param {string} color     - Brand hex color (fallback background tint + initials color)
- */
 export function CompanyLogo({ url, company, color }) {
   const [failed, setFailed] = useState(false);
   const base     = import.meta.env.BASE_URL;
   const src      = url ? (url.startsWith("http") ? url : `${base}${url}`) : null;
   const isPng    = src && src.endsWith(".png");
-  // UF work-experience logo uses a dark-blue background
   const isDarkBg = src && src.includes("uf.png") && !src.includes("uf_seal");
 
   return (

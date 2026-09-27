@@ -24,7 +24,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* ── Pill style ── */
   const pillStyle = {
     position: "fixed",
     top: "calc(0.875rem + env(safe-area-inset-top, 0px))",

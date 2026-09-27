@@ -1,7 +1,6 @@
 import { applyRateLimit }             from "./middleware/rateLimit.js";
 import { validateChat, sanitize }     from "./middleware/validate.js";
 
-// Srivathsav's context — fed to the model as the system prompt
 const SYSTEM_PROMPT = `You are Srivathsav Kommineni, a Full Stack Software Engineer. You are chatting with visitors on your personal portfolio website. Answer as yourself — in first person, professionally, warmly, and with technical depth. Keep replies concise (2-4 short paragraphs max). If you genuinely don't know something, say so naturally.
 
 == ABOUT ME ==
@@ -37,36 +36,28 @@ Cloud/DevOps: AWS, Azure, Docker, Kubernetes, Terraform, GitHub Actions
 Speak in first person. Be enthusiastic about AI/ML and system design. For salary questions, say you're open to discussing based on role. Keep answers concise. Suggest portfolio sections when relevant. Never fabricate experience or skills not listed above.`;
 
 export default async function handler(req, res) {
-  /* ── CORS ── */
   res.setHeader("Access-Control-Allow-Origin",  "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST")   return res.status(405).json({ error: "Method not allowed" });
 
-  /* ── Rate limiting ── */
   if (applyRateLimit(req, res, "chat")) return;
 
-  /* ── Input validation ── */
   const body = req.body ?? {};
   const { valid, error } = validateChat(body);
   if (!valid) return res.status(400).json({ error });
 
-  /* ── Sanitize + cap messages ── */
   const sanitized = body.messages
     .slice(-40)
     .map((m) => ({ role: m.role, content: sanitize(m.content) }))
-    .filter((m) => m.role === "user" || m.role === "assistant"); // strip injected system msgs
+    .filter((m) => m.role === "user" || m.role === "assistant");
 
-  /* ── Check API key is set ── */
   if (!process.env.GROQ_API_KEY) {
-    console.error("[api/chat] GROQ_API_KEY environment variable is not set");
-    return res.status(500).json({ error: "GROQ_API_KEY not configured on server." });
+    console.error("[api/chat] GROQ_API_KEY is not set");
+    return res.status(500).json({ error: "Chat is temporarily unavailable." });
   }
 
-  /* ── Groq REST API (free developer tier) ──
-     llama-3.1-8b-instant and llama3-8b-8192 were shut down for free/dev keys
-     on 2026-08-16. openai/gpt-oss-20b is Groq's official replacement. */
   try {
     const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -85,9 +76,9 @@ export default async function handler(req, res) {
     if (!groqRes.ok) {
       const errBody = await groqRes.json().catch(() => ({}));
       console.error("[api/chat] Groq HTTP error:", groqRes.status, JSON.stringify(errBody));
-      if (groqRes.status === 401) return res.status(500).json({ error: "AI service configuration error." });
-      if (groqRes.status === 429) return res.status(503).json({ error: "AI service is busy. Please try again in a moment." });
-      return res.status(500).json({ error: "AI service temporarily unavailable." });
+      if (groqRes.status === 401) return res.status(500).json({ error: "Chat is temporarily unavailable." });
+      if (groqRes.status === 429) return res.status(503).json({ error: "Too many messages. Please try again in a moment." });
+      return res.status(500).json({ error: "Chat is temporarily unavailable." });
     }
 
     const data = await groqRes.json();
@@ -98,6 +89,6 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error("[api/chat] fetch error:", err.message, err.cause?.message);
-    return res.status(500).json({ error: "AI service temporarily unavailable." });
+    return res.status(500).json({ error: "Chat is temporarily unavailable." });
   }
 }

@@ -3,11 +3,8 @@
 /* Dark mode overrides */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ═══════════════════════════════════════════════════════════
-   DESIGN TOKENS
-═══════════════════════════════════════════════════════════ */
+/* DESIGN TOKENS */
 :root {
-  /* Light: Apple's clean white */
   --color-bg:           #f5f5f7;
   --color-bg-alt:       #ffffff;
   --color-surface:      #ffffff;
@@ -39,7 +36,6 @@
 }
 
 .dark {
-  /* Midnight Precision — near-pitch black with subtle violet undertone */
   --color-bg:           #030305;
   --color-bg-alt:       #080810;
   --color-surface:      rgba(255, 255, 255, 0.04);
@@ -56,9 +52,7 @@
   --nav-bg:             rgba(3, 3, 5, 0.82);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   GLOBAL RESET & BASE
-═══════════════════════════════════════════════════════════ */
+/* GLOBAL RESET & BASE */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -67,9 +61,7 @@
 
 html {
   font-size: 16px;
-  /* Native smooth scroll — no JS library needed, never breaks position:fixed */
   scroll-behavior: smooth;
-  /* Prevent layout shift when scrollbar appears */
   scrollbar-gutter: stable;
 }
 
@@ -87,26 +79,26 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ── Tabular nums on all numeric content */
+/* Tabular nums on all numeric content */
 .tabular-nums { font-variant-numeric: tabular-nums; }
 
-/* ── Smooth cursor for interactive elements */
+/* Smooth cursor for interactive elements */
 button, a, [role="button"], label { cursor: pointer; }
 
-/* ── Fast tap on touch — remove 300ms delay */
+/* Fast tap on touch — remove 300ms delay */
 button, a, [role="button"] { touch-action: manipulation; }
 
-/* ── Prevent layout shifts on images */
+/* Prevent layout shifts on images */
 img { display: block; max-width: 100%; height: auto; }
 
-/* ── Will-change hints for animated elements */
+/* Will-change hints for animated elements */
 .avatar-ring       { will-change: transform; }
 .gradient-name     { will-change: background-position; }
 .typing-cursor     { will-change: opacity; }
 .status-dot        { will-change: box-shadow; }
 .scroll-indicator  { will-change: transform; }
 
-/* ── Contain layout for cards */
+/* Contain layout for cards */
 .card { contain: layout style; }
 
 ::-webkit-scrollbar { width: 5px; }
@@ -117,19 +109,14 @@ img { display: block; max-width: 100%; height: auto; }
 /* Selection — brand color */
 ::selection { background: rgba(99, 102, 241, 0.22); color: var(--color-text); }
 
-/* ── Page entry fade-in
-   NOTE: Do NOT add transform here — any transform on <body> creates a
-   new containing block for position:fixed descendants (navbar, chatbot).
-   Opacity-only is safe: it never creates a fixed-element containing block. */
+/* Page fade-in — no transform on body (breaks position:fixed) */
 @keyframes page-enter {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 body { animation: page-enter 0.5s ease both; }
 
-/* ═══════════════════════════════════════════════════════════
-   TYPOGRAPHY
-═══════════════════════════════════════════════════════════ */
+/* TYPOGRAPHY */
 h1, h2, h3, h4, h5, h6 {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif;
   font-weight: 700;
@@ -138,7 +125,7 @@ h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
-/* ── Focus visible — keyboard navigation accessibility */
+/* Focus visible — keyboard navigation accessibility */
 :focus-visible {
   outline: 2px solid #6366f1;
   outline-offset: 3px;
@@ -146,13 +133,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 :focus:not(:focus-visible) { outline: none; }
 
-/* ── Minimum 44px touch targets (WCAG 2.5.5) */
+/* Touch targets */
 button, [role="button"] { min-height: 44px; min-width: 44px; }
 a.btn                   { min-height: 44px; }
 
-/* ═══════════════════════════════════════════════════════════
-   LAYOUT UTILITIES
-═══════════════════════════════════════════════════════════ */
+/* LAYOUT UTILITIES */
 .section {
   padding: var(--section-py) var(--section-px);
   max-width: var(--section-max);
@@ -195,9 +180,7 @@ a.btn                   { min-height: 44px; }
   max-width: 560px;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   CARD  — Glass in dark mode, clean white in light
-═══════════════════════════════════════════════════════════ */
+/* CARD — Glass in dark mode, clean white in light */
 .card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -215,7 +198,7 @@ a.btn                   { min-height: 44px; }
   }
 }
 
-/* Dark: true glassmorphism */
+/* Dark card */
 .dark .card {
   background: rgba(255, 255, 255, 0.035);
   border-color: rgba(255, 255, 255, 0.08);
@@ -234,9 +217,7 @@ a.btn                   { min-height: 44px; }
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   BUTTONS  — Pill-shaped, Apple-style
-═══════════════════════════════════════════════════════════ */
+/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -293,9 +274,7 @@ a.btn                   { min-height: 44px; }
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   BADGE  — micro-interactions
-═══════════════════════════════════════════════════════════ */
+/* BADGE — micro-interactions */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -312,14 +291,10 @@ a.btn                   { min-height: 44px; }
   .badge:hover { transform: scale(1.06); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   DIVIDER
-═══════════════════════════════════════════════════════════ */
+/* DIVIDER */
 .divider { width: 100%; height: 1px; background: var(--color-border); margin: 1.5rem 0; }
 
-/* ═══════════════════════════════════════════════════════════
-   KEYFRAMES
-═══════════════════════════════════════════════════════════ */
+/* KEYFRAMES */
 @keyframes spin-ring {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
@@ -384,7 +359,7 @@ a.btn                   { min-height: 44px; }
   50%       { box-shadow: 0 0 0 1px rgba(168,85,247,0.22), 0 8px 32px -8px rgba(0,0,0,0.35); }
 }
 
-/* ── Respect prefers-reduced-motion ── */
+/* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -394,9 +369,7 @@ a.btn                   { min-height: 44px; }
   body { animation: none; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   GRADIENT NAME  — moving shimmer
-═══════════════════════════════════════════════════════════ */
+/* GRADIENT NAME — moving shimmer */
 .gradient-name {
   background: linear-gradient(
     100deg,
@@ -415,9 +388,7 @@ a.btn                   { min-height: 44px; }
   animation: gradient-name-flow 6s linear infinite;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   HERO
-═══════════════════════════════════════════════════════════ */
+/* HERO */
 .avatar-ring { animation: spin-ring 6s linear infinite; }
 
 .typing-cursor {
@@ -451,9 +422,7 @@ a.btn                   { min-height: 44px; }
   text-transform: uppercase;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   CARD SPOTLIGHT  (mouse-tracking glow — pointer devices only)
-═══════════════════════════════════════════════════════════ */
+/* CARD SPOTLIGHT (mouse-tracking glow — pointer devices only) */
 .card-spotlight {
   --mouse-x: 50%;
   --mouse-y: 50%;
@@ -478,9 +447,7 @@ a.btn                   { min-height: 44px; }
   .card-spotlight:hover::after { opacity: 1; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SKILL CARD  — gradient border on hover
-═══════════════════════════════════════════════════════════ */
+/* SKILL CARD — gradient border on hover */
 .skill-card-hover { transition: border-color 0.3s, box-shadow 0.3s, background 0.3s; }
 @media (hover: hover) and (pointer: fine) {
   .skill-card-hover:hover {
@@ -491,9 +458,7 @@ a.btn                   { min-height: 44px; }
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SECTION GLASS  (alternating section backgrounds)
-═══════════════════════════════════════════════════════════ */
+/* SECTION GLASS (alternating section backgrounds) */
 .section-glass {
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
@@ -504,18 +469,14 @@ a.btn                   { min-height: 44px; }
   border-color: rgba(255, 255, 255, 0.07);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   NAV ACTIVE LINK
-═══════════════════════════════════════════════════════════ */
+/* NAV ACTIVE LINK */
 .nav-active {
   color: var(--color-text) !important;
   background: var(--color-accent) !important;
   border-radius: 0.5rem;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   INPUTS
-═══════════════════════════════════════════════════════════ */
+/* INPUTS */
 input, textarea {
   width: 100%;
   padding: 0.625rem 0.875rem;
@@ -537,26 +498,9 @@ input:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   RESPONSIVE BREAKPOINTS
-   ─ Design targets:
-     320px  — iPhone SE (old), budget Android
-     375px  — iPhone 12 mini / SE3
-     390px  — iPhone 14/15 standard
-     430px  — iPhone Plus / Max
-     540px  — Surface Duo / large phone landscape
-     640px  — iPad mini portrait / large phones
-     768px  — iPad / tablet portrait
-     834px  — iPad Air portrait
-     1024px — iPad Pro landscape / small laptops
-     1280px — MacBook Air 13"
-     1440px — MacBook Pro 14" / 16"
-     1680px — iMac 21"
-     1920px — Full HD monitors / iMac 24"
-     2560px — 4K / 5K / Retina iMac
-═══════════════════════════════════════════════════════════ */
+/* RESPONSIVE BREAKPOINTS ─ Design targets: 320px — iPhone SE (old), budget Android */
 
-/* ── 4K+ / Ultra HD monitors ── */
+/* 4K+ / Ultra HD monitors */
 @media (min-width: 2560px) {
   :root {
     --section-max: 1600px;
@@ -567,7 +511,7 @@ input:focus, textarea:focus {
   .section-title { font-size: 4.5rem; }
 }
 
-/* ── Large monitors (1920px — iMac 24", Full HD) ── */
+/* Large monitors (1920px — iMac 24", Full HD) */
 @media (min-width: 1920px) and (max-width: 2559px) {
   :root {
     --section-max: 1400px;
@@ -577,7 +521,7 @@ input:focus, textarea:focus {
   }
 }
 
-/* ── MacBook Pro 14/16" + iMac 21" ── */
+/* MacBook Pro 14/16" + iMac 21" */
 @media (min-width: 1440px) and (max-width: 1919px) {
   :root {
     --section-max: 1200px;
@@ -585,7 +529,7 @@ input:focus, textarea:focus {
   }
 }
 
-/* ── iPad Pro landscape / small laptop ── */
+/* iPad Pro landscape / small laptop */
 @media (max-width: 1024px) {
   :root {
     --section-max: 100%;
@@ -594,7 +538,7 @@ input:focus, textarea:focus {
   }
 }
 
-/* ── Tablets (iPad mini → iPad Air portrait) ── */
+/* Tablets (iPad mini → iPad Air portrait) */
 @media (max-width: 768px) {
   :root {
     --section-px:  1.25rem;
@@ -604,7 +548,7 @@ input:focus, textarea:focus {
   .section-subtitle { font-size: 1rem; }
 }
 
-/* ── Large phones / small tablet portrait (640px) ── */
+/* Large phones / small tablet portrait (640px) */
 @media (max-width: 640px) {
   :root {
     --section-px: 1rem;
@@ -615,7 +559,7 @@ input:focus, textarea:focus {
   .scroll-indicator { display: none; }
 }
 
-/* ── Standard phones (< 480px) ── */
+/* Standard phones (< 480px) */
 @media (max-width: 480px) {
   :root {
     --section-px: 0.875rem;
@@ -625,7 +569,7 @@ input:focus, textarea:focus {
   .badge { font-size: 0.7rem; }
 }
 
-/* ── Very small phones (< 375px — iPhone SE old) ── */
+/* Very small phones (< 375px — iPhone SE old) */
 @media (max-width: 374px) {
   :root {
     --section-px: 0.75rem;
@@ -634,7 +578,7 @@ input:focus, textarea:focus {
   .btn { padding: 0.55rem 1rem; font-size: 0.82rem; }
 }
 
-/* ── Phone landscape mode ── */
+/* Phone landscape mode */
 @media (max-height: 500px) and (orientation: landscape) {
   :root {
     --section-py: 2.5rem;
@@ -644,14 +588,12 @@ input:focus, textarea:focus {
   #hero { min-height: auto !important; padding-top: 5rem !important; padding-bottom: 3rem !important; }
 }
 
-/* ── High DPI / Retina adjustments ── */
+/* High DPI / Retina adjustments */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   ::-webkit-scrollbar { width: 4px; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   GRAIN NOISE OVERLAY — premium depth texture
-═══════════════════════════════════════════════════════════ */
+/* Grain overlay */
 .grain-overlay {
   position: fixed;
   inset: 0;
@@ -662,12 +604,10 @@ input:focus, textarea:focus {
   background-size: 300px 300px;
   mix-blend-mode: overlay;
 }
-/* Less grain in light mode — it's already textured enough */
+/* Light mode grain */
 :root:not(.dark) .grain-overlay { opacity: 0.018; }
 
-/* ═══════════════════════════════════════════════════════════
-   AURORA ORBS — hero background
-═══════════════════════════════════════════════════════════ */
+/* AURORA ORBS — hero background */
 .aurora-orb {
   position: absolute;
   border-radius: 50%;
@@ -675,9 +615,7 @@ input:focus, textarea:focus {
   pointer-events: none;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   FLOATING PILL NAVBAR
-═══════════════════════════════════════════════════════════ */
+/* FLOATING PILL NAVBAR */
 .nav-pill {
   animation: pill-glow 5s ease-in-out infinite;
 }
@@ -685,9 +623,7 @@ input:focus, textarea:focus {
   animation: pill-glow 5s ease-in-out infinite;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   BENTO GRID — skills section
-═══════════════════════════════════════════════════════════ */
+/* BENTO GRID — skills section */
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -706,18 +642,14 @@ input:focus, textarea:focus {
   .bento-2, .bento-3, .bento-4 { grid-column: span 1; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SCRAMBLE TEXT  — hero name
-═══════════════════════════════════════════════════════════ */
+/* SCRAMBLE TEXT — hero name */
 .scramble-char {
   display: inline-block;
   color: inherit;
   font-variant-numeric: tabular-nums;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   STAT STRIP — hero stats
-═══════════════════════════════════════════════════════════ */
+/* STAT STRIP — hero stats */
 .stat-strip {
   display: inline-flex;
   align-items: center;

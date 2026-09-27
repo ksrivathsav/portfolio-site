@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User, Sparkles, RefreshCw } from "lucide-react";
 import { useBreakpoint } from "../hooks/useBreakpoint";
 
-/* ── Starter questions visitors can tap ── */
 const STARTERS = [
   "What are your key skills?",
   "Tell me about your current role",
@@ -18,7 +17,7 @@ function useChat() {
   const [messages, setMessages] = useState([
     {
       role:    "assistant",
-      content: "Hi! 👋 I'm an AI version of Srivathsav. Ask me anything about my skills, experience, projects, or background — I'll answer as if I were him.",
+      content: "Hey — ask me about my work, projects, or background.",
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -50,7 +49,6 @@ function useChat() {
 
       setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
     } catch (err) {
-      // Hide raw browser/network errors (JSON parse failures, DOMExceptions, etc.)
       const isRawBrowserErr =
         !err.message ||
         err.message.toLowerCase().includes("json") ||
@@ -76,7 +74,7 @@ function useChat() {
   const reset = useCallback(() => {
     setMessages([{
       role:    "assistant",
-      content: "Hi! 👋 I'm an AI version of Srivathsav. Ask me anything about my skills, experience, projects, or background — I'll answer as if I were him.",
+      content: "Hey — ask me about my work, projects, or background.",
     }]);
     setError(null);
     setLoading(false);
@@ -94,7 +92,6 @@ export default function Chatbot() {
   const bottomRef  = useRef(null);
   const inputRef   = useRef(null);
 
-  /* ── Keyboard shortcut: press "/" to open chatbot ── */
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "/" && !["INPUT","TEXTAREA"].includes(document.activeElement?.tagName)) {
@@ -107,12 +104,10 @@ export default function Chatbot() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  /* Auto-scroll to newest message */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  /* Focus input when chat opens */
   useEffect(() => {
     if (open) setTimeout(() => inputRef.current?.focus(), 300);
   }, [open]);
@@ -129,7 +124,6 @@ export default function Chatbot() {
 
   return (
     <>
-      {/* ── Chat window ── */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -140,18 +134,10 @@ export default function Chatbot() {
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             style={{
               position: "fixed",
-              /*
-               * Mobile: full-width bottom sheet.
-               * On iOS the bottom sheet must sit ABOVE the home bar.
-               * We use padding-bottom inside the window (not here) to
-               * keep content clear of the safe area, because the sheet
-               * itself spans edge-to-edge.
-               */
               bottom: isMobile ? "0" : "calc(6rem + env(safe-area-inset-bottom, 0px))",
               right:  isMobile ? "0" : "1.5rem",
               left:   isMobile ? "0" : "auto",
               width:  isMobile ? "100%" : "min(380px, calc(100vw - 3rem))",
-              /* Use svh/dvh for correct iOS height — fallback to 85vh */
               maxHeight: isMobile
                 ? "min(85svh, 85dvh, 85vh)"
                 : "min(580px, 85dvh)",
@@ -166,7 +152,6 @@ export default function Chatbot() {
               backdropFilter: "blur(24px)",
             }}
           >
-            {/* Header */}
             <div style={{
               display: "flex", alignItems: "center", gap: "0.75rem",
               padding: "1rem 1.25rem",
@@ -183,10 +168,10 @@ export default function Chatbot() {
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--color-text)" }}>
-                  Talk to Srivathsav AI
+                  Chat
                 </div>
                 <div style={{ fontSize: "0.72rem", color: "var(--color-muted)" }}>
-                  Powered by Groq · Press <kbd style={{ background: "rgba(255,255,255,0.1)", borderRadius: "3px", padding: "1px 4px", fontSize: "0.68rem", fontFamily: "monospace", border: "1px solid rgba(255,255,255,0.15)" }}>/</kbd> to toggle
+                  Press <kbd style={{ background: "rgba(255,255,255,0.1)", borderRadius: "3px", padding: "1px 4px", fontSize: "0.68rem", fontFamily: "monospace", border: "1px solid rgba(255,255,255,0.15)" }}>/</kbd> to toggle
                 </div>
               </div>
               <div style={{ display: "flex", gap: "0.25rem" }}>
@@ -209,7 +194,6 @@ export default function Chatbot() {
               </div>
             </div>
 
-            {/* Messages */}
             <div style={{
               flex: 1, overflowY: "auto", padding: "1rem 1rem 0.5rem",
               display: "flex", flexDirection: "column", gap: "0.875rem",
@@ -227,7 +211,6 @@ export default function Chatbot() {
                     gap: "0.5rem",
                   }}
                 >
-                  {/* Avatar */}
                   <div style={{
                     width: "28px", height: "28px", borderRadius: "50%", flexShrink: 0,
                     background: msg.role === "user"
@@ -241,7 +224,6 @@ export default function Chatbot() {
                     }
                   </div>
 
-                  {/* Bubble */}
                   <div style={{
                     maxWidth: "80%",
                     padding: "0.625rem 0.875rem",
@@ -260,7 +242,6 @@ export default function Chatbot() {
                 </motion.div>
               ))}
 
-              {/* Typing indicator */}
               {loading && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
@@ -291,7 +272,6 @@ export default function Chatbot() {
                 </motion.div>
               )}
 
-              {/* Starter chips — shown only at the beginning */}
               {messages.length === 1 && !loading && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", padding: "0.25rem 0" }}>
                   {STARTERS.map((q) => (
@@ -321,7 +301,6 @@ export default function Chatbot() {
               <div ref={bottomRef} />
             </div>
 
-            {/* Input row */}
             <div style={{
               padding: isMobile
                 ? `0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0px))`
@@ -378,7 +357,6 @@ export default function Chatbot() {
         )}
       </AnimatePresence>
 
-      {/* Floating toggle button — always fixed bottom-right */}
       <motion.button
         onClick={() => setOpen((o) => !o)}
         initial={{ scale: 0, opacity: 0 }}
@@ -386,7 +364,7 @@ export default function Chatbot() {
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.93 }}
-        aria-label={open ? "Close AI chat" : "Open AI chat"}
+        aria-label={open ? "Close chat" : "Open chat"}
         style={{
           position: "fixed",
           bottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))",
@@ -413,7 +391,6 @@ export default function Chatbot() {
         </AnimatePresence>
       </motion.button>
 
-      {/* Unread indicator dot */}
       {!open && (
         <motion.div
           initial={{ scale: 0 }}

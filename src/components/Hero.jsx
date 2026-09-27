@@ -12,7 +12,6 @@ import { useTypewriter }  from "../hooks/useTypewriter";
 import { useScramble }    from "../hooks/useScramble";
 import { useCounter }     from "../hooks/useCounter";
 
-/* ── Aurora animated background ─────────────────────────── */
 function AuroraBackground() {
   const orbs = [
     {
@@ -54,7 +53,6 @@ function AuroraBackground() {
   );
 }
 
-/* ── Avatar with spinning rainbow ring ───────────────────── */
 function AvatarOrb({ name, size = 220 }) {
   const px = `${size}px`;
   return (
@@ -92,7 +90,6 @@ function AvatarOrb({ name, size = 220 }) {
   );
 }
 
-/* ── Magnetic wrapper (desktop only) ─────────────────────── */
 function MagneticButton({ children, disabled, strength = 0.28 }) {
   const ref = useRef(null);
   const x   = useMotionValue(0);
@@ -163,7 +160,6 @@ export default function Hero() {
     >
       <AuroraBackground />
 
-      {/* ── Main row ── */}
       <div
         style={{
           maxWidth: "1140px",
@@ -177,7 +173,6 @@ export default function Hero() {
           position: "relative",
         }}
       >
-        {/* ── Avatar: top on mobile ── */}
         {isMobile && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -188,7 +183,6 @@ export default function Hero() {
           </motion.div>
         )}
 
-        {/* ── Text column ── */}
         <div
           style={{
             flex: "1 1 55%",
@@ -198,7 +192,6 @@ export default function Hero() {
             textAlign: isMobile ? "center" : "left",
           }}
         >
-          {/* Status badge */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -226,7 +219,6 @@ export default function Hero() {
             </motion.span>
           </motion.div>
 
-          {/* Scramble name */}
           <motion.h1
             className="gradient-name"
             initial={{ opacity: 0, y: 24 }}
@@ -253,7 +245,6 @@ export default function Hero() {
             {scrambledName}
           </motion.h1>
 
-          {/* Typewriter role */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -278,7 +269,6 @@ export default function Hero() {
             </h2>
           </motion.div>
 
-          {/* Bio */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -294,7 +284,6 @@ export default function Hero() {
             {personalInfo.bio}
           </motion.p>
 
-          {/* CTA */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -335,7 +324,6 @@ export default function Hero() {
             </MagneticButton>
           </motion.div>
 
-          {/* Social icons */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -369,7 +357,6 @@ export default function Hero() {
               ))}
             </div>
 
-            {/* Stat strip */}
             <motion.div
               className="stat-strip"
               initial={{ opacity: 0, y: 10 }}
@@ -409,7 +396,6 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* ── Avatar: right on tablet/desktop ── */}
         {!isMobile && (
           <motion.div
             initial={{ opacity: 0, x: 40, scale: 0.88 }}
@@ -422,7 +408,6 @@ export default function Hero() {
         )}
       </div>
 
-      {/* Scroll indicator */}
       <div className="scroll-indicator">
         <span>scroll</span>
         <ChevronDown size={16} />

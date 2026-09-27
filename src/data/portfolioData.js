@@ -1,6 +1,3 @@
-// All portfolio content — name, experience, education, projects, skills.
-// Edit this file to update your information.
-
 export const personalInfo = {
   name: "Srivathsav Kommineni",
   title: "Full Stack Developer",

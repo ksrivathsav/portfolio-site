@@ -11,7 +11,6 @@ export function useBreakpoint() {
   useEffect(() => {
     let rafId;
     const handler = () => {
-      // Debounce via rAF to avoid thrashing on resize
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => setDims(getState()));
     };

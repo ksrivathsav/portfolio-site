@@ -3,11 +3,9 @@ import { lazy, Suspense, memo } from "react";
 import { ThemeProvider }  from "./context/ThemeContext";
 import { ErrorBoundary }  from "./components/ui/ErrorBoundary";
 
-// Hero loads eagerly — above the fold, on the critical path
 import Hero   from "./components/Hero";
 import Navbar from "./components/Navbar";
 
-// All other sections are code-split for a faster initial load
 const Experience = lazy(() => import("./components/Experience"));
 const Education  = lazy(() => import("./components/Education"));
 const Projects   = lazy(() => import("./components/Projects"));
@@ -32,7 +30,6 @@ SectionSkeleton.displayName = "SectionSkeleton";
 function AppInner() {
   return (
     <>
-      {/* Film-grain noise texture — adds depth without JS */}
       <div className="grain-overlay" aria-hidden="true" />
 
       <CursorGlow />
