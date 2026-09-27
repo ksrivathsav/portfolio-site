@@ -64,7 +64,9 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "GROQ_API_KEY not configured on server." });
   }
 
-  /* ── Groq REST API (Llama 3.1 — free tier) ── */
+  /* ── Groq REST API (free developer tier) ──
+     llama-3.1-8b-instant and llama3-8b-8192 were shut down for free/dev keys
+     on 2026-08-16. openai/gpt-oss-20b is Groq's official replacement. */
   try {
     const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -73,7 +75,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model:       "llama3-8b-8192",
+        model:       "openai/gpt-oss-20b",
         messages:    [{ role: "system", content: SYSTEM_PROMPT }, ...sanitized],
         max_tokens:  450,
         temperature: 0.72,
@@ -85,8 +87,7 @@ export default async function handler(req, res) {
       console.error("[api/chat] Groq HTTP error:", groqRes.status, JSON.stringify(errBody));
       if (groqRes.status === 401) return res.status(500).json({ error: "AI service configuration error — check GROQ_API_KEY." });
       if (groqRes.status === 429) return res.status(503).json({ error: "AI service is busy. Please try again in a moment." });
-      // Expose full error for debugging
-      return res.status(500).json({ error: "AI service temporarily unavailable." });
+      return res.status(500).json({ error: "AI service temporarily unavailable.", _status: groqRes.status, _groq: errBody });
     }
 
     const data = await groqRes.json();
