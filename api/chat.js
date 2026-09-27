@@ -85,9 +85,9 @@ export default async function handler(req, res) {
     if (!groqRes.ok) {
       const errBody = await groqRes.json().catch(() => ({}));
       console.error("[api/chat] Groq HTTP error:", groqRes.status, JSON.stringify(errBody));
-      if (groqRes.status === 401) return res.status(500).json({ error: "AI service configuration error — check GROQ_API_KEY." });
+      if (groqRes.status === 401) return res.status(500).json({ error: "AI service configuration error." });
       if (groqRes.status === 429) return res.status(503).json({ error: "AI service is busy. Please try again in a moment." });
-      return res.status(500).json({ error: "AI service temporarily unavailable.", _status: groqRes.status, _groq: errBody });
+      return res.status(500).json({ error: "AI service temporarily unavailable." });
     }
 
     const data = await groqRes.json();
@@ -98,6 +98,6 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error("[api/chat] fetch error:", err.message, err.cause?.message);
-    return res.status(500).json({ error: "AI service temporarily unavailable.", _debug: err.message });
+    return res.status(500).json({ error: "AI service temporarily unavailable." });
   }
 }
