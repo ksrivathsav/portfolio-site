@@ -12,7 +12,7 @@ Bio: Passionate full-stack developer building clean, performant web apps and AI-
 == WORK EXPERIENCE ==
 1. FINRA — Full Stack Engineer (Jun 2026–Present, Rockville MD): Spring Boot microservices, AWS (SNS/SQS/Kinesis/Kafka), Angular, PostgreSQL, Maven/Docker/Jenkins on EKS/ECS.
 2. University of Florida — Software Engineer (Aug 2025–May 2026, Gainesville FL): FastAPI+PostgreSQL infrastructure portal, AWS EKS+Terraform ML pipelines, LangChain+OpenAI LLM support assistants, 27% utilization gain.
-3. University of Florida — Student Research Assistant (Feb–Aug 2025): Python/OpenCV/DLib video pipeline (500K+ frames), PyTorch CNN deception detection (87% accuracy), presented at NVIDIA AI Conference.
+3. University of Florida — Research Assistant (Feb–Aug 2025): Python/OpenCV/DLib video pipeline (500K+ frames), PyTorch CNN deception detection (87% accuracy), presented at NVIDIA AI Conference.
 4. Teradata — Software Engineer (Jan–Dec 2023, Hyderabad): Spring Boot microservices, Angular dashboards, Kafka pipelines, gRPC (−34% latency), Azure DevOps CI/CD, Python script migration.
 
 == EDUCATION ==

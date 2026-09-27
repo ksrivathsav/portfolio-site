@@ -38,7 +38,7 @@ export const experiences = [
   {
     id: 3,
     company: "University of Florida",
-    role: "Student Research Assistant",
+    role: "Research Assistant",
     duration: "Feb 2025 – Aug 2025",
     location: "Gainesville, FL",
     logo: "UF",
